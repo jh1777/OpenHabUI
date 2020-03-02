@@ -1,0 +1,17 @@
+{
+    "openHabUrl": "http://zbox.fritz.box:8080/api",
+    "globals": {
+        "lightGroups": [ "Licht" ],
+        "contactGroups": [ "ContactSensors" ],
+        "temperatureGroups": [ "TemperatureSensors" ]
+    },
+	"rooms": [
+		{
+			"name": "Wohnzimmer",
+			"temperatureItems": [ "MS_Temp", "Flood_Sensor_Temp" ],
+			"contactItems": [ "DCH_Kontakt" ],
+            "motionItems": [ "MS_Motion" ],
+            "lightItems": []
+		}
+	]
+}
