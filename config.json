@@ -1,5 +1,5 @@
 {
-    "openHabUrl": "http://zbox.fritz.box:8080/api",
+    "openHabUrl": "http://192.168.178.129:8080/rest",
     "globals": {
         "lightGroups": [ "Licht" ],
         "contactGroups": [ "ContactSensors" ],

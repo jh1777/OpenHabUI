@@ -1,5 +1,5 @@
-export class Globals {
-    TemperatureGroups: string[];
-    ContactGroups: string[];
-    LightGroups: string[];
+export interface Globals {
+    temperatureGroups: string[];
+    contactGroups: string[];
+    lightGroups: string[];
 }

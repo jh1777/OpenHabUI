@@ -1,7 +1,7 @@
-export class Room {
-    Name: string;
-    TemperatureItems: string[];
-    ContactItems: string[];
-    MotionItems: string[];
-    LightItems: string[];
+export interface Room {
+    name: string;
+    temperatureItems: string[];
+    contactItems: string[];
+    motionItems: string[];
+    lightItems: string[];
 }

@@ -1,0 +1,28 @@
+<h2>Groups</h2>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th class="left">{{group.groupName}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of group.members">
+        <td class="left">
+          <a (click)="openModal($event, item)" href="">{{item.name}}</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <clr-modal [(clrModalOpen)]="showModal">
+    <h3 class="modal-title">{{item?.label}}</h3>
+    <div class="modal-body">
+        <div><strong>Item Name:</strong> {{item?.name}}</div>
+        <div><strong>State:</strong> {{item?.state}}</div>
+        <div><strong>Transformed State:</strong> {{item?.transformedState}}</div>
+        <div><strong>Type:</strong> {{item?.type}}</div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="closeModal()">Ok</button>
+    </div>
+  </clr-modal>
