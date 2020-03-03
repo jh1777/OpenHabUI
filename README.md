@@ -6,6 +6,10 @@ GitHub Repo
 https://github.com/jh1777/OpenHabUI
 
 
+## Setup
+### OpenHab
+add the line `org.eclipse.smarthome.cors:enable=true` in the file *services/runtime.cfg*
+
 # Angular Default Help
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.4.
