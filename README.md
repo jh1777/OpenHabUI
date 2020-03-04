@@ -5,6 +5,9 @@ A smart and lean UI for your OpenHab Server (locally) using OpenHab REST API.
 GitHub Repo
 https://github.com/jh1777/OpenHabUI
 
+## Ideas
+Use 'Labels' 
+
 
 ## Setup
 ### OpenHab
@@ -33,3 +36,6 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 # Reference
 ## Useful Tutorial for Clarity
 https://medium.com/@beeman/tutorial-project-clarity-and-angular-cli-50d845a24d5b
+
+## Clarity
+https://clarity.design/documentation
