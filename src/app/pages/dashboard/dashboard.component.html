@@ -1,5 +1,17 @@
-<h2>Information</h2>
+<div class="jh-header">Information</div>
 
+<div *ngFor="let itemKey of items.keys()">
+  {{items.get(itemKey).displayName}}
+  <div></div>
+  <div class="clr-row">
+    <div class="clr-col-lg-3 clr-col-19" *ngFor="let item of items.get(itemKey).members">  
+      <app-roundedbox [type]="items.get(itemKey).dataType" [label]="item?.label" [value]="item?.transformedState ? item?.transformedState: item?.state" (click)="openModal($event, item)"></app-roundedbox>
+    </div>
+    <p></p> 
+  </div>
+</div>
+
+<!--
 <clr-accordion>
   <clr-accordion-panel *ngFor="let itemKey of items.keys()">
     <clr-accordion-title>{{items.get(itemKey).displayName}}</clr-accordion-title>
@@ -25,7 +37,7 @@
     </clr-accordion-content>
   </clr-accordion-panel>
 </clr-accordion>
-
+-->
 <!--<table class="table">
     <thead>
       <tr>
