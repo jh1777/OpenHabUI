@@ -1,6 +1,6 @@
 <div class="jh-header">Information</div>
 
-<div *ngFor="let itemKey of items.keys()">
+<div *ngFor="let itemKey of groups">
   {{items.get(itemKey).displayName}}
   <div></div>
   <div class="clr-row">
@@ -38,20 +38,7 @@
   </clr-accordion-panel>
 </clr-accordion>
 -->
-<!--<table class="table">
-    <thead>
-      <tr>
-        <th class="left">{{group.groupName}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of group.members">
-        <td class="left">
-          <a (click)="openModal($event, item)" href="">{{item.name}}</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>-->
+
 <clr-modal [(clrModalOpen)]="showModal">
   <h3 class="modal-title">{{item?.label}}</h3>
   <div class="modal-body">

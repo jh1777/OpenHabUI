@@ -8,7 +8,8 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
-import { RoundedboxComponent } from './components/roundedbox/roundedbox.component';
+import { RoundedboxComponent } from './components/dashboard/roundedbox/roundedbox.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { RoundedboxComponent } from './components/roundedbox/roundedbox.componen
     ClarityModule,
     BrowserAnimationsModule,
     UiModule,
+    FormsModule,
     HttpClientModule
   ],
   providers: [],
