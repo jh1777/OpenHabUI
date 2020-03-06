@@ -15,6 +15,10 @@
         "temperatureGroup": {
             "name": "TemperatureSensors",
             "displayName": "Temperatur Sensoren"
+        },
+        "motionGroup": {
+            "name": "MotionSensors",
+            "displayName": "Bewegungs Sensoren"
         }
     },
 	"rooms": [

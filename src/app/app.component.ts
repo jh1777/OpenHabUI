@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import configuration from 'config.json';
-import { Dashboard } from './config/model/dashboard';
-import { Room } from './config/model/room';
-import { Units } from './config/model/units';
+import { Dashboard } from './models/config/dashboard';
+import { Room } from './models/config//room';
+import { Units } from './models/config/units';
 
 @Component({
   selector: 'app-root',

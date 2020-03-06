@@ -4,4 +4,5 @@ export interface Dashboard {
     temperatureGroup: GroupItem;
     contactGroup: GroupItem;
     lightGroup: GroupItem;
+    motionGroup: GroupItem;
 }

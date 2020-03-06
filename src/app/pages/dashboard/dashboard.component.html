@@ -11,33 +11,9 @@
   </div>
 </div>
 
-<!--
-<clr-accordion>
-  <clr-accordion-panel *ngFor="let itemKey of items.keys()">
-    <clr-accordion-title>{{items.get(itemKey).displayName}}</clr-accordion-title>
-    <clr-accordion-content *clrIfExpanded>
-      <div class="clr-row">
-        <div class="clr-col-lg-3 clr-col-12" *ngFor="let item of items.get(itemKey).members">  
-          <div class="card">
-              <div class="card-block">
-                  <div class="card-title">
-                    {{item?.label}}
-                  </div>
-                  <div class="card-text">
-                     {{item?.transformedState ? item?.transformedState: item?.state}}
-                  </div>
-              </div>
-              <div class="card-footer">
-                  <a class="btn btn-sm btn-link" (click)="openModal($event, item)">Details</a>
-              </div>
-          </div>
-      </div>
-    </div>
-    <p></p>
-    </clr-accordion-content>
-  </clr-accordion-panel>
-</clr-accordion>
--->
+<div *ngFor="let sc of stateChanges">
+  {{sc.toString()}}
+</div>
 
 <clr-modal [(clrModalOpen)]="showModal">
   <h3 class="modal-title">{{item?.label}}</h3>
