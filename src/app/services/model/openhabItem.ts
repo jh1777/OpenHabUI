@@ -4,4 +4,5 @@ export interface OpenhabItem {
     transformedState: string;
     type: string;
     label: string;
+    groupNames: string[];
 }
