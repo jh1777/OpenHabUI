@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, forkJoin } from 'rxjs';
 import { catchError, map, tap, retry } from 'rxjs/operators';
 import * as config from '../../../config.json';
 import { OpenhabGroup } from './model/openhabGroup';
+import { OpenhabItem } from './model/openhabItem.js';
 
 @Injectable({
   providedIn: 'root'
@@ -13,23 +14,32 @@ export class OpenhabApiService {
   
   constructor(private http: HttpClient) { }
 
-  static HttpOptions = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache'
-//    'Access-Control-Allow-Origin': '*',
-//    'Access-Control-Allow-Methods':'GET,POST,PATCH,DELETE,PUT,OPTIONS',
-//    'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, content-type'
-  });
 
-  getItems(itemName: string): Observable<OpenhabGroup> {
-    let uri = `${this.url}/items/${itemName}`;
-    return this.http.get<OpenhabGroup>(uri) //{headers: OpenhabApiService.HttpOptions })
+  static httpHeaders = new HttpHeaders()
+    .set("Content-Type", "application/json")
+    .set("Cache-Control", "no-cache");
+
+  getGroup(groupName: string): Observable<OpenhabGroup> {
+    let uri = `${this.url}/items/${groupName}`;
+    return this.http.get<OpenhabGroup>(uri) //, { headers: OpenhabApiService.httpHeaders })
       .pipe(
-        tap(i => i.groupName = itemName),
         retry(1),
         catchError(this.errorHandler)
       );
   }
+
+  getItemsFromGroups(groupNames: string[]): Observable<OpenhabGroup[]> {
+    var result: OpenhabItem[] = [];
+    var calls: Observable<OpenhabGroup>[] = [];
+    // Collect all gorup calls
+    groupNames.forEach( group => {
+      let call = this.getGroup(group);
+      calls.push(call);
+    });
+    // Execute all
+    return forkJoin(calls);
+  }
+
 
   errorHandler(error: any) {
     let errorMessage = '';

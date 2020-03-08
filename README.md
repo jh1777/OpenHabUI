@@ -37,5 +37,8 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Useful Tutorial for Clarity
 https://medium.com/@beeman/tutorial-project-clarity-and-angular-cli-50d845a24d5b
 
+## CShap Linq vs Typescript 
+https://decembersoft.com/posts/typescript-vs-csharp-linq/
+
 ## Clarity
 https://clarity.design/documentation

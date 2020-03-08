@@ -10,14 +10,14 @@ import { NgModel } from '@angular/forms';
 export class RoundedboxComponent implements OnInit {
   @Input() value: string;
   @Input() label: string;
-  @Input() type: DataType;
+  @Input() type: string;
   sliderValue: number;
 
   constructor() { 
   }
 
   ngOnInit(): void {
-    if (this.type == DataType.Light) {
+    if (this.type == "light") {
       this.sliderValue =  Number.parseInt(this.value);
     }
   }

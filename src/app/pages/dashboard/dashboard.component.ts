@@ -2,11 +2,12 @@ import { Component, OnInit, Output, EventEmitter, NgZone } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
-import { Dashboard } from 'src/app/models/config/dashboard';
 import { OpenhabGroup } from 'src/app/services/model/openhabGroup';
 import { AppComponent } from 'src/app/app.component';
 import { DataType } from 'src/app/components/dashboard/roundedbox/datatype';
 import { ItemStateChangedEvent } from 'src/app/models/openhab-events/itemStateChangedEvent';
+import { Group } from 'src/app/models/config/group';
+import { Room } from 'src/app/models/config/room';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,13 @@ export class DashboardComponent implements OnInit {
   title = environment.title;
   item: OpenhabItem;
   groups: string[];
-  items: Map<string, OpenhabGroup> = new Map<string, OpenhabGroup>();
+  roomNames: string[];
+  rooms: Room[] = AppComponent.configuration.rooms;
+  
+  // OLD:
+  //items: Map<string, OpenhabGroup> = new Map<string, OpenhabGroup>();
+  // NEW
+  itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
   showModal: boolean = false;
   
   stateChanges: ItemStateChangedEvent[] = [];
@@ -28,9 +35,10 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit() {
-    let configuration: Dashboard = AppComponent.configuration.dashboard;
-    console.log("Getting data from rest API");
 
+    
+    console.log("Getting data from rest API");
+    /*
     // TODO: refactor: a lot of same calls!
 
     this.api.getItems(configuration.contactGroup.name).subscribe(res => {
@@ -65,8 +73,58 @@ export class DashboardComponent implements OnInit {
       this.items.set(configuration.motionGroup.name, res);
       this.groups = Array.from(this.items.keys()).sort();
     });
-
+*/
+    // NEW
+    this.getGroupItems();
+    
     this.registerEventSource(this.createItemState);
+    
+  }
+
+  getGroupItems() {
+    let groups: Group[] = AppComponent.configuration.groups;
+    //let rooms: Room[] = AppComponent.configuration.rooms;
+    var ohItems: OpenhabItem[] = [];
+    var itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
+    this.roomNames = this.rooms.map(r => r.group);
+    // Call API
+    this.api.getItemsFromGroups(groups.map(e => e.name)).subscribe(groupEntries => { 
+      // TODO: replace der Lables gemäß config!!
+        // add all items of ths group to array of all items
+        groupEntries.forEach(group =>  { 
+          let currGroup = groups.filter(g => g.name == group.name)[0];
+          if (currGroup != null) {
+            group.members.forEach(i => {
+              // set category
+              i.category = currGroup.category;
+              // replace strings
+              currGroup.removeFromName.forEach(str => i.label = i.label.replace(str, ''));
+            });
+           
+          }
+          
+          Array.prototype.push.apply(ohItems, group.members);
+        }); 
+    
+        // TODO: Fix Chrome debugger errors!!
+        // TODO: Flur Temp wird ncht angezeigt!
+
+        // Set room based on configured rooms
+        ohItems.forEach(item => { 
+          this.rooms.forEach(room => { if (item.groupNames.includes(room.group)) item.room = room.displayName });
+        });
+        // Groupy be Rooms
+        ohItems.forEach(item => {
+          if (itemsByRoom.has(item.room)) {
+            var i = itemsByRoom.get(item.room);
+            i.push(item);
+          } else {
+            var list: OpenhabItem[] = [];
+            itemsByRoom.set(item.room, list);
+          }
+        });
+        this.itemsByRoom = itemsByRoom;
+    });
   }
 
   /**
@@ -115,6 +173,7 @@ export class DashboardComponent implements OnInit {
       // Add to list of changes
       this.stateChanges?.push(itemEvent);
       // Update used items in this view (poc; needs refactoring!)
+      /*
       var itemGroupArray = Array.from(this.items.values());
       itemGroupArray.forEach(group => {
         let itemsinGroup = group.members;
@@ -127,6 +186,7 @@ export class DashboardComponent implements OnInit {
           };
         });
       });
+      */
     });
 
     return itemEvent;

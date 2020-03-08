@@ -1,6 +1,6 @@
 export enum DataType {
-    Temperature = 1,
-    Contact,
-    Light,
-    Motion
+    temperature = 1,
+    contact,
+    light,
+    motion
 }

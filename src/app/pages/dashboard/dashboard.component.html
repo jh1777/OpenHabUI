@@ -1,5 +1,15 @@
 <div class="jh-header">Information</div>
+<div *ngFor="let room of itemsByRoom.keys()">
+  Room: {{room}}
+  <div class="clr-row">
+    <div class="clr-col-lg-3 clr-col-19" *ngFor="let item of itemsByRoom.get(room)"> 
+      <app-roundedbox [type]="item.category" [label]="item?.label" [value]="item?.transformedState ? item?.transformedState: item?.state" (click)="openModal($event, item)"></app-roundedbox>
+    </div>
+    <p></p> 
+  </div>
+</div>
 
+<!-- old
 <div *ngFor="let itemKey of groups">
   {{items.get(itemKey).displayName}}
   <div></div>
@@ -10,6 +20,7 @@
     <p></p> 
   </div>
 </div>
+-->
 
 <div *ngFor="let sc of stateChanges">
   {{sc.toString()}}

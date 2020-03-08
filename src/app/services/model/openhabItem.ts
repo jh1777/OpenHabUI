@@ -5,4 +5,7 @@ export interface OpenhabItem {
     type: string;
     label: string;
     groupNames: string[];
+    // calculated
+    room: string;  // from config
+    category: string; // from config
 }

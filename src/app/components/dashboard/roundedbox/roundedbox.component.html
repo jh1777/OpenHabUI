@@ -1,10 +1,10 @@
 <div class="container">
-    <table width="100%" border="0px" *ngIf="type != 3">
+    <table width="100%" border="0px" *ngIf="type != 'light'">
         <tr>
             <td>
-                <clr-icon *ngIf="type == 1" shape="thermometer" size="32"></clr-icon>
-                <clr-icon *ngIf="type == 2" shape="view-cards" size="32"></clr-icon>
-                <clr-icon *ngIf="type == 4" shape="eye" size="32"></clr-icon>
+                <clr-icon *ngIf="type == 'temperature'" shape="thermometer" size="32"></clr-icon>
+                <clr-icon *ngIf="type == 'contact'" shape="view-cards" size="32"></clr-icon>
+                <clr-icon *ngIf="type == 'motion'" shape="eye" size="32"></clr-icon>
             </td>
             <td align="right" valign="middle"><font size="+2">{{value}}</font></td>
         </tr>
@@ -14,7 +14,7 @@
             </td>
         </tr>
     </table>
-    <table width="100%" border="0px" *ngIf="type == 3">
+    <table width="100%" border="0px" *ngIf="type == 'light'">
         <tr>
             <td>
                 <clr-icon shape="lightbulb" size="32" *ngIf="sliderValue == 0"></clr-icon>

@@ -5,7 +5,7 @@
             "name": "ContactSensors",
             "displayName": "Fenster und Tueren",
             "unit": "",
-            "type": "contact",
+            "category": "contact",
             "removeFromName": [
                 "Kontakt",
                 "Contact"
@@ -15,7 +15,7 @@
             "name": "Lights",
             "displayName": "Lichter",
             "unit": "%",
-            "type": "light",
+            "category": "light",
             "removeFromName": [
                 "Helligkeit"
             ]
@@ -24,17 +24,17 @@
             "name": "TemperatureSensors",
             "displayName": "Temperatur",
             "unit": "°C",
-            "type": "temperature",
+            "category": "temperature",
             "removeFromName": [
-                "Temperatur",
-                "Temperature"
+                "Temperature",
+                "Temperatur"
             ]
         },
         {
             "name": "MotionSensors",
             "displayName": "Bewegung",
             "unit": "",
-            "type": "motion",
+            "category": "motion",
             "removeFromName": [
                 "Bewegung"
             ]
@@ -43,23 +43,27 @@
     "rooms": [
         {
             "group": "Wohnzimmer",
-            "displayValue": "Wohnzimmer"
+            "displayName": "Wohnzimmer"
         },
         {
             "group": "Kinderzimmer_Maria",
-            "displayValue": "Maria"
+            "displayName": "Maria"
         },
         {
             "group": "Kinderzimmer_2",
-            "displayValue": "Tim"
+            "displayName": "Tim"
         },
         {
             "group": "Schlafzimmer",
-            "displayValue": "Schlafzimmer"
+            "displayName": "Schlafzimmer"
         },
         {
             "group": "Badezimmer",
-            "displayValue": "Bad"
+            "displayName": "Bad"
+        },
+        {
+            "group": "Flur",
+            "displayName": "Flur"
         }
     ]
 }
