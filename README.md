@@ -6,12 +6,18 @@ GitHub Repo
 https://github.com/jh1777/OpenHabUI
 
 ## Ideas
-Use 'Labels' 
+Use 'Labels' from Clarity!
 
 
 ## Setup
 ### OpenHab
 add the line `org.eclipse.smarthome.cors:enable=true` in the file *services/runtime.cfg*
+
+## Run locally
+1. Install angular cli
+2. cloe git repo (`git clone ....`)
+3. run `npm i` in cloned folder
+4. start app using `ng serve`
 
 # Angular Default Help
 
