@@ -1,43 +1,36 @@
 {
     "openHabUrl": "http://192.168.178.129:8080/rest",
+    "filterByGroups": true,
 	"groups": [
         {
             "name": "ContactSensors",
             "displayName": "Fenster und Tueren",
             "unit": "",
-            "category": "contact",
-            "removeFromName": [
-                "Kontakt",
-                "Contact"
-            ]
+            "category": "contact"
         },
         {
             "name": "Lights",
             "displayName": "Lichter",
             "unit": "%",
-            "category": "light",
-            "removeFromName": [
-                "Helligkeit"
-            ]
+            "category": "light"
         },
         {
             "name": "TemperatureSensors",
             "displayName": "Temperatur",
             "unit": "°C",
-            "category": "temperature",
-            "removeFromName": [
-                "Temperature",
-                "Temperatur"
-            ]
+            "category": "temperature"
         },
         {
             "name": "MotionSensors",
             "displayName": "Bewegung",
             "unit": "",
-            "category": "motion",
-            "removeFromName": [
-                "Bewegung"
-            ]
+            "category": "motion"
+        },
+        {
+            "name": "BatteryStatus",
+            "displayName": "Batterie",
+            "unit": "%",
+            "category": "battery"
         }
     ],
     "rooms": [
@@ -58,7 +51,7 @@
             "displayName": "Schlafzimmer"
         },
         {
-            "group": "Badezimmer",
+            "group": "Bad",
             "displayName": "Bad"
         },
         {

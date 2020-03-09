@@ -8,4 +8,5 @@ export interface OpenhabItem {
     // calculated
     room: string;  // from config
     category: string; // from config
+    unit: string;  // from config
 }

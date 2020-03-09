@@ -1,16 +1,19 @@
 <div class="container">
+
     <table width="100%" border="0px" *ngIf="type != 'light'">
         <tr>
             <td>
                 <clr-icon *ngIf="type == 'temperature'" shape="thermometer" size="32"></clr-icon>
-                <clr-icon *ngIf="type == 'contact'" shape="view-cards" size="32"></clr-icon>
+                <clr-icon *ngIf="type == 'contact'" shape="axis-chart" size="32"></clr-icon>
                 <clr-icon *ngIf="type == 'motion'" shape="eye" size="32"></clr-icon>
+                <clr-icon *ngIf="type == 'battery'" shape="battery" size="32"></clr-icon>
+                <clr-icon *ngIf="type == 'sun'" shape="sun" size="32"></clr-icon>
             </td>
-            <td align="right" valign="middle"><font size="+2">{{value}}</font></td>
+            <td align="right" valign="middle"><font size="+2">{{value}} {{unit != null ? unit : "" }}</font></td>
         </tr>
         <tr>
             <td colspan="2">
-                <strong>{{label}}</strong>
+                {{label}}
             </td>
         </tr>
     </table>
@@ -23,16 +26,17 @@
             <td align="right" valign="middle">
                 <form clrForm>
                     <clr-range-container [clrRangeHasProgress]="true">
-                        <input type="range" clrRange [(ngModel)]="sliderValue" name="pct" />
-                        <clr-control-helper>{{value}}</clr-control-helper>
+                        <input type="range" clrRange [(ngModel)]="sliderValue" (change)="sliderChanged($event)" name="pct" />
+                        <clr-control-helper>{{value}} {{unit != null ? unit : "" }}</clr-control-helper>
                     </clr-range-container>
                 </form>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <strong>{{label}}</strong>
+                {{label}}
             </td>
         </tr>
     </table>
+    <clr-icon shape="info-circle"></clr-icon>
 </div>
