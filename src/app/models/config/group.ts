@@ -4,4 +4,6 @@ export interface Group {
     displayName: string;
     unit: string;
     category: string;
+    warningThreshold?: number;
+    replaceInItemLabel?: string[];
 }

@@ -9,8 +9,8 @@ https://github.com/jh1777/OpenHabUI
 Use 'Labels' from Clarity!
 
 
-## Setup
-### OpenHab
+# Setup
+## OpenHab
 add the line `org.eclipse.smarthome.cors:enable=true` in the file *services/runtime.cfg*
 
 ## Run locally
@@ -18,6 +18,17 @@ add the line `org.eclipse.smarthome.cors:enable=true` in the file *services/runt
 2. cloe git repo (`git clone ....`)
 3. run `npm i` in cloned folder
 4. start app using `ng serve`
+
+## Config
+The config.json is the main configuration of this UI.
+The OpenHab API URL must be configured as like `http://localhost:8080/rest`. Or whatever your host is.
+> Don't forget to setup OpenHab like described above Setup -> OpenHab section.
+Any `category` (like contact, temperature, motion etc.) is a fixed term for this application.
+File is separated into `groups` for categories, like mentioned above and a section for defining the `rooms`.
+`rooms.group` must be the openhab group name for the room you awant to see in the UI.
+Inside of that room every item that belongs to that group will be splitted into the `groups` by category.
+My example can be found and used as reference.
+More detailled description of that file will follow!
 
 # Angular Default Help
 

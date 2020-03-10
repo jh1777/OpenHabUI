@@ -1,0 +1,61 @@
+<div class="card container">
+    <div class="card-header header">
+       <font size="+1">{{groupName}}</font>
+    </div>
+    
+    <div class="card-block" *ngFor="let category of categories">
+        <table border="0px" width=100%>
+            <tr>
+                <td style="padding-right: 10px" width="25%">
+                    <clr-icon *ngIf="category == 'temperature'" shape="thermometer" size="32"></clr-icon> <!-- class="has-badge" -->
+                    <clr-icon *ngIf="category == 'contact'" shape="axis-chart" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'motion'" shape="eye" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'battery' && batteryWarning" shape="battery" class="has-badge" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'battery'  && !batteryWarning" shape="battery" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'sun'" shape="sun" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'light'" shape="lightbulb" size="32"></clr-icon>
+                </td>
+                <td style="padding-right: 20px" width="50%">
+                    <div class="card-text" *ngFor="let item of data">
+                        <div *ngIf="item.category == category">{{item?.label}}</div>
+                    </div>
+                </td>
+                <td align="right" width="25%">
+                    <div class="card-text" *ngFor="let item of data">
+                        <div *ngIf="item.category == category">
+                            {{item?.transformedState}}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card-footer">
+        ...
+    </div>
+</div>
+
+
+<!--
+    <div class="card container">
+    <div class="card-header header">
+       <font size="+1">{{groupName}}</font>
+    </div>
+    <div class="card-block" *ngFor="let category of categories">
+
+        <clr-icon *ngIf="category == 'temperature'" shape="thermometer" size="32"></clr-icon>
+        <clr-icon *ngIf="category == 'contact'" shape="axis-chart" size="32"></clr-icon>
+        <clr-icon *ngIf="category == 'motion'" shape="eye" size="32"></clr-icon>
+        <clr-icon *ngIf="category == 'battery'" shape="battery" size="32"></clr-icon>
+        <clr-icon *ngIf="category == 'sun'" shape="sun" size="32"></clr-icon>
+        <clr-icon *ngIf="category == 'light'" shape="lightbulb" size="32"></clr-icon>
+
+        <div class="card-text" *ngFor="let item of data">
+            <div *ngIf="item.category == category">{{item.label}}</div>
+        </div>
+    </div>
+    <div class="card-footer">
+        ...
+    </div>
+</div>
+-->

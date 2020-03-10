@@ -1,33 +1,82 @@
 {
     "openHabUrl": "http://192.168.178.129:8080/rest",
-    "units": {
-        "temperature": "°C"
-    },
-    "dashboard": {
-        "lightGroup": {
-            "name": "Lights",
-            "displayName": "Lichter"
-        },
-        "contactGroup": {
+    "filterByGroups": true,
+	"groups": [
+        {
             "name": "ContactSensors",
-            "displayName": "Fenster Sensoren"
+            "displayName": "Fenster und Tueren",
+            "unit": "",
+            "category": "contact",
+            "replaceInItemLabel": [
+                "Kontakt",
+                "Fenster",
+                "fenster"
+            ]
         },
-        "temperatureGroup": {
+        {
+            "name": "Lights",
+            "displayName": "Lichter",
+            "unit": "%",
+            "category": "light",
+            "replaceInItemLabel": [
+                "Helligkeit"
+            ]
+        },
+        {
             "name": "TemperatureSensors",
-            "displayName": "Temperatur Sensoren"
+            "displayName": "Temperatur",
+            "unit": "°C",
+            "category": "temperature",
+            "replaceInItemLabel": [
+                "Temperature",
+                "Temperatur"
+            ]
         },
-        "motionGroup": {
+        {
             "name": "MotionSensors",
-            "displayName": "Bewegungs Sensoren"
+            "displayName": "Bewegung",
+            "unit": "",
+            "category": "motion",
+            "replaceInItemLabel": [
+                "Bewegung"
+            ]
+        },
+        {
+            "name": "BatteryStatus",
+            "displayName": "Batterie",
+            "unit": "%",
+            "category": "battery",
+            "replaceInItemLabel": [
+                "Batterie"
+            ]
         }
-    },
-	"rooms": [
-		{
-			"name": "Wohnzimmer",
-			"temperatureItems": [ "MS_Temp", "Flood_Sensor_Temp" ],
-			"contactItems": [ "DCH_Kontakt" ],
-            "motionItems": [ "MS_Motion" ],
-            "lightItems": []
-		}
-	]
+    ],
+    "rooms": [
+        {
+            "group": "Wohnzimmer",
+            "displayName": "Wohnzimmer"
+        },
+        {
+            "group": "Kinderzimmer_Maria",
+            "displayName": "Maria",
+            "iconKey": "Kinderzimmer"
+        },
+        {
+            "group": "Kinderzimmer_2",
+            "displayName": "Tim",
+            "iconKey": "Kinderzimmer"
+        },
+        {
+            "group": "Schlafzimmer",
+            "displayName": "Schlafzimmer"
+        },
+        {
+            "group": "Bad",
+            "displayName": "Bad"
+        },
+        {
+            "group": "Flur",
+            "displayName": "Flur"
+        }
+    ]
 }
