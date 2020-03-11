@@ -48,7 +48,8 @@
             "category": "battery",
             "replaceInItemLabel": [
                 "Batterie"
-            ]
+            ],
+            "warningThreshold": 30
         }
     ],
     "rooms": [

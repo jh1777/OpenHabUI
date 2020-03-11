@@ -15,15 +15,15 @@
                     <clr-icon *ngIf="category == 'sun'" shape="sun" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'light'" shape="lightbulb" size="32"></clr-icon>
                 </td>
-                <td style="padding-right: 20px" width="50%">
+                <td style="padding-right: 20px" width="50%" style="vertical-align: middle;">
                     <div class="card-text" *ngFor="let item of data">
                         <div *ngIf="item.category == category">{{item?.label}}</div>
                     </div>
                 </td>
-                <td align="right" width="25%">
+                <td align="right" width="25%" style="vertical-align: middle;">
                     <div class="card-text" *ngFor="let item of data">
                         <div *ngIf="item.category == category">
-                            {{item?.transformedState}}
+                            <strong>{{item?.transformedState}}</strong>
                         </div>
                     </div>
                 </td>
