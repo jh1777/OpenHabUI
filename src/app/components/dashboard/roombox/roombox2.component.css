@@ -1,0 +1,24 @@
+.container {
+    background-color: rgb(240, 244, 246);
+    border-color: #28afb0;
+    border-width: 0px;
+    border-radius: 0px;
+    -webkit-box-shadow: 0 2px 5px 0px rgb(171, 171, 171);
+    -moz-box-shadow: 0 2px 5px 0px rgb(171, 171, 171);
+    box-shadow: 0 2px 5px 0px  rgb(171, 171, 171);
+    background-color: white;
+}
+
+.header {
+    height: 2.5rem;
+    border-radius: 0px 0px 0px 0px;
+    background-color: #28afb0;
+    color: white;
+    -webkit-box-shadow: 0 1px 4px 0px rgb(171, 171, 171);
+    -moz-box-shadow: 0 1px 4px 0px rgb(171, 171, 171);
+    box-shadow: 0 1px 4px 0px  rgb(171, 171, 171);
+}
+
+div.card-header.header {
+    padding: 13px !important;
+}
