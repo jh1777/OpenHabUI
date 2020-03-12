@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, forkJoin } from 'rxjs';
-import { catchError, map, tap, retry } from 'rxjs/operators';
+import { catchError, map, tap, retry, observeOn } from 'rxjs/operators';
 import * as config from '../../../config.json';
 import { OpenhabGroup } from './model/openhabGroup';
 import { OpenhabItem } from './model/openhabItem';
 import { Room } from '../models/config/room';
 import { AppComponent } from '../app.component';
 import { Group } from '../models/config/group';
+import { ItemPostProcessor } from './postprocessor/itemPostprocessor';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,28 @@ export class OpenhabApiService {
   
   constructor(private http: HttpClient) { }
 
-
   static httpHeaders = new HttpHeaders()
-    .set("Content-Type", "application/json")
-    .set("Cache-Control", "no-cache");
+    .set("Content-Type", "text/plain");
+
+  setItemState(item: OpenhabItem, state: string): Observable<HttpResponse<string>>
+  {
+    let uri = `${this.url}/items/${item.name}`;
+    
+    return this.http.post<string>(uri, state, { headers: OpenhabApiService.httpHeaders, observe: 'response' })
+      .pipe(
+        retry(1),
+        catchError(this.errorHandler)
+      );
+  }
+
+  getItem(itemName: string): Observable<HttpResponse<OpenhabItem>> {
+    let uri = `${this.url}/items/${itemName}`;
+    return this.http.get<OpenhabItem>(uri, { observe: 'response' })
+    .pipe(
+      retry(1),
+      catchError(this.errorHandler)
+    );
+  }
 
   getRoomGroup(roomGroupName: string): Observable<OpenhabGroup> {
     let uri = `${this.url}/items/${roomGroupName}`;
@@ -33,20 +52,16 @@ export class OpenhabApiService {
           let groups = this.groups.map(g => g.name);
           g.displayName = this.rooms.filter(r => r.group == g.name)[0]?.displayName;
           g.members.forEach(item => { 
-            // set item.room
-            item.room = this.rooms.filter(r => r.group == g.name)[0]?.displayName; 
-            // set item.category, item.unit
-            let groupsMatch = this.groups.filter(g => item.groupNames.includes(g.name));
-            groupsMatch.forEach(gm => {
-              item.category = gm.category;
-              item.unit = gm.unit;
-            });
+            // set transformed state, item.category, item.unit, item.room
+            item = ItemPostProcessor.EnrichItem(item, this.groups, this.rooms, g.name);
           });
-          // only part of specified groups?
+          // show only room items that are part of specified 'groups'?
           if (AppComponent.configuration.filterByGroups) {
             g.members = g.members.filter(item => intersection(item.groupNames, groups).length > 0);
           }
-          
+          // replace all labels acording to config
+          g.members = ItemPostProcessor.ReplaceLabelsInGroup(g.members, this.groups);
+
         }),
         retry(1),
         catchError(this.errorHandler)

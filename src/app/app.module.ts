@@ -7,7 +7,6 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
-import { RoundedboxComponent } from './components/dashboard/roundedbox/roundedbox.component';
 import { FormsModule } from '@angular/forms';
 import { RoomboxComponent } from './components/dashboard/roombox/roombox.component';
 
@@ -15,7 +14,6 @@ import { RoomboxComponent } from './components/dashboard/roombox/roombox.compone
   declarations: [
     AppComponent,
     DashboardComponent,
-    RoundedboxComponent,
     RoomboxComponent
   ],
   imports: [

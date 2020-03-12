@@ -1,4 +1,4 @@
-<div class="jh-header">Information</div>
+<div class="jh-header">Räume</div>
 
 <!-- old
 <div *ngFor="let room of rooms">
@@ -11,13 +11,12 @@
   </div>
 </div>
 -->
-<div>
-  <div class="clr-row">
-    <div class="clr-col-lg-3 clr-col-19" *ngFor="let room of rooms"> 
-      <app-roombox [groupName]="room.displayName" [data]="itemsByRoom.get(room.group)" [shape]="room.iconKey"></app-roombox>
-    </div>
-    <p></p> 
+
+<div class="clr-row">
+  <div class="clr-col-lg-3 clr-col-19" *ngFor="let room of rooms"> 
+    <app-roombox [groupName]="room.displayName" [data]="itemsByRoom.get(room.group)" [categoriesByRoom]="categoriesByRoom" [shape]="room.iconKey"></app-roombox>
   </div>
+  <p></p> 
 </div>
 
 <div *ngFor="let sc of stateChanges">

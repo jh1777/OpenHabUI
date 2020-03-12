@@ -3,27 +3,31 @@
        <font size="+1">{{groupName}}</font>
     </div>
     
-    <div class="card-block" *ngFor="let category of categories">
+    <div class="card-block" *ngFor="let category of categoriesByRoom.get(groupName)">    <!-- categories"> -->
         <table border="0px" width=100%>
             <tr>
-                <td style="padding-right: 10px" width="25%">
-                    <clr-icon *ngIf="category == 'temperature'" shape="thermometer" size="32"></clr-icon> <!-- class="has-badge" -->
+                <td style="padding-right: 10px; vertical-align: middle;" width="20%">
+                    <clr-icon *ngIf="category == 'temperature'" shape="thermometer" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'contact'" shape="axis-chart" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'motion'" shape="eye" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'battery' && batteryWarning" shape="battery" class="has-badge" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'battery'  && !batteryWarning" shape="battery" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'sun'" shape="sun" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'light'" shape="lightbulb" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'wallplug'" shape="switch" size="32"></clr-icon>
                 </td>
-                <td style="padding-right: 20px" width="50%" style="vertical-align: middle;">
+                <td width="50%" style="vertical-align: middle;">
                     <div class="card-text" *ngFor="let item of data">
                         <div *ngIf="item.category == category">{{item?.label}}</div>
                     </div>
                 </td>
-                <td align="right" width="25%" style="vertical-align: middle;">
+                <td align="right" width="30%" style="vertical-align: middle;">
                     <div class="card-text" *ngFor="let item of data">
-                        <div *ngIf="item.category == category">
-                            <strong>{{item?.transformedState}}</strong>
+                        <div *ngIf="item.category == category && category == 'wallplug'">
+                            <a (click)="switchWallPlug($event, item)" class="label clickable" style="cursor: pointer;">{{item?.transformedState}}</a>
+                        </div>
+                        <div *ngIf="item.category == category && category != 'wallplug'">
+                            <strong>{{item?.transformedState }}</strong>
                         </div>
                     </div>
                 </td>

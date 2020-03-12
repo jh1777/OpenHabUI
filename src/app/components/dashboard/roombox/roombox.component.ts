@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, NgZone, SimpleChanges } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { Group } from 'src/app/models/config/group';
 import { AppComponent } from 'src/app/app.component';
+import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 
 @Component({
   selector: 'app-roombox',
@@ -12,17 +13,27 @@ export class RoomboxComponent implements OnInit {
   @Input() shape: string;
   @Input() data: OpenhabItem[];
   @Input() groupName: string;
+  @Input() categoriesByRoom: Map<string, string[]>;
+
   dataTypes: Group[] = AppComponent.configuration.groups;
-  categories: string[];
+  //categories: string[];
   batteryWarning: boolean = false;
 
-  constructor() { }
+  constructor(private service: OpenhabApiService) {
 
-  ngOnInit(): void {
   }
 
-  ngOnChanges() {
+  ngOnInit(): void {
+  
+  }
+
+
+/* 
+
+  ngOnChanges(changes: SimpleChanges) {
     if (this.data) {
+      // TODO: do this again here or somewhere else:
+
       // check battery
       this.data.filter(i => i.category == "battery").forEach(item => {
         var threshold = this.dataTypes.filter(t => t.category == "battery" && item.groupNames.includes(t.name))[0].warningThreshold;
@@ -33,27 +44,17 @@ export class RoomboxComponent implements OnInit {
           this.batteryWarning = true;
         }
       });
-      // refine item transformedState 
-      this.data.forEach(item =>{
-        if (!item.transformedState) {
-          item.transformedState = item.state;
-        }
-        if (item.transformedState.length > 8) {
-          item.transformedState = item.transformedState.substr(0, 6)+"...";
-        }
-        if (item.unit) {
-          item.transformedState = `${item.transformedState} ${item.unit}`;
-        }
-      });
-      // only unique Categories for UI
-      this.categories = [...new Set(this.data.map(d => d.category))].sort();
-      // replace item labels for UI (maybe wrong place here!?)
-      this.dataTypes.forEach(dataType => {
-        if (dataType.replaceInItemLabel) {
-          dataType.replaceInItemLabel.forEach(label => this.data.forEach(item => item.label = item.label.replace(label, '')));
-        }
-      });
-      }
+
+      
     }
-    
+  }
+*/
+
+  switchWallPlug(event: MouseEvent, item: OpenhabItem) {
+    let newState = item.state == "ON" ? "OFF" : "ON";
+    this.service.setItemState(item, newState)
+      .subscribe(event => {
+        console.log(`Setting new state = ${newState} on item ${item.name}. Result Code: ${event.statusText}`);
+    });
+  }
 }

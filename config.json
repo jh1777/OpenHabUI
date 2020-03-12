@@ -3,6 +3,12 @@
     "filterByGroups": true,
 	"groups": [
         {
+            "name": "WallPlugs",
+            "displayName": "Steckdosen",
+            "unit": "",
+            "category": "wallplug"
+        },
+        {
             "name": "ContactSensors",
             "displayName": "Fenster und Tueren",
             "unit": "",
@@ -55,29 +61,35 @@
     "rooms": [
         {
             "group": "Wohnzimmer",
-            "displayName": "Wohnzimmer"
+            "displayName": "Wohnzimmer",
+            "simple": false
         },
         {
             "group": "Kinderzimmer_Maria",
             "displayName": "Maria",
-            "iconKey": "Kinderzimmer"
+            "iconKey": "Kinderzimmer",
+            "simple": true
         },
         {
             "group": "Kinderzimmer_2",
             "displayName": "Tim",
-            "iconKey": "Kinderzimmer"
+            "iconKey": "Kinderzimmer",
+            "simple": true
         },
         {
             "group": "Schlafzimmer",
-            "displayName": "Schlafzimmer"
+            "displayName": "Schlafzimmer",
+            "simple": true
         },
         {
             "group": "Bad",
-            "displayName": "Bad"
+            "displayName": "Bad",
+            "simple": true
         },
         {
             "group": "Flur",
-            "displayName": "Flur"
+            "displayName": "Flur",
+            "simple": true
         }
     ]
 }
