@@ -64,13 +64,6 @@ export class DashboardComponent implements OnInit {
     return result;
   }
 
-  mapModelToItemArray(model: OpenhabGroup[]): OpenhabItem[]
-  {
-    var result: OpenhabItem[] = [];
-    model.forEach(g => Array.prototype.push.apply(result, g.members));
-    return result;
-  }
-
   /**
    * Read event from OpenHab
    */
