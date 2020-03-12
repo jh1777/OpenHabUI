@@ -68,23 +68,23 @@
             "group": "Kinderzimmer_Maria",
             "displayName": "Maria",
             "iconKey": "Kinderzimmer",
-            "simple": true
+            "simple": false
         },
         {
             "group": "Kinderzimmer_2",
             "displayName": "Tim",
             "iconKey": "Kinderzimmer",
-            "simple": true
+            "simple": false
         },
         {
             "group": "Schlafzimmer",
             "displayName": "Schlafzimmer",
-            "simple": true
+            "simple": false
         },
         {
             "group": "Bad",
             "displayName": "Bad",
-            "simple": true
+            "simple": false
         },
         {
             "group": "Flur",

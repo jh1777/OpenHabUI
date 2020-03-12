@@ -13,10 +13,10 @@ export class RoomboxComponent implements OnInit {
   @Input() shape: string;
   @Input() data: OpenhabItem[];
   @Input() groupName: string;
+  @Input() simple: boolean;
   @Input() categoriesByRoom: Map<string, string[]>;
 
   dataTypes: Group[] = AppComponent.configuration.groups;
-  //categories: string[];
   batteryWarning: boolean = false;
 
   constructor(private service: OpenhabApiService) {
@@ -26,29 +26,6 @@ export class RoomboxComponent implements OnInit {
   ngOnInit(): void {
   
   }
-
-
-/* 
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.data) {
-      // TODO: do this again here or somewhere else:
-
-      // check battery
-      this.data.filter(i => i.category == "battery").forEach(item => {
-        var threshold = this.dataTypes.filter(t => t.category == "battery" && item.groupNames.includes(t.name))[0].warningThreshold;
-        if (!threshold) {
-          threshold = 0;
-        }
-        if (Number.parseInt(item.state) < threshold) {
-          this.batteryWarning = true;
-        }
-      });
-
-      
-    }
-  }
-*/
 
   switchWallPlug(event: MouseEvent, item: OpenhabItem) {
     let newState = item.state == "ON" ? "OFF" : "ON";

@@ -1,10 +1,8 @@
 import { OpenhabItem } from '../model/openhabItem';
 import { Group } from 'src/app/models/config/group';
 import { Room } from 'src/app/models/config/room';
-import { OpenhabGroup } from '../model/openhabGroup';
 
 export class ItemPostProcessor {
-
 
     static ReplaceLabelsInGroup = (items: OpenhabItem[], groups: Group[]): OpenhabItem[]  => {
         // replace all labels acording to config
@@ -44,13 +42,6 @@ export class ItemPostProcessor {
         item.room = rooms.filter(r => r.group == groupName)[0]?.displayName; 
         // set category, unit
         item = ItemPostProcessor.SetGroupProperties(item, groups);
-
-        // let groupsMatch = groups.filter(g => item.groupNames.includes(g.name));
-        // groupsMatch.forEach(gm => {
-        //     item.category = gm.category;
-        //     item.unit = gm.unit;
-        // });
-
         // set transformedState
         item = ItemPostProcessor.SetTransformedState(item);
         return item;
