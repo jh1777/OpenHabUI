@@ -9,6 +9,7 @@ import { Room } from 'src/app/models/config/room';
 import { ItemPostProcessor } from 'src/app/services/postprocessor/itemPostprocessor';
 import { Group } from 'src/app/models/config/group';
 import cloneDeep from 'lodash.clonedeep';
+import { EventbusService } from 'src/app/services/eventbus.service';
 
 
 @Component({
@@ -30,8 +31,11 @@ export class DashboardComponent implements OnInit {
   showModal: boolean = false;
   stateChanges: ItemStateChangedEvent[] = [];
 
-  constructor(private api: OpenhabApiService, private zone: NgZone) {
-  }
+  constructor(
+    private api: OpenhabApiService, 
+    private zone: NgZone, 
+    private eventService: EventbusService) 
+    {}
 
   ngOnInit() {
     // Call API for all cofigured Rooms
@@ -45,10 +49,16 @@ export class DashboardComponent implements OnInit {
       this.items = this.mapModelToItems(this.itemsByRoom);
     });
 
-    this.registerEventSource(this.createItemState);
+    // this.registerEventSource(this.createItemState); // OLD
+
+    // Subscribe to Events
+    this.eventService.subscribeToSubject(this.handleStateChange);
   }
 
-
+  /**
+   * Map the Array of OpenhabItem to string item name list
+   * @param items Map<string, OpenhabItem[]
+   */
   mapModelToItems(items: Map<string, OpenhabItem[]>): string[] {
     var result: OpenhabItem[] = [];
     items.forEach((value, _) =>  {
@@ -57,6 +67,10 @@ export class DashboardComponent implements OnInit {
     return result.map(i => i.name);
   }
 
+  /**
+   * Map the Array of OpenhabItem to Map of Key: room name, Value: list of categories
+   * @param items Map<string, OpenhabItem[]
+   */
   mapModelToCategories(items:  Map<string, OpenhabItem[]>): Map<string, string[]> {
     // only unique Categories for UI
     var result: Map<string, string[]> = new Map<string, string[]>();
@@ -67,6 +81,10 @@ export class DashboardComponent implements OnInit {
     return result;
   }
 
+  /**
+   * Map the Array of OpenhabGroups to Map of Key: group name, Value: OpenhabItems
+   * @param model OpenhabGroup[]
+   */
   mapModelToMap(model: OpenhabGroup[]): Map<string, OpenhabItem[]> {
     var result: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
     model.forEach(group => {
@@ -85,8 +103,9 @@ export class DashboardComponent implements OnInit {
   /**
    * Read event from OpenHab
    */
+  /* old: (no ' ' after *)
   registerEventSource = (callback: (string) => ItemStateChangedEvent) => {
-    var source = new EventSource(AppComponent.configuration.openHabUrl + '/events?topics=smarthome/items/*/statechanged,smarthome/items/*/*/statechanged');
+    var source = new EventSource(AppComponent.configuration.openHabUrl +  '/events?topics=smarthome/items/* /statechanged,smarthome/items/* /* /statechanged');
     source.onmessage = function (event) {
       try {
         let evtdata = JSON.parse(event.data);
@@ -105,10 +124,52 @@ export class DashboardComponent implements OnInit {
     };
     source.onerror = (error) => console.error(error);
   }
+  */
+
+  /**
+   * Handle the event when an Item changed
+   */
+  handleStateChange = (itemStateChangedEvent: ItemStateChangedEvent): void => {
+    // Check if Item is persent
+    if (this.items.includes(itemStateChangedEvent.Item)) { 
+      // Very important! run in zone to update live in web view!
+      this.zone.run(() => {
+        // Add to list of changes
+        this.stateChanges?.push(itemStateChangedEvent);
+
+        // Update Items currently in use
+        // Create temp Map as clone of existing one to ensure the event detection of Angular is working
+        var itemsByRoomTemp = cloneDeep(this.itemsByRoom);
+        // Iterate through items
+        itemsByRoomTemp.forEach((value, key) => {
+          value.map((item, index, array) => {
+            if (item.name === itemStateChangedEvent.Item) {
+              // set new value directly
+              item.state = itemStateChangedEvent.NewValue;
+              // To get transformed data call API for this item
+              this.api.getItem(item.name).subscribe(i => {
+                console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
+                // create temp item to copy the data
+                var newItem = ItemPostProcessor.SetGroupProperties(i.body, this.groups);
+                item.category = newItem.category;
+                item.unit = newItem.unit;
+                /// Update transformed State
+                item.transformedState = ItemPostProcessor.SetTransformedState(i.body).transformedState;
+                // Update UI model
+                this.itemsByRoom = itemsByRoomTemp;
+              });
+            }
+          });
+        });
+      });
+      console.log(itemStateChangedEvent.toString());
+    }
+  }
 
   /**
    * Parse the OpenHab Event and create own ItemStateChangedEvent object
    */
+  /* old: 
   createItemState = (topicData: any): ItemStateChangedEvent => {
     var itemEvent = new ItemStateChangedEvent();
     let topicparts: string[] = topicData.topic.split('/');
@@ -160,6 +221,7 @@ export class DashboardComponent implements OnInit {
     });
     return itemEvent;
   }
+*/
 
   // For Details button
   openModal($event, item) {

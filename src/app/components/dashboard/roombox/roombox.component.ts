@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { Group } from 'src/app/models/config/group';
 import { AppComponent } from 'src/app/app.component';
