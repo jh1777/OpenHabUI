@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, NgZone, ChangeDetectorRef, KeyValueDiffers } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
@@ -8,6 +8,8 @@ import { ItemStateChangedEvent } from 'src/app/models/openhab-events/itemStateCh
 import { Room } from 'src/app/models/config/room';
 import { ItemPostProcessor } from 'src/app/services/postprocessor/itemPostprocessor';
 import { Group } from 'src/app/models/config/group';
+import cloneDeep from 'lodash.clonedeep';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -20,23 +22,39 @@ export class DashboardComponent implements OnInit {
   item: OpenhabItem;
   rooms: Room[] = AppComponent.configuration.rooms;
   groups: Group[] = AppComponent.configuration.groups;
+  
   itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
   categoriesByRoom: Map<string, string[]> = new Map<string, string[]>();
-
+  
+  items: string[];
   showModal: boolean = false;
   stateChanges: ItemStateChangedEvent[] = [];
 
-  constructor(private api: OpenhabApiService, private zone: NgZone, private changeDetector: ChangeDetectorRef) {
+  constructor(private api: OpenhabApiService, private zone: NgZone) {
   }
 
   ngOnInit() {
     // Call API for all cofigured Rooms
     this.api.getItemsFromRoomGroups(this.rooms.map(r => r.group)).subscribe(roomGroups => {
       this.itemsByRoom = this.mapModelToMap(roomGroups);
-      this.categoriesByRoom = this.mapModelToCategories(this.itemsByRoom);
+      // Key Value test:
+      //roomGroups.map(value => this.itemsByRoom2.push({ [value.name]: value.members}));
+      //-----
+      this.categoriesByRoom = this.mapModelToCategories(this.itemsByRoom); 
+      //----
+      this.items = this.mapModelToItems(this.itemsByRoom);
     });
 
     this.registerEventSource(this.createItemState);
+  }
+
+
+  mapModelToItems(items: Map<string, OpenhabItem[]>): string[] {
+    var result: OpenhabItem[] = [];
+    items.forEach((value, _) =>  {
+      Array.prototype.push.apply(result, value);
+    });
+    return result.map(i => i.name);
   }
 
   mapModelToCategories(items:  Map<string, OpenhabItem[]>): Map<string, string[]> {
@@ -76,9 +94,10 @@ export class DashboardComponent implements OnInit {
           console.error("Another EventType - not yet supported!");
         } else {
           let itemStateChangedEvent = callback(evtdata);
-          console.log(itemStateChangedEvent.toString());
+          if (itemStateChangedEvent) {
+            console.log(itemStateChangedEvent.toString());
+          }
         }
-
       }
       catch (e) {
         console.warn('SSE event issue: ' + e.message);
@@ -96,6 +115,11 @@ export class DashboardComponent implements OnInit {
     let itemName = topicparts.length > 2 ? topicparts[2] : "";
     itemEvent.Item = itemName;
 
+    // Check if Item is persent
+    if (!this.items.includes(itemName)) { 
+      return null;
+    }
+
     if (topicData.type === 'ItemStateEvent' || topicData.type === 'ItemStateChangedEvent' || topicData.type === 'GroupItemStateChangedEvent') {
       var payload = JSON.parse(topicData.payload);
       itemEvent.NewValue = payload.value;
@@ -112,7 +136,7 @@ export class DashboardComponent implements OnInit {
 
       // Update Items currently in use
       // Create temp Map as clone of existing one to ensure the event detection of Angular is working
-      var itemsByRoomTemp = new Map<string, OpenhabItem[]>(JSON.parse(JSON.stringify(Array.from(this.itemsByRoom))));
+      var itemsByRoomTemp = cloneDeep(this.itemsByRoom); // new Map<string, OpenhabItem[]>(JSON.parse(JSON.stringify(Array.from(this.itemsByRoom))));
       // Iterate through items
       itemsByRoomTemp.forEach((value, key) => {
         value.map((item, index, array) => {
