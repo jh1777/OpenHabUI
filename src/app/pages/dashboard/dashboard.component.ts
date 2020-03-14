@@ -128,7 +128,6 @@ export class DashboardComponent implements OnInit {
       itemEvent.OldType = payload.oldType;
     }
     
-
     // Very important! run in zone to update live in web view!
     this.zone.run(() => {
       // Add to list of changes
@@ -136,7 +135,7 @@ export class DashboardComponent implements OnInit {
 
       // Update Items currently in use
       // Create temp Map as clone of existing one to ensure the event detection of Angular is working
-      var itemsByRoomTemp = cloneDeep(this.itemsByRoom); // new Map<string, OpenhabItem[]>(JSON.parse(JSON.stringify(Array.from(this.itemsByRoom))));
+      var itemsByRoomTemp = cloneDeep(this.itemsByRoom);
       // Iterate through items
       itemsByRoomTemp.forEach((value, key) => {
         value.map((item, index, array) => {
