@@ -9,4 +9,5 @@ export interface OpenhabItem {
     room: string;  // from config
     category: string; // from config
     unit: string;  // from config
+    hasWarning: boolean; // from config derived e.g. for battery
 }

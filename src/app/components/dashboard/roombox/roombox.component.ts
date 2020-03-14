@@ -17,16 +17,22 @@ export class RoomboxComponent implements OnInit {
   @Input() categoriesByRoom: Map<string, string[]>;
 
   dataTypes: Group[] = AppComponent.configuration.groups;
-  batteryWarning: boolean = false;
+  warningCategories: string[] = []; // names of item categores (because of the icon!) which are in warning state!
 
   constructor(private service: OpenhabApiService) {
 
   }
-
-  ngOnInit(): void {
   
+  ngOnChanges() {
+    // TODO: Changes in data are not reflected on icon - only when page is reloaded!!
+    this.warningCategories = this.data?.filter(i => i.hasWarning == true).map(i => i.category);
   }
 
+  ngOnInit(): void {
+    
+  }
+
+  
   switchWallPlug(event: MouseEvent, item: OpenhabItem) {
     let newState = item.state == "ON" ? "OFF" : "ON";
     this.service.setItemState(item, newState)

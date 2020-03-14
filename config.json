@@ -89,7 +89,7 @@
         {
             "group": "Flur",
             "displayName": "Flur",
-            "simple": true
+            "simple": false
         }
     ]
 }

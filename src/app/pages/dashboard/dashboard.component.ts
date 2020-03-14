@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
 
     // this.registerEventSource(this.createItemState); // OLD
 
-    // Subscribe to Events
+    // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange);
   }
 

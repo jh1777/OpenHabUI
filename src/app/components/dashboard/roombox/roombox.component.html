@@ -8,12 +8,16 @@
             <tr>
                 <td style="padding-right: 10px; vertical-align: middle;" width="20%">
                     <clr-icon *ngIf="category == 'temperature'" shape="thermometer" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'contact'" shape="axis-chart" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'motion'" shape="eye" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'battery' && batteryWarning" shape="battery" class="has-badge" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'battery'  && !batteryWarning" shape="battery" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'sun'" shape="sun" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'light'" shape="lightbulb" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'contact' && !warningCategories.includes(category)" shape="axis-chart" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'contact' && warningCategories.includes(category)" shape="axis-chart" class="has-badge" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'motion' && warningCategories.includes(category)" shape="eye" class="is-solid" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'motion' && !warningCategories.includes(category)" shape="eye" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'battery' && warningCategories.includes(category)" shape="battery" class="has-badge" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'battery' && !warningCategories.includes(category)" shape="battery" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'sun' && !warningCategories.includes(category)" shape="sun" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'sun' && warningCategories.includes(category)" shape="sun" class="is-solid" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'light' && !warningCategories.includes(category)" shape="lightbulb" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'light' && warningCategories.includes(category)" shape="lightbulb" class="has-badge" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'wallplug'" shape="switch" size="32"></clr-icon>
                 </td>
                 <td width="50%" style="vertical-align: middle;">
@@ -47,8 +51,8 @@
                     <clr-icon *ngIf="category == 'temperature'" shape="thermometer" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'contact'" shape="axis-chart" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'motion'" shape="eye" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'battery' && batteryWarning" shape="battery" class="has-badge" size="32"></clr-icon>
-                    <clr-icon *ngIf="category == 'battery'  && !batteryWarning" shape="battery" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'battery' && warningCategories.includes(category)" shape="battery" class="has-badge" size="32"></clr-icon>
+                    <clr-icon *ngIf="category == 'battery'  && !warningCategories.includes(category)" shape="battery" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'sun'" shape="sun" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'light'" shape="lightbulb" size="32"></clr-icon>
                     <clr-icon *ngIf="category == 'wallplug'" shape="switch" size="32"></clr-icon>

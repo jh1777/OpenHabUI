@@ -33,6 +33,11 @@ export class ItemPostProcessor {
         groupsMatch.forEach(gm => {
             item.category = gm.category;
             item.unit = gm.unit;
+            if (gm.warningThreshold) {
+                item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? item.state !== gm.warningThreshold : Number.parseFloat(item.state) <= gm.warningThreshold;
+            } else {
+                item.hasWarning = false;
+            }
         });
         return item;
     }
