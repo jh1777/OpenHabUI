@@ -1,0 +1,40 @@
+{
+    "dashboardTiles": [
+        {
+            "title": "Wohnraum essentials",
+            "items": [
+                {
+                    "name": "DCH_Kontakt",
+                    "displayName": "Fenster Terrasse",
+                    "category": "contact"
+                },
+                {
+                    "name": "MS_Motion",
+                    "displayName": "Bewegung",
+                    "category": "motion"
+                }
+            ]
+        },
+        {
+            "title": "Küche",
+            "items": [
+                {
+                    "name": "Flood_Kitchen_Alarm",
+                    "displayName": "Wassermelder",
+                    "category": "alert"
+                },
+                {
+                    "name": "Flood_Kitchen_Temp",
+                    "displayName": "Temperatur Küche",
+                    "category": "temperature"
+                }
+            ]
+        }
+    ],
+    "rooms": [
+        {
+            "title": "Wohnzimmer",
+            "groupName": "Wohnzimmer"
+        }
+    ]
+}
