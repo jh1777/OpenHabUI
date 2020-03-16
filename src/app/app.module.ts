@@ -9,14 +9,14 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RoomboxComponent } from './components/dashboard/roombox/roombox.component';
-import { CategoryboxComponent } from './components/dashboard/categorybox/categorybox.component';
+import { TileComponent } from './components/dashboard/tile/tile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     RoomboxComponent,
-    CategoryboxComponent
+    TileComponent
   ],
   imports: [
     BrowserModule,

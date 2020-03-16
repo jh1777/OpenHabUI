@@ -1,6 +1,7 @@
 import { OpenhabItem } from '../model/openhabItem';
 import { Group } from 'src/app/models/config/group';
 import { Room } from 'src/app/models/config/room';
+import { Category } from 'src/app/models/config/category';
 
 export class ItemPostProcessor {
 
@@ -27,26 +28,11 @@ export class ItemPostProcessor {
         return item;
     }
 
-    static SetGroupProperties = (item: OpenhabItem, groups: Group[]): OpenhabItem => {
-        // set category, unit
-        let groupsMatch = groups.filter(g => item.groupNames.includes(g.name));
-        groupsMatch.forEach(gm => {
-            item.category = gm.category;
-            item.unit = gm.unit;
-            if (gm.warningThreshold) {
-                item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? item.state !== gm.warningThreshold : Number.parseFloat(item.state) <= gm.warningThreshold;
-            } else {
-                item.hasWarning = false;
-            }
-        });
-        return item;
-    }
-
     static EnrichItem = (item: OpenhabItem, groups: Group[], rooms: Room[], groupName: string): OpenhabItem => {
         // set room
-        item.room = rooms.filter(r => r.group == groupName)[0]?.displayName; 
+        item.room = rooms.filter(r => r.groupName == groupName)[0]?.displayName; 
         // set category, unit
-        item = ItemPostProcessor.SetGroupProperties(item, groups);
+        //item = ItemPostProcessor.SetGroupProperties(item, groups);
         // set transformedState
         item = ItemPostProcessor.SetTransformedState(item);
         return item;

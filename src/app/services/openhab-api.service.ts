@@ -16,7 +16,7 @@ import { ItemPostProcessor } from './postprocessor/itemPostprocessor';
 export class OpenhabApiService {
   private url = `${config.openHabUrl}`;
   rooms: Room[] = AppComponent.configuration.rooms;
-  groups: Group[] = AppComponent.configuration.groups;
+  //groups: Group[] = AppComponent.configuration.groups;
   
   constructor(private http: HttpClient) { }
 
@@ -43,24 +43,34 @@ export class OpenhabApiService {
     );
   }
 
+  getItemSimple(itemName: string): Observable<OpenhabItem> {
+    let uri = `${this.url}/items/${itemName}`;
+    return this.http.get<OpenhabItem>(uri)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandler)
+    );
+  }
+
   getRoomGroup(roomGroupName: string): Observable<OpenhabGroup> {
     let uri = `${this.url}/items/${roomGroupName}`;
     const intersection = (a, b) => { const s = new Set(b); return a.filter(x => s.has(x)); };
     return this.http.get<OpenhabGroup>(uri) //, { headers: OpenhabApiService.httpHeaders })
       .pipe(
         tap(g => {
-          let groups = this.groups.map(g => g.name);
-          g.displayName = this.rooms.filter(r => r.group == g.name)[0]?.displayName;
+          //let groups = this.groups.map(g => g.name);
+          g.displayName = this.rooms.filter(r => r.groupName == g.name)[0]?.displayName;
           g.members.forEach(item => { 
             // set transformed state, item.category, item.unit, item.room
-            item = ItemPostProcessor.EnrichItem(item, this.groups, this.rooms, g.name);
+            // --> fix: item = ItemPostProcessor.EnrichItem(item, this.rooms, g.name);
           });
           // show only room items that are part of specified 'groups'?
-          if (AppComponent.configuration.filterByGroups) {
-            g.members = g.members.filter(item => intersection(item.groupNames, groups).length > 0);
-          }
+          //if (AppComponent.configuration.filterByGroups) {
+          //  g.members = g.members.filter(item => intersection(item.groupNames, groups).length > 0);
+          //}
+          
           // replace all labels acording to config
-          g.members = ItemPostProcessor.ReplaceLabelsInGroup(g.members, this.groups);
+          //g.members = ItemPostProcessor.ReplaceLabelsInGroup(g.members, this.groups);
 
         }),
         retry(1),
@@ -69,11 +79,21 @@ export class OpenhabApiService {
   }
 
   getItemsFromRoomGroups(groupNames: string[]): Observable<OpenhabGroup[]> {
-    var result: OpenhabItem[] = [];
     var calls: Observable<OpenhabGroup>[] = [];
     // Collect all gorup calls
     groupNames.forEach( group => {
       let call = this.getRoomGroup(group);
+      calls.push(call);
+    });
+    // Execute all
+    return forkJoin(calls);
+  }
+
+  getItems(itemNames: string[]): Observable<OpenhabItem[]> {
+    var calls: Observable<OpenhabItem>[] = [];
+    // Collect all gorup calls
+    itemNames.forEach(item => {
+      let call = this.getItemSimple(item);
       calls.push(call);
     });
     // Execute all

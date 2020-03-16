@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import configuration from 'config.json';
+import configuration from 'config-v3.json';
 import iconMapping from 'icon-mapping.json';
 import { Room } from './models/config//room';
-import { Group } from './models/config/group';
+import { Tile } from './models/config/tile';
+import { Category } from './models/config/category';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,6 @@ import { Group } from './models/config/group';
 })
 
 export class AppComponent  {
-  public static configuration: {openHabUrl:string, filterByGroups:boolean, groups:Group[], rooms:Room[]} = configuration;
+  public static configuration: {openHabUrl:string, dashboardTiles:Tile[], rooms:Room[], categories:Category[]} = configuration;
   public static iconMapping: { rooms: {[key: string]: string} } = iconMapping;
 }
