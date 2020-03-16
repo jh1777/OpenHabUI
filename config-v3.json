@@ -1,5 +1,5 @@
 {
-    "openHabUrl": "string",
+    "openHabUrl": "http://192.168.178.129:8080/rest",
     "dashboardTiles": [
         {
             "title": "Wohnraum essentials",

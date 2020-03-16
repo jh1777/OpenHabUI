@@ -9,10 +9,10 @@ import { Room } from 'src/app/models/config/room';
 import { ItemPostProcessor } from 'src/app/services/postprocessor/itemPostprocessor';
 import cloneDeep from 'lodash.clonedeep';
 import { EventbusService } from 'src/app/services/eventbus.service';
-import flattenDeep from 'lodash.flattendeep';
 import { Group } from 'src/app/models/config/group';
 import { Category } from 'src/app/models/config/category';
 import { Tile } from 'src/app/models/config/tile';
+import { Item } from 'src/app/models/config/item';
 
 
 @Component({
@@ -24,25 +24,30 @@ import { Tile } from 'src/app/models/config/tile';
 export class DashboardComponent implements OnInit {
   title = environment.title;
   item: OpenhabItem;
-  rooms: Room[] = AppComponent.configuration.rooms;
-  categories: Category[] = AppComponent.configuration.categories;
+  //rooms: Room[] = AppComponent.configuration.rooms;
+  //categories: Category[] = AppComponent.configuration.categories;
 
-  itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
-  categoriesByRoom: Map<string, string[]> = new Map<string, string[]>();
+  //itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
+  //categoriesByRoom: Map<string, string[]> = new Map<string, string[]>();
   
-  items: string[];
+  
   showModal: boolean = false;
   stateChanges: ItemStateChangedEvent[] = [];
 
   // V3
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
+  items: string[] = [];
 
   constructor(
     private api: OpenhabApiService, 
     private zone: NgZone, 
     private eventService: EventbusService) 
     {}
+
+
+
+
 
   ngOnInit() {
     // Call API for all configured tiles
@@ -52,26 +57,16 @@ export class DashboardComponent implements OnInit {
         this.itemsByTile.set(tile.title, items);
 
         items.forEach(item => {
+          // add really queried items to local array for eventbus filter
+          this.items.push(item.name);
+          // Get config for Item
           let itemConfig = tile.items.filter(i => i.name == item.name)[0];
-          if (itemConfig) {
-            item.category = itemConfig.category;
-            item.label = itemConfig.displayName;
-            if (itemConfig.unit) {
-              item.unit = itemConfig.unit;
-              item.transformedState = `${item.state} ${item.unit}`;
-            }
-            if (itemConfig.warningThreshold) {
-              if (!itemConfig.warningThresholdType || itemConfig.warningThresholdType == "lt") {
-                item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? false : Number.parseFloat(item.state) <= itemConfig.warningThreshold;
-              } else {
-                item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? false : Number.parseFloat(item.state) >= itemConfig.warningThreshold;
-              }
-            }
-          }
+          ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
         });
       });
     });
-
+    // Subscribe to Events (new)
+    this.eventService.subscribeToSubject(this.handleStateChange);
 
     /*
     this.api.getItemsFromRoomGroups(this.rooms.map(r => r.group)).subscribe(roomGroups => {
@@ -180,9 +175,9 @@ export class DashboardComponent implements OnInit {
 
         // Update Items currently in use
         // Create temp Map as clone of existing one to ensure the event detection of Angular is working
-        var itemsByRoomTemp = cloneDeep(this.itemsByRoom);
+        var itemsByTileTemp = cloneDeep(this.itemsByTile);
         // Iterate through items
-        itemsByRoomTemp.forEach((value, key) => {
+        itemsByTileTemp.forEach((value, key) => {
           value.map((item, index, array) => {
             if (item.name === itemStateChangedEvent.Item) {
               // set new value directly
@@ -191,13 +186,18 @@ export class DashboardComponent implements OnInit {
               this.api.getItem(item.name).subscribe(i => {
                 console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
                 // create temp item to copy the data
-                var newItem = i.body;
+                //var newItem = i.body;
                 // item.category = newItem.category;
                 // TODO: item.unit = newItem.unit;
+
+                // Apply Item config
+                ItemPostProcessor.ApplyConfigToItem(item);
+
                 /// Update transformed State
-                item.transformedState = ItemPostProcessor.SetTransformedState(i.body).transformedState;
+                // TODO like this:: item.transformedState = ItemPostProcessor.SetTransformedState(i.body).transformedState;
+
                 // Update UI model
-                this.itemsByRoom = itemsByRoomTemp;
+                this.itemsByTile = itemsByTileTemp;
               });
             }
           });

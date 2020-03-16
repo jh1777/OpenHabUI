@@ -48,14 +48,23 @@
                             <table border="0px">
                                 <tr>
                                     <td align="left" width="20%" style="padding-right: 10px; vertical-align: top;">
-                                        <clr-icon *ngIf="item.category == 'temperature'" shape="thermometer" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'contact'" shape="axis-chart" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'motion'" shape="eye" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'battery'" shape="battery" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'sun'" shape="sun" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'light'" shape="lightbulb" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'wallplug'" shape="switch" size="36"></clr-icon>
-                                        <clr-icon *ngIf="item.category == 'alert'" shape="warning-standard" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'temperature' && !item.hasWarning" shape="thermometer" size="36"></clr-icon> <!-- class="is-warning" -->
+                                        <clr-icon *ngIf="item.category == 'contact' && !item.hasWarning" shape="axis-chart" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'motion' && !item.hasWarning" shape="eye" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'battery' && !item.hasWarning" shape="battery" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'sun' && !item.hasWarning" shape="sun" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'light' && !item.hasWarning" shape="lightbulb" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'wallplug' && !item.hasWarning" shape="switch" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'alert' && !item.hasWarning" shape="warning-standard" size="36"></clr-icon>
+
+                                        <clr-icon *ngIf="item.category == 'temperature' && item.hasWarning" shape="thermometer" class="is-warning" size="36"></clr-icon> <!--  -->
+                                        <clr-icon *ngIf="item.category == 'contact' && item.hasWarning" shape="axis-chart" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'motion' && item.hasWarning" shape="eye" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'battery' && item.hasWarning" shape="battery" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'sun' && item.hasWarning" shape="sun" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'light' && item.hasWarning" shape="lightbulb" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'wallplug' && item.hasWarning" shape="switch" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'alert' && item.hasWarning" shape="warning-standard" class="is-warning" size="36"></clr-icon>
                                     </td>
                                     <td align="left" width="70%" style="padding-right: 10px; vertical-align: middle;">
                                         <div *ngIf="item.category == 'wallplug'">

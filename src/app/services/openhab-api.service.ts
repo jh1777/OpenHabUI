@@ -2,19 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, forkJoin } from 'rxjs';
 import { catchError, map, tap, retry, observeOn } from 'rxjs/operators';
-import * as config from '../../../config.json';
 import { OpenhabGroup } from './model/openhabGroup';
 import { OpenhabItem } from './model/openhabItem';
 import { Room } from '../models/config/room';
 import { AppComponent } from '../app.component';
-import { Group } from '../models/config/group';
 import { ItemPostProcessor } from './postprocessor/itemPostprocessor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenhabApiService {
-  private url = `${config.openHabUrl}`;
+  private url = `${AppComponent.configuration.openHabUrl}`;
   rooms: Room[] = AppComponent.configuration.rooms;
   //groups: Group[] = AppComponent.configuration.groups;
   
