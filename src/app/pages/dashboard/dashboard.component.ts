@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit {
   stateChanges: ItemStateChangedEvent[] = [];
 
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
+  warningStateByTile: Map<string, boolean> = new Map<string, boolean>();
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
   items: string[] = [];
 
@@ -47,7 +48,10 @@ export class DashboardComponent implements OnInit {
           // Get config for Item
           let itemConfig = tile.items.filter(i => i.name == item.name)[0];
           ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
+          
         });
+        // Warning state
+        this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
       });
     });
     // Subscribe to Events (new)

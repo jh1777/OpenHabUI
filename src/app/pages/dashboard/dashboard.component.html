@@ -1,9 +1,7 @@
-<div class="jh-header">Räume</div>
 
-  <p></p>
   <div class="card-columns card-columns-2">
     <div  *ngFor="let tile of tiles" >
-    <app-tile [items]="itemsByTile.get(tile.title)" [tileName]="tile.title" ></app-tile>
+    <app-tile [items]="itemsByTile.get(tile.title)" [tileName]="tile.title" [hasWarningItem]="warningStateByTile.get(tile.title)"></app-tile>
   </div>
   </div>
 

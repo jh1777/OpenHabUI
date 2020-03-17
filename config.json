@@ -2,7 +2,7 @@
     "openHabUrl": "http://192.168.178.129:8080/rest",
     "dashboardTiles": [
         {
-            "title": "Wohnraum essentials",
+            "title": "Essentials",
             "items": [
                 {
                     "name": "DCH_Kontakt",
@@ -15,14 +15,6 @@
                     "category": "motion"
                 },
                 {
-                    "name": "DCH_Battery",
-                    "displayName": "Batterie",
-                    "category": "battery",
-                    "unit": "%",
-                    "warningThreshold": 30,
-                    "warningThresholdType": "lt"
-                },
-                {
                     "name": "Wall_Plug",
                     "displayName": "Aquarium",
                     "category": "switch"
@@ -30,7 +22,8 @@
                 {
                     "name": "TradfriWohnzimmer",
                     "displayName": "Licht",
-                    "category": "dimmer"
+                    "category": "dimmer",
+                    "unit": "%"
                 }
             ]
         },
@@ -49,16 +42,36 @@
                     "unit": "°C",
                     "warningThreshold": 25,
                     "warningThresholdType": "gt"
-                },
+                }
+            ]
+        },
+        {
+            "title": "Batterien",
+            "items": [
                 {
                     "name": "Flood_Kitchen_Battery",
-                    "displayName": "Batterie Küche",
+                    "displayName": "Küche",
+                    "category": "battery",
+                    "unit": "%",
+                    "warningThreshold": 30,
+                    "warningThresholdType": "lt"
+                },
+                {
+                    "name": "DCH_Battery",
+                    "displayName": "Terrassentür",
+                    "category": "battery",
+                    "unit": "%",
+                    "warningThreshold": 30,
+                    "warningThresholdType": "lt"
+                },
+                {
+                    "name": "DCH_WT_Battery",
+                    "displayName": "Flur",
                     "category": "battery",
                     "unit": "%",
                     "warningThreshold": 30,
                     "warningThresholdType": "lt"
                 }
-
             ]
         }
     ],

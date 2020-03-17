@@ -15,6 +15,9 @@ export class ItemPostProcessor {
     if (itemConfig) {
       // set configured values in model
       item.category = CategoryType[itemConfig.category];
+      if (!item.transformedState) {
+        item.transformedState = item.state;
+      }
       item.label = itemConfig.displayName;
       if (itemConfig.unit) {
         item.unit = itemConfig.unit;
