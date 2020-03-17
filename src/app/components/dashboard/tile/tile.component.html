@@ -1,0 +1,89 @@
+<!--
+<div class="card container">
+    <div class="card-header header">
+       <font size="+1">{{tileName}}</font>
+    </div>
+    
+    <div class="card-block block" *ngFor="let item of items"> 
+        <table border="0px" width=100%>
+            <tr>
+                <td align="left" width="15%" style="padding-right: 10px; vertical-align: middle;">
+                    <clr-icon *ngIf="item.category == 'temperature'" shape="thermometer" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'contact'" shape="axis-chart" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'motion'" shape="eye" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'battery'" shape="battery" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'sun'" shape="sun" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'light'" shape="lightbulb" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'wallplug'" shape="switch" size="36"></clr-icon>
+                    <clr-icon *ngIf="item.category == 'alert'" shape="warning-standard" size="36"></clr-icon>
+                </td>
+                <td align="left" width="50%" style="padding-right: 10px; vertical-align: middle;">
+                    {{item?.label}}
+                </td>
+                <td align="right" width="35%" style="vertical-align: middle;">
+                    <div *ngIf="item.category == 'wallplug'">
+                        <a (click)="switchWallPlug($event, item)" class="label clickable" style="cursor: pointer;">{{item?.transformedState ? item?.transformedState : item?.state}}</a>
+                    </div>
+                    <div *ngIf="item.category != 'wallplug'">
+                        <strong>{{item?.transformedState ? item?.transformedState : item?.state }}</strong>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+-->
+
+<div class="card container">
+    <div class="card-header header">
+       {{tileName}}
+    </div>
+    
+    <div class="card-block block"> 
+        <table border="0px" width="100%">
+            <tr>
+                <td >
+                    <div class="clr-row">
+                        <div class="clr-col-md" *ngFor="let item of items">
+                            <table border="0px">
+                                <tr>
+                                    <td align="left" width="20%" style="padding-right: 10px; vertical-align: top;">
+                                        <clr-icon *ngIf="item.category == 'temperature' && !item.hasWarning" shape="thermometer" size="36"></clr-icon> <!-- class="is-warning" -->
+                                        <clr-icon *ngIf="item.category == 'contact' && !item.hasWarning" shape="axis-chart" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'motion' && !item.hasWarning" shape="eye" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'battery' && !item.hasWarning" shape="battery" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'sun' && !item.hasWarning" shape="sun" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'light' && !item.hasWarning" shape="lightbulb" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'wallplug' && !item.hasWarning" shape="switch" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'alert' && !item.hasWarning" shape="warning-standard" size="36"></clr-icon>
+
+                                        <clr-icon *ngIf="item.category == 'temperature' && item.hasWarning" shape="thermometer" class="is-warning" size="36"></clr-icon> <!--  -->
+                                        <clr-icon *ngIf="item.category == 'contact' && item.hasWarning" shape="axis-chart" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'motion' && item.hasWarning" shape="eye" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'battery' && item.hasWarning" shape="battery" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'sun' && item.hasWarning" shape="sun" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'light' && item.hasWarning" shape="lightbulb" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'wallplug' && item.hasWarning" shape="switch" class="is-warning" size="36"></clr-icon>
+                                        <clr-icon *ngIf="item.category == 'alert' && item.hasWarning" shape="warning-standard" class="is-warning" size="36"></clr-icon>
+                                    </td>
+                                    <td align="left" width="70%" style="padding-right: 10px; vertical-align: middle;">
+                                        <div *ngIf="item.category == 'wallplug'">
+                                            <a (click)="switchWallPlug($event, item)" class="label clickable" style="cursor: pointer; font-size: medium;">{{item?.transformedState ? item?.transformedState : item?.state}}</a>
+                                        </div>
+                                        <div *ngIf="item.category != 'wallplug'" style="font-size: medium;">
+                                            <strong>{{item?.transformedState ? item?.transformedState : item?.state }}</strong>
+                                        </div>
+                                        <div style="font-size: smaller">
+                                            {{item?.label}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

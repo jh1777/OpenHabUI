@@ -1,9 +1,13 @@
 import { OpenhabItem } from '../model/openhabItem';
 import { Group } from 'src/app/models/config/group';
 import { Room } from 'src/app/models/config/room';
+import { Category } from 'src/app/models/config/category';
+import { Item } from 'src/app/models/config/item';
+import { AppComponent } from 'src/app/app.component';
 
 export class ItemPostProcessor {
 
+    /* old:
     static ReplaceLabelsInGroup = (items: OpenhabItem[], groups: Group[]): OpenhabItem[]  => {
         // replace all labels acording to config
         groups.forEach(group => {
@@ -27,28 +31,43 @@ export class ItemPostProcessor {
         return item;
     }
 
-    static SetGroupProperties = (item: OpenhabItem, groups: Group[]): OpenhabItem => {
-        // set category, unit
-        let groupsMatch = groups.filter(g => item.groupNames.includes(g.name));
-        groupsMatch.forEach(gm => {
-            item.category = gm.category;
-            item.unit = gm.unit;
-            if (gm.warningThreshold) {
-                item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? item.state !== gm.warningThreshold : Number.parseFloat(item.state) <= gm.warningThreshold;
-            } else {
-                item.hasWarning = false;
-            }
-        });
-        return item;
-    }
-
     static EnrichItem = (item: OpenhabItem, groups: Group[], rooms: Room[], groupName: string): OpenhabItem => {
         // set room
-        item.room = rooms.filter(r => r.group == groupName)[0]?.displayName; 
+        item.room = rooms.filter(r => r.groupName == groupName)[0]?.displayName; 
         // set category, unit
-        item = ItemPostProcessor.SetGroupProperties(item, groups);
+        //item = ItemPostProcessor.SetGroupProperties(item, groups);
         // set transformedState
         item = ItemPostProcessor.SetTransformedState(item);
         return item;
     }
+    */
+
+   static ApplyConfigToItem = (item: OpenhabItem, itemConfig: Item = null): OpenhabItem => {
+    if (itemConfig == null) {
+      // Get config for Item
+      let itemsFromTilesConfig = AppComponent.configuration.dashboardTiles.map(t => t.items);
+      const flattenedArray: Item[] = [].concat(...itemsFromTilesConfig);
+      itemConfig = flattenedArray.filter(i => i.name == item.name)[0];
+    }
+    if (itemConfig) {
+      // set configured values in model
+      item.category = itemConfig.category;
+      item.label = itemConfig.displayName;
+      if (itemConfig.unit) {
+        item.unit = itemConfig.unit;
+        item.transformedState = `${item.state} ${item.unit}`;
+      }
+      if (itemConfig.warningThreshold) {
+        if (!itemConfig.warningThresholdType || itemConfig.warningThresholdType == "lt") {
+          item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? false : Number.parseFloat(item.state) <= itemConfig.warningThreshold;
+        } else {
+          item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? false : Number.parseFloat(item.state) >= itemConfig.warningThreshold;
+        }
+      }
+      if(item.category == "alert") {
+        item.hasWarning = item.state == "ON";
+      }
+    }
+    return item;
+  }
 }

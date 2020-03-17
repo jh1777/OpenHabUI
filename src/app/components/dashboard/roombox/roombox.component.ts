@@ -16,7 +16,7 @@ export class RoomboxComponent implements OnInit {
   @Input() simple: boolean;
   @Input() categoriesByRoom: Map<string, string[]>;
 
-  dataTypes: Group[] = AppComponent.configuration.groups;
+  //dataTypes: Group[] = AppComponent.configuration.groups;
   warningCategories: string[] = []; // names of item categores (because of the icon!) which are in warning state!
 
   constructor(private service: OpenhabApiService) {

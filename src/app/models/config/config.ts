@@ -1,10 +1,9 @@
 import { Room } from './room';
-import { Group } from './group';
+import { Tile } from './tile';
 
 export interface Config
 {
     openHabUrl: string;
-    filterByGroups: boolean;
-    groups: Group[];
+    dashboardTiles: Tile[];
     rooms: Room[]; 
 }

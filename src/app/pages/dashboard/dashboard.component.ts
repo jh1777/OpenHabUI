@@ -7,9 +7,12 @@ import { AppComponent } from 'src/app/app.component';
 import { ItemStateChangedEvent } from 'src/app/models/openhab-events/itemStateChangedEvent';
 import { Room } from 'src/app/models/config/room';
 import { ItemPostProcessor } from 'src/app/services/postprocessor/itemPostprocessor';
-import { Group } from 'src/app/models/config/group';
 import cloneDeep from 'lodash.clonedeep';
 import { EventbusService } from 'src/app/services/eventbus.service';
+import { Group } from 'src/app/models/config/group';
+import { Category } from 'src/app/models/config/category';
+import { Tile } from 'src/app/models/config/tile';
+import { Item } from 'src/app/models/config/item';
 
 
 @Component({
@@ -21,15 +24,20 @@ import { EventbusService } from 'src/app/services/eventbus.service';
 export class DashboardComponent implements OnInit {
   title = environment.title;
   item: OpenhabItem;
-  rooms: Room[] = AppComponent.configuration.rooms;
-  groups: Group[] = AppComponent.configuration.groups;
+  //rooms: Room[] = AppComponent.configuration.rooms;
+  //categories: Category[] = AppComponent.configuration.categories;
+
+  //itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
+  //categoriesByRoom: Map<string, string[]> = new Map<string, string[]>();
   
-  itemsByRoom: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
-  categoriesByRoom: Map<string, string[]> = new Map<string, string[]>();
   
-  items: string[];
   showModal: boolean = false;
   stateChanges: ItemStateChangedEvent[] = [];
+
+  // V3
+  itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
+  tiles: Tile[] = AppComponent.configuration.dashboardTiles;
+  items: string[] = [];
 
   constructor(
     private api: OpenhabApiService, 
@@ -37,8 +45,30 @@ export class DashboardComponent implements OnInit {
     private eventService: EventbusService) 
     {}
 
+
+
+
+
   ngOnInit() {
-    // Call API for all cofigured Rooms
+    // Call API for all configured tiles
+    AppComponent.configuration.dashboardTiles.forEach(tile => {
+      let itemNames = tile.items.map(i => i.name);
+      this.api.getItems(itemNames).subscribe(items => {
+        this.itemsByTile.set(tile.title, items);
+
+        items.forEach(item => {
+          // add really queried items to local array for eventbus filter
+          this.items.push(item.name);
+          // Get config for Item
+          let itemConfig = tile.items.filter(i => i.name == item.name)[0];
+          ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
+        });
+      });
+    });
+    // Subscribe to Events (new)
+    this.eventService.subscribeToSubject(this.handleStateChange);
+
+    /*
     this.api.getItemsFromRoomGroups(this.rooms.map(r => r.group)).subscribe(roomGroups => {
       this.itemsByRoom = this.mapModelToMap(roomGroups);
       // Key Value test:
@@ -53,12 +83,15 @@ export class DashboardComponent implements OnInit {
 
     // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange);
+    */
   }
 
+  
   /**
    * Map the Array of OpenhabItem to string item name list
    * @param items Map<string, OpenhabItem[]
    */
+  /*
   mapModelToItems(items: Map<string, OpenhabItem[]>): string[] {
     var result: OpenhabItem[] = [];
     items.forEach((value, _) =>  {
@@ -66,11 +99,12 @@ export class DashboardComponent implements OnInit {
     });
     return result.map(i => i.name);
   }
-
+*/
   /**
    * Map the Array of OpenhabItem to Map of Key: room name, Value: list of categories
    * @param items Map<string, OpenhabItem[]
    */
+  /*
   mapModelToCategories(items:  Map<string, OpenhabItem[]>): Map<string, string[]> {
     // only unique Categories for UI
     var result: Map<string, string[]> = new Map<string, string[]>();
@@ -80,11 +114,12 @@ export class DashboardComponent implements OnInit {
     });
     return result;
   }
-
+*/
   /**
    * Map the Array of OpenhabGroups to Map of Key: group name, Value: OpenhabItems
    * @param model OpenhabGroup[]
    */
+  /*
   mapModelToMap(model: OpenhabGroup[]): Map<string, OpenhabItem[]> {
     var result: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
     model.forEach(group => {
@@ -99,6 +134,7 @@ export class DashboardComponent implements OnInit {
     });
     return result;
   }
+/*
 
   /**
    * Read event from OpenHab
@@ -139,9 +175,9 @@ export class DashboardComponent implements OnInit {
 
         // Update Items currently in use
         // Create temp Map as clone of existing one to ensure the event detection of Angular is working
-        var itemsByRoomTemp = cloneDeep(this.itemsByRoom);
+        var itemsByTileTemp = cloneDeep(this.itemsByTile);
         // Iterate through items
-        itemsByRoomTemp.forEach((value, key) => {
+        itemsByTileTemp.forEach((value, key) => {
           value.map((item, index, array) => {
             if (item.name === itemStateChangedEvent.Item) {
               // set new value directly
@@ -150,13 +186,18 @@ export class DashboardComponent implements OnInit {
               this.api.getItem(item.name).subscribe(i => {
                 console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
                 // create temp item to copy the data
-                var newItem = ItemPostProcessor.SetGroupProperties(i.body, this.groups);
-                item.category = newItem.category;
-                item.unit = newItem.unit;
+                //var newItem = i.body;
+                // item.category = newItem.category;
+                // TODO: item.unit = newItem.unit;
+
+                // Apply Item config
+                ItemPostProcessor.ApplyConfigToItem(item);
+
                 /// Update transformed State
-                item.transformedState = ItemPostProcessor.SetTransformedState(i.body).transformedState;
+                // TODO like this:: item.transformedState = ItemPostProcessor.SetTransformedState(i.body).transformedState;
+
                 // Update UI model
-                this.itemsByRoom = itemsByRoomTemp;
+                this.itemsByTile = itemsByTileTemp;
               });
             }
           });

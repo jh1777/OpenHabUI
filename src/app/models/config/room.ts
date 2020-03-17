@@ -1,6 +1,4 @@
 export interface Room {
-    group: string;
+    groupName: string;
     displayName: string;
-    iconKey?: string;
-    simple?: boolean;
 }
