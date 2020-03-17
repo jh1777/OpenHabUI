@@ -3,6 +3,7 @@ import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { Group } from 'src/app/models/config/group';
 import { AppComponent } from 'src/app/app.component';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
+import { CategoryType } from 'src/app/models/config/category';
 
 @Component({
   selector: 'app-roombox',
@@ -24,8 +25,7 @@ export class RoomboxComponent implements OnInit {
   }
   
   ngOnChanges() {
-    // TODO: Changes in data are not reflected on icon - only when page is reloaded!!
-    this.warningCategories = this.data?.filter(i => i.hasWarning == true).map(i => i.category);
+    this.warningCategories = this.data?.filter(i => i.hasWarning == true).map(i => CategoryType[i.category]);
   }
 
   ngOnInit(): void {

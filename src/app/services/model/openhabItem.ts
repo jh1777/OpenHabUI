@@ -1,3 +1,5 @@
+import { CategoryType } from 'src/app/models/config/category';
+
 export interface OpenhabItem {
     name: string;
     state: string;
@@ -7,7 +9,7 @@ export interface OpenhabItem {
     groupNames: string[];
     // calculated
     room: string;  // from config
-    category: string; // from config
+    category: CategoryType; //string; // from config
     unit: string;  // from config
     hasWarning: boolean; // from config derived e.g. for battery
 }

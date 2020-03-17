@@ -10,13 +10,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RoomboxComponent } from './components/dashboard/roombox/roombox.component';
 import { TileComponent } from './components/dashboard/tile/tile.component';
+import { ItemiconComponent } from './components/itemicon/itemicon.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     RoomboxComponent,
-    TileComponent
+    TileComponent,
+    ItemiconComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import configuration from 'config-v3.json';
+import configuration from 'config.json';
 import iconMapping from 'icon-mapping.json';
 import { Room } from './models/config//room';
 import { Tile } from './models/config/tile';

@@ -1,35 +1,75 @@
 {
     "openHabUrl": "http://192.168.178.129:8080/rest",
-    "filterByGroups": true,
-	"groups": [
+    "dashboardTiles": [
         {
-            "name": "WallPlugs",
-            "displayName": "Steckdosen",
-            "unit": "",
-            "category": "wallplug"
-        },
-        {
-            "name": "ContactSensors",
-            "displayName": "Fenster und Tueren",
-            "unit": "",
-            "category": "contact",
-            "replaceInItemLabel": [
-                "Kontakt",
-                "Fenster",
-                "fenster"
+            "title": "Wohnraum essentials",
+            "items": [
+                {
+                    "name": "DCH_Kontakt",
+                    "displayName": "Fenster Terrasse",
+                    "category": "contact"
+                },
+                {
+                    "name": "MS_Motion",
+                    "displayName": "Bewegung",
+                    "category": "motion"
+                },
+                {
+                    "name": "DCH_Battery",
+                    "displayName": "Batterie",
+                    "category": "battery",
+                    "unit": "%",
+                    "warningThreshold": 30,
+                    "warningThresholdType": "lt"
+                },
+                {
+                    "name": "Wall_Plug",
+                    "displayName": "Aquarium",
+                    "category": "switch"
+                },
+                {
+                    "name": "TradfriWohnzimmer",
+                    "displayName": "Licht",
+                    "category": "dimmer"
+                }
             ]
         },
         {
-            "name": "Lights",
-            "displayName": "Lichter",
-            "unit": "%",
-            "category": "light",
-            "replaceInItemLabel": [
-                "Helligkeit"
+            "title": "Küche",
+            "items": [
+                {
+                    "name": "Flood_Kitchen_Alert",
+                    "displayName": "Wassermelder",
+                    "category": "alert"
+                },
+                {
+                    "name": "Flood_Kitchen_Temp",
+                    "displayName": "Temperatur Küche",
+                    "category": "temperature",
+                    "unit": "°C",
+                    "warningThreshold": 25,
+                    "warningThresholdType": "gt"
+                },
+                {
+                    "name": "Flood_Kitchen_Battery",
+                    "displayName": "Batterie Küche",
+                    "category": "battery",
+                    "unit": "%",
+                    "warningThreshold": 30,
+                    "warningThresholdType": "lt"
+                }
+
             ]
-        },
+        }
+    ],
+    "rooms": [
         {
-            "name": "TemperatureSensors",
+            "displayName": "Wohnzimmer",
+            "groupName": "Wohnzimmer"
+        }
+    ],
+    "categories": [
+        {
             "displayName": "Temperatur",
             "unit": "°C",
             "category": "temperature",
@@ -39,7 +79,6 @@
             ]
         },
         {
-            "name": "MotionSensors",
             "displayName": "Bewegung",
             "unit": "",
             "category": "motion",
@@ -48,7 +87,6 @@
             ]
         },
         {
-            "name": "BatteryStatus",
             "displayName": "Batterie",
             "unit": "%",
             "category": "battery",
@@ -56,40 +94,6 @@
                 "Batterie"
             ],
             "warningThreshold": 30
-        }
-    ],
-    "rooms": [
-        {
-            "group": "Wohnzimmer",
-            "displayName": "Wohnzimmer",
-            "simple": false
-        },
-        {
-            "group": "Kinderzimmer_Maria",
-            "displayName": "Maria",
-            "iconKey": "Kinderzimmer",
-            "simple": false
-        },
-        {
-            "group": "Kinderzimmer_2",
-            "displayName": "Tim",
-            "iconKey": "Kinderzimmer",
-            "simple": false
-        },
-        {
-            "group": "Schlafzimmer",
-            "displayName": "Schlafzimmer",
-            "simple": false
-        },
-        {
-            "group": "Bad",
-            "displayName": "Bad",
-            "simple": false
-        },
-        {
-            "group": "Flur",
-            "displayName": "Flur",
-            "simple": false
         }
     ]
 }

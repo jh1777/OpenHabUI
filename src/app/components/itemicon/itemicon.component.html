@@ -1,0 +1,17 @@
+<clr-icon *ngIf="item.category == categoryType.temperature && !item.hasWarning" shape="thermometer" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.contact && !item.hasWarning" shape="axis-chart" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.motion && !item.hasWarning" shape="eye" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.battery && !item.hasWarning" shape="battery" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.sun && !item.hasWarning" shape="sun" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.dimmer && !item.hasWarning" shape="lightbulb" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.switch && !item.hasWarning" shape="switch" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.alert && !item.hasWarning" shape="warning-standard" size="42"></clr-icon>
+
+<clr-icon *ngIf="item.category == categoryType.temperature && item.hasWarning" shape="thermometer" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.contact && item.hasWarning" shape="axis-chart" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.motion && item.hasWarning" shape="eye" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.battery && item.hasWarning" shape="battery" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.sun && item.hasWarning" shape="sun" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.dimmer && item.hasWarning" shape="lightbulb" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.switch && item.hasWarning" shape="switch" class="is-warning" size="42"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.alert && item.hasWarning" shape="warning-standard" class="is-warning" size="42"></clr-icon>

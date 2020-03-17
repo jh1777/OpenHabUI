@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
+import { CategoryType } from 'src/app/models/config/category';
 
 @Component({
   selector: 'app-tile',
@@ -10,6 +11,7 @@ import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 export class TileComponent implements OnInit {
   @Input() tileName: string;
   @Input() items: OpenhabItem[];
+  categoryType = CategoryType;
   
   constructor(private service: OpenhabApiService) { }
 

@@ -4,3 +4,14 @@ export interface Category {
     category: string;
     replaceInItemLabel: string[];
 }
+
+export enum CategoryType {
+    temperature,
+    contact,
+    motion,
+    alert,
+    battery,
+    dimmer,
+    switch,
+    sun
+}

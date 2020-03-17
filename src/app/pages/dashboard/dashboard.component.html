@@ -1,32 +1,11 @@
 <div class="jh-header">Räume</div>
 
-<!--
-<div class="clr-row">
-  <div class="clr-col-lg-3 clr-col-19" *ngFor="let room of rooms"> 
-    <app-roombox [simple]="room.simple" [groupName]="room.displayName" [data]="itemsByRoom.get(room.group)" [categoriesByRoom]="categoriesByRoom" [shape]="room.iconKey"></app-roombox>
-  </div>
-  <p></p> 
-</div>
-
-<div *ngFor="let sc of stateChanges">
-  {{sc.toString()}}
-</div>
-
--->
-<!-- <div class="clr-row">
-  <div class="clr-col-lg-3 clr-col-19" *ngFor="let tile of tiles"> 
-  -->
   <p></p>
   <div class="card-columns card-columns-2">
     <div  *ngFor="let tile of tiles" >
     <app-tile [items]="itemsByTile.get(tile.title)" [tileName]="tile.title" ></app-tile>
   </div>
   </div>
-<!--
-  </div>
-  <p></p>
-</div>
--->
 
 
 <clr-modal [(clrModalOpen)]="showModal">
