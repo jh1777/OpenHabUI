@@ -31,11 +31,33 @@ add the line `org.eclipse.smarthome.cors:enable=true` in the file *services/runt
 The OpenHab API URL must be configured as like `http://localhost:8080/rest`. Or whatever your host is.
 > Don't forget to setup OpenHab like described above Setup -> OpenHab section.
 
-Any `category` (like contact, temperature, motion etc.) is a fixed term for this application.
-File is separated into `groups` for categories, like mentioned above and a section for defining the `rooms`.
-`rooms.group` must be the openhab group name for the room you awant to see in the UI.
-Inside of that room every item that belongs to that group will be splitted into the `groups` by category.
-My example can be found and used as reference.
+There are three main sections in `config.json`:
+#### Sections
+##### dashboardTiles
+Contains n _tile_ definitions. Each tile has a _title_ and n _items_ in it. 
+Each _item_ is defined as:
+```json
+{
+    "name": "<openhab item name>",
+    "displayName": "<label in UI>",
+    "category": "<category - see below>",
+    "unit": "<item unit like °C, % etc.>", // optional
+    "warningThreshold": 25, // optional: if set, state will be compared and set to isWarning
+    "warningThresholdType": "gt" // optional: if warningThreshold is set, this should be also set to 'gt' (greater than) or 'lt' (lower than) to be able to determine warning state
+}
+```
+##### rooms
+Define `groupName` and `displayName` of groups you want to see on a separate page in the UI. 
+One page for each room will be shown.
+
+##### categories
+tbd
+
+#### Category
+These are static categories defined for the UI itself since not every openhab item is configured the same and reporting the same via rest api.
+Defined categories are found in enum _CategoryType_ `src/app/models/config/category.ts`.
+
+My `config.json` is included and can be used as reference.
 More detailled description of that file will follow!
 
 ## Angular Default Help
