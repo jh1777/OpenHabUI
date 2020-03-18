@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { CategoryType } from 'src/app/models/config/category';
+import { EventbusService } from 'src/app/services/eventbus.service';
+import { ItemStateChangedEvent } from 'src/app/services/model/itemStateChangedEvent';
 
 @Component({
   selector: 'app-tile',
@@ -12,9 +14,14 @@ export class TileComponent implements OnInit {
   @Input() tileName: string;
   @Input() items: OpenhabItem[];
   @Input() hasWarningItem: boolean;
+
+  // UI needed
+  item: OpenhabItem;
+  showModal: boolean = false;
   categoryType = CategoryType;
+  stateHistory: ItemStateChangedEvent[] = [];
   
-  constructor(private service: OpenhabApiService) { }
+  constructor(private service: OpenhabApiService, private eventService: EventbusService) { }
 
   ngOnInit(): void {
 
@@ -34,5 +41,33 @@ export class TileComponent implements OnInit {
       .subscribe(event => {
         console.log(`Setting new state = ${newState} on item ${item.name}. Result Code: ${event.statusText}`);
     });
+  }
+
+   // For Details button
+   openModal($event: MouseEvent, item: OpenhabItem) {
+    $event.preventDefault();
+    this.item = item;
+    
+    this.stateHistory = [];
+    if (this.eventService.itemchangedHistory.has(item.name)) {
+      this.eventService.itemchangedHistory.get(item.name).subscribe({
+        next: (v) =>  this.stateHistory.push(v)
+      });
+    }
+    /*
+    this.eventService.itemchangedHistory.subscribe({
+      next: (v) => { 
+        if (v.Item == item.name) { 
+          this.stateHistory.push(v);
+        }
+      }
+    });
+    */
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.item = null;
   }
 }

@@ -28,7 +28,7 @@
                                             <strong>{{item?.transformedState }}</strong>
                                         </div>
                                         <div style="font-size: smaller; vertical-align: top;">
-                                            {{item?.label}}
+                                            {{item?.label}}&nbsp;<clr-icon shape="info-circle" (click)="openModal($event, item)"></clr-icon>
                                         </div>
                                     </td>
                                 </tr>
@@ -40,3 +40,23 @@
         </table>
     </div>
 </div>
+
+<clr-modal [(clrModalOpen)]="showModal">
+    <h3 class="modal-title">{{item?.label}}</h3>
+    <div class="modal-body">
+        <div><strong>Item Name:</strong> {{item?.name}}</div>
+        <div><strong>State:</strong> {{item?.state}}</div>
+        <div *ngIf="item?.transformedState"><strong>Transformed State:</strong> {{item?.transformedState}}</div>
+        <div><strong>Warning:</strong> {{item?.hasWarning ? "Y" : "N" }}</div>
+        <div><strong>Category:</strong> {{ categoryType[item?.category] }}</div>
+        <div *ngIf="stateHistory.length > 0">
+            <div><strong>History (last 10):</strong></div>
+            <div *ngFor="let state of stateHistory">
+                {{state.DateTime | date: 'medium' }}: <strong>{{state.NewValue}}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="closeModal()">Ok</button>
+    </div>
+  </clr-modal>

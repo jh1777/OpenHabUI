@@ -1,5 +1,6 @@
 export class ItemStateChangedEvent {
     Item: string;
+    DateTime: Date;
     NewType: string;
     OldType: string;
     NewValue: string;

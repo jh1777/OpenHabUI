@@ -1,5 +1,6 @@
 {
     "openHabUrl": "http://192.168.178.129:8080/rest",
+    "itemStateHistory": 10,
     "dashboardTiles": [
         {
             "title": "Essentials",
@@ -15,15 +16,30 @@
                     "category": "motion"
                 },
                 {
+                    "name": "TradfriWohnzimmer",
+                    "displayName": "Licht",
+                    "category": "dimmer",
+                    "unit": "%"
+                }
+            ]
+        },
+        {
+            "title": "Fernbedienungen",
+            "items": [
+                {
+                    "name": "TV_Power_Echo",
+                    "displayName": "Fernseher",
+                    "category": "switch"
+                },
+                {
                     "name": "Wall_Plug",
                     "displayName": "Aquarium",
                     "category": "switch"
                 },
                 {
-                    "name": "TradfriWohnzimmer",
-                    "displayName": "Licht",
-                    "category": "dimmer",
-                    "unit": "%"
+                    "name": "NAS",
+                    "displayName": "NAS",
+                    "category": "switch"
                 }
             ]
         },
@@ -71,6 +87,33 @@
                     "unit": "%",
                     "warningThreshold": 30,
                     "warningThresholdType": "lt"
+                }
+            ]
+        },
+        {
+            "title": "Kinder",
+            "items":[
+                {
+                    "name": "DCH_KID_Kontakt",
+                    "displayName": "Maria",
+                    "category": "contact"
+                },
+                {
+                    "name": "DCH_KID_Temperatur",
+                    "displayName": "Maria",
+                    "category": "temperature",
+                    "unit": "°C"
+                },
+                {
+                    "name": "DCH_WORK_Kontakt",
+                    "displayName": "Tim",
+                    "category": "contact"
+                },
+                {
+                    "name": "DCH_WORK_Temperatur",
+                    "displayName": "Tim",
+                    "category": "temperature",
+                    "unit": "°C"
                 }
             ]
         }

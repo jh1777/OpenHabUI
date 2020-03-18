@@ -12,6 +12,6 @@ import { Category } from './models/config/category';
 })
 
 export class AppComponent  {
-  public static configuration: {openHabUrl:string, dashboardTiles:Tile[], rooms:Room[], categories:Category[]} = configuration;
+  public static configuration: {openHabUrl:string, itemStateHistory: number, dashboardTiles:Tile[], rooms:Room[], categories:Category[]} = configuration;
   public static iconMapping: { rooms: {[key: string]: string} } = iconMapping;
 }

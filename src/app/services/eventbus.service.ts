@@ -1,28 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 import { AppComponent } from '../app.component';
-import { ItemStateChangedEvent } from '../models/openhab-events/itemStateChangedEvent';
+import { ItemStateChangedEvent } from './model/itemStateChangedEvent';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventbusService {
+  // General Change Events
   itemchanged = new Subject<ItemStateChangedEvent>();
+  // Map of ReplaySubjects by ItemName to keep track of each item change history in a separate Subject
+  itemchangedHistory: Map<string, ReplaySubject<ItemStateChangedEvent>> = new Map<string, ReplaySubject<ItemStateChangedEvent>>();
+  // Number of history items to keep
+  itemStateHistory = AppComponent.configuration.itemStateHistory ? AppComponent.configuration.itemStateHistory : 10;
 
   constructor() {
-    this.createSubjectOnEventBus(this.itemchanged);
   }
 
   /**
-   * Subcribe to the EventBus subject and passing a callback function
+   * Create and subscribe to the EventBus subject and passing a callback function
+   * 
    */
-  subscribeToSubject = (callback: (event: ItemStateChangedEvent) => void) => {
+  subscribeToSubject = (callback: (event: ItemStateChangedEvent) => void, filter: string[] = null) => {
+    this.createSubjectOnEventBus(this.itemchanged, this.itemchangedHistory, this.itemStateHistory, filter);
     this.itemchanged.subscribe({
       next: callback
     });
   }
 
-  private createSubjectOnEventBus = (subj: Subject<ItemStateChangedEvent>) => {
+  /**
+   * Subscribe to EventBus of OpenHab and notifiy Subjects on each value change
+   * Pass optional filter parameter (string[]) to not pollute the subjects with unneccessary events
+   */
+  private createSubjectOnEventBus = (subj: Subject<ItemStateChangedEvent>, replaySubject: Map<string, ReplaySubject<ItemStateChangedEvent>>, itemStateHistory: number, filter: string[] = null) => { 
     var source = new EventSource(AppComponent.configuration.openHabUrl + '/events?topics=smarthome/items/*/statechanged,smarthome/items/*/*/statechanged');
     source.onmessage = function (event) {
       try {
@@ -31,6 +41,7 @@ export class EventbusService {
         let topicparts: string[] = evtdata.topic.split('/');
         let itemName = topicparts.length > 2 ? topicparts[2] : "";
         itemEvent.Item = itemName;
+        itemEvent.DateTime = new Date();
         if (evtdata.type === 'ItemStateEvent' || evtdata.type === 'ItemStateChangedEvent' || evtdata.type === 'GroupItemStateChangedEvent') {
           var payload = JSON.parse(evtdata.payload);
           itemEvent.NewValue = payload.value;
@@ -38,8 +49,16 @@ export class EventbusService {
           itemEvent.OldValue = payload.oldValue;
           itemEvent.OldType = payload.oldType;
         }
-
-        subj.next(itemEvent);
+        
+        if (filter == null || (filter != null && filter.includes(itemName))) {
+          subj.next(itemEvent);
+          if (replaySubject.has(itemName)) {
+            replaySubject.get(itemName).next(itemEvent);
+          } else {
+            replaySubject.set(itemName, new ReplaySubject<ItemStateChangedEvent>(itemStateHistory));
+            replaySubject.get(itemName).next(itemEvent);
+          }
+        } 
       }
       catch (e) {
         console.warn('SSE event issue: ' + e.message);

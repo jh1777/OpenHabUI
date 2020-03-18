@@ -15,13 +15,15 @@ export class ItemPostProcessor {
     if (itemConfig) {
       // set configured values in model
       item.category = CategoryType[itemConfig.category];
-      if (!item.transformedState) {
-        item.transformedState = item.state;
-      }
       item.label = itemConfig.displayName;
+      
+      
       if (itemConfig.unit) {
         item.unit = itemConfig.unit;
         item.transformedState = `${item.state} ${item.unit}`;
+      }
+      if (!item.transformedState) {
+        item.transformedState = item.state;
       }
       if (itemConfig.warningThreshold) {
         if (!itemConfig.warningThresholdType || itemConfig.warningThresholdType == "lt") {
@@ -36,4 +38,5 @@ export class ItemPostProcessor {
     }
     return item;
   }
+
 }

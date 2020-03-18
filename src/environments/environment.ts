@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  title: "OpenHAB UI",
-  configFile: "config.json"
+  title: "OpenHAB UI"
 };
 
 /*

@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { AppComponent } from 'src/app/app.component';
-import { ItemStateChangedEvent } from 'src/app/models/openhab-events/itemStateChangedEvent';
+import { ItemStateChangedEvent } from 'src/app/services/model/itemStateChangedEvent';
 import { ItemPostProcessor } from 'src/app/services/postprocessor/itemPostprocessor';
 import cloneDeep from 'lodash.clonedeep';
 import { EventbusService } from 'src/app/services/eventbus.service';
@@ -19,9 +19,7 @@ import { Tile } from 'src/app/models/config/tile';
 
 export class DashboardComponent implements OnInit {
   title = environment.title;
-  item: OpenhabItem;
-  
-  showModal: boolean = false;
+
   stateChanges: ItemStateChangedEvent[] = [];
 
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
@@ -55,7 +53,7 @@ export class DashboardComponent implements OnInit {
       });
     });
     // Subscribe to Events (new)
-    this.eventService.subscribeToSubject(this.handleStateChange);
+    this.eventService.subscribeToSubject(this.handleStateChange, this.items);
   }
 
   /**
@@ -81,16 +79,12 @@ export class DashboardComponent implements OnInit {
               // To get transformed data call API for this item
               this.api.getItem(item.name).subscribe(i => {
                 console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
-                // create temp item to copy the data
-                //var newItem = i.body;
-                // item.category = newItem.category;
-                // TODO: item.unit = newItem.unit;
-
+                
+                // Set TransformedState from GET call first
+                item.transformedState = i.body.transformedState;
+                
                 // Apply Item config
                 ItemPostProcessor.ApplyConfigToItem(item);
-
-                /// Update transformed State
-                // TODO like this:: item.transformedState = ItemPostProcessor.SetTransformedState(i.body).transformedState;
 
                 // Update UI model
                 this.itemsByTile = itemsByTileTemp;
@@ -101,17 +95,5 @@ export class DashboardComponent implements OnInit {
       });
       console.log(itemStateChangedEvent.toString());
     }
-  }
-
-  // For Details button
-  openModal($event, item) {
-    $event.preventDefault();
-    this.item = item;
-    this.showModal = true;
-  }
-
-  closeModal() {
-    this.showModal = false;
-    this.item = null;
   }
 }
