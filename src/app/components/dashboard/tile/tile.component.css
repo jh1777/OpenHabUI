@@ -26,9 +26,15 @@
 }
 
 div.card-header.header {
-    padding: 18px !important;
+    padding: 14px !important;
 }
 
 .warning {
     background-color: #ceaf41;
+}
+
+a.label.clickable {
+    padding: 3px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
