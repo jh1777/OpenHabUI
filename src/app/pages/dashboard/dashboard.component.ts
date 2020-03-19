@@ -4,10 +4,12 @@ import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { AppComponent } from 'src/app/app.component';
 import { ItemStateChangedEvent } from 'src/app/services/model/itemStateChangedEvent';
-import { ItemPostProcessor } from 'src/app/services/postprocessor/itemPostprocessor';
+import { ItemPostProcessor } from 'src/app/services/serviceTools/itemPostprocessor';
 import cloneDeep from 'lodash.clonedeep';
 import { EventbusService } from 'src/app/services/eventbus.service';
 import { Tile } from 'src/app/models/config/tile';
+import { MapTools } from 'src/app/services/serviceTools/mapTools';
+import { CategoryType } from 'src/app/models/config/category';
 
 // service worker 
 
@@ -22,8 +24,14 @@ export class DashboardComponent implements OnInit {
 
   stateChanges: ItemStateChangedEvent[] = [];
 
+  // Items by Tile Name
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
+  // Warning state by Tile Name
   warningStateByTile: Map<string, boolean> = new Map<string, boolean>();
+  // Summary Items by category name
+  summaryItems: Map<string, OpenhabItem[]>= new Map<string, OpenhabItem[]>();
+  summary: Map<string, string> = new Map<string, string>();
+
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
   items: string[] = [];
 
@@ -46,12 +54,32 @@ export class DashboardComponent implements OnInit {
           // Get config for Item
           let itemConfig = tile.items.filter(i => i.name == item.name)[0];
           ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
+          // Add to summary items map
+          if (itemConfig.includeInSummary) {
+
+            // TODO: merge to SummaryItem Class object together with Summary TEST (below)
+            MapTools.AddEntryToMapArray<string, OpenhabItem>(this.summaryItems, CategoryType[item.category], item);
+          }
           
         });
         // Warning state
         this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
+
+        // Summary TEST POC - TODO: Do it corerctly!
+        let keys = Array.from(this.summaryItems.keys());
+        keys.forEach(key => {
+          let value = this.summaryItems.get(key);
+          var resultArray: string[] = [];
+          value.map(v => {
+            let label = v.state == "ON" ? v.label : "";
+            resultArray.push(label);
+          });
+
+          this.summary.set(key, resultArray.join(', '));
+        });
       });
     });
+    
     // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange, this.items);
   }

@@ -10,6 +10,8 @@ import { CategoryType } from 'src/app/models/config/category';
 export class ItemiconComponent implements OnInit {
 
   @Input() item: OpenhabItem;
+  @Input() iconSize = "36";
+  @Input() isDisabled = false;
   categoryType = CategoryType;
 
   constructor() { }

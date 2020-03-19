@@ -6,7 +6,7 @@ import { OpenhabGroup } from './model/openhabGroup';
 import { OpenhabItem } from './model/openhabItem';
 import { Room } from '../models/config/room';
 import { AppComponent } from '../app.component';
-import { ItemPostProcessor } from './postprocessor/itemPostprocessor';
+import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
 
 @Injectable({
   providedIn: 'root'

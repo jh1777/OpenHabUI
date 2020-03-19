@@ -54,15 +54,6 @@ export class TileComponent implements OnInit {
         next: (v) =>  this.stateHistory.push(v)
       });
     }
-    /*
-    this.eventService.itemchangedHistory.subscribe({
-      next: (v) => { 
-        if (v.Item == item.name) { 
-          this.stateHistory.push(v);
-        }
-      }
-    });
-    */
     this.showModal = true;
   }
 

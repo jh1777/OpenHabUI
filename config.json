@@ -116,6 +116,23 @@
                     "unit": "°C"
                 }
             ]
+        },
+        {
+            "title": "Presence",
+            "items":[
+                {
+                    "name": "iPhone_Joerg",
+                    "displayName": "Jörg",
+                    "category": "presence",
+                    "includeInSummary": true
+                },
+                {
+                    "name": "iPhone_Julia",
+                    "displayName": "Julia",
+                    "category": "presence",
+                    "includeInSummary": true
+                }  
+            ]
         }
     ],
     "rooms": [

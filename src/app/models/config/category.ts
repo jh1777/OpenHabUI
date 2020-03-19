@@ -13,5 +13,6 @@ export enum CategoryType {
     battery,
     dimmer,
     switch,
-    sun
+    sun,
+    presence
 }

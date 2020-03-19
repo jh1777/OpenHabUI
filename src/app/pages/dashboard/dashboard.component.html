@@ -1,4 +1,5 @@
-
+<app-summary [summaryItems]="summaryItems" [summary]="summary"></app-summary>
+<div style="padding-top: 10px;"></div>
   <div class="card-columns card-columns-2">
     <div  *ngFor="let tile of tiles" >
     <app-tile [items]="itemsByTile.get(tile.title)" [tileName]="tile.title" [hasWarningItem]="warningStateByTile.get(tile.title)"></app-tile>
