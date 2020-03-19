@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+html {
+
+    /* 
+     * It's recommended, however, that percentage units be used to allow for accessible browser text 
+     * resizing.  Given that our current 24px baseline lives on top of a 20px (125%) root font size, we 
+     * would need to divide our preferred baseline by 0.192 to get the percentage we need.
+     * 
+     * So the following percentage would produce a UI that follows a design with a 20px vertical rhythm 
+     * and 5px grid – 20 ÷ 0.192 = 104.166667.
+     */
+    font-size: 100%;
+
+
+}
