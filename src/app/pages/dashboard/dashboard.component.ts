@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
             resultArray.push(label);
           });
 
-          this.summary.set(key, resultArray.join(', '));
+          this.summary.set(key, resultArray.length > 1 ? resultArray.join(', ') : resultArray.toString());
         });
       });
     });
