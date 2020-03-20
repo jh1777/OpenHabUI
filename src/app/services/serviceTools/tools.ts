@@ -1,4 +1,4 @@
-export class MapTools {
+export class Tools {
     static AddEntryToMapArray<K,V>(map: Map<K, V[]>, key: K, value: V) {
         // Array present with key?
         if (map.has(key)) {
@@ -9,4 +9,5 @@ export class MapTools {
             map.set(key, array);
         }
     }
+
 }

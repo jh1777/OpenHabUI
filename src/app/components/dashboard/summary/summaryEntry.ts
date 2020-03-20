@@ -1,8 +1,8 @@
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 
-export interface SummaryItem {
+export class SummaryEntry {
     category: string;
-    items: OpenhabItem[];
+    items: OpenhabItem[] = [];
     content: string;
-    disabledIcon: boolean;
+    disabledIcon: boolean = false;
 }

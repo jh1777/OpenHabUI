@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
+import { SummaryEntry } from './summaryEntry';
 
 @Component({
   selector: 'app-summary',
@@ -8,12 +9,7 @@ import { OpenhabItem } from 'src/app/services/model/openhabItem';
 })
 export class SummaryComponent implements OnInit {
 
-  @Input() summaryItems: Map<string, OpenhabItem[]>; // Key is category name
-  @Input() summary: Map<string, string>;
-
+  @Input() summaryItems: Map<string, SummaryEntry>; 
   constructor() { }
-
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 }

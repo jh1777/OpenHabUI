@@ -8,8 +8,10 @@ import { ItemPostProcessor } from 'src/app/services/serviceTools/itemPostprocess
 import cloneDeep from 'lodash.clonedeep';
 import { EventbusService } from 'src/app/services/eventbus.service';
 import { Tile } from 'src/app/models/config/tile';
-import { MapTools } from 'src/app/services/serviceTools/mapTools';
+import { Tools } from 'src/app/services/serviceTools/tools';
 import { CategoryType } from 'src/app/models/config/category';
+import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry';
+import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 
 // service worker 
 
@@ -29,11 +31,12 @@ export class DashboardComponent implements OnInit {
   // Warning state by Tile Name
   warningStateByTile: Map<string, boolean> = new Map<string, boolean>();
   // Summary Items by category name
-  summaryItems: Map<string, OpenhabItem[]>= new Map<string, OpenhabItem[]>();
+  summaryItems: Map<string, SummaryEntry> = new Map<string, SummaryEntry>();
   summary: Map<string, string> = new Map<string, string>();
 
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
   items: string[] = [];
+  summaryTools = new SummaryTools();
 
   constructor(
     private api: OpenhabApiService, 
@@ -56,30 +59,18 @@ export class DashboardComponent implements OnInit {
           ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
           // Add to summary items map
           if (itemConfig.includeInSummary) {
-
-            // TODO: merge to SummaryItem Class object together with Summary TEST (below)
-            MapTools.AddEntryToMapArray<string, OpenhabItem>(this.summaryItems, CategoryType[item.category], item);
-          }
-          
+            // Addd to Summary
+            this.summaryTools.fillSummary(this.summaryItems, item);
+          }          
         });
         // Warning state
         this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
 
-        // Summary TEST POC - TODO: Do it corerctly!
-        let keys = Array.from(this.summaryItems.keys());
-        keys.forEach(key => {
-          let value = this.summaryItems.get(key);
-          var resultArray: string[] = [];
-          value.map(v => {
-            let label = v.state == "ON" ? v.label : "";
-            resultArray.push(label);
-          });
-
-          this.summary.set(key, resultArray.length > 1 ? resultArray.join(', ') : resultArray.toString());
-        });
+        // Summary Calculation
+        this.summaryTools.calculateSummaryContent(this.summaryItems);
       });
     });
-    
+
     // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange, this.items);
   }
