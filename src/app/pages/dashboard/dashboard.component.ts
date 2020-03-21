@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
   summary: Map<string, string> = new Map<string, string>();
 
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
+  tilesToShow: Tile[] = [];
   items: string[] = [];
   summaryTools = new SummaryTools();
 
@@ -51,7 +52,12 @@ export class DashboardComponent implements OnInit {
     AppComponent.configuration.dashboardTiles.forEach(tile => {
       let itemNames = tile.items.map(i => i.name);
       this.api.getItems(itemNames).subscribe(items => {
-        this.itemsByTile.set(tile.title, items);
+        let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
+        if (itemsForTile.length > 0) {
+          let itemNamesForTile = itemsForTile.map(t => t.name);
+          this.itemsByTile.set(tile.title, items.filter(i => itemNamesForTile.includes(i.name)));
+          this.tilesToShow.push(tile);
+        }
 
         items.forEach(item => {
           // add really queried items to local array for eventbus filter

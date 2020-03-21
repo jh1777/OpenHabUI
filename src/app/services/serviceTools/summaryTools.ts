@@ -30,11 +30,15 @@ export class SummaryTools {
             let value = summaryItems.get(key);
             switch (key) {
                 case CategoryType[CategoryType.presence]:
-                     this.presenceCalculation(value);
+                    this.calculateContent(value, "Keiner da", CategoryType.presence);
+                    //this.presenceCalculation(value);
                     break;
                 case CategoryType[CategoryType.contact]:
-                    this.contactCalculation(value);
+                    this.calculateContent(value, "Nichts geöffnet", CategoryType.contact);
+                    //this.contactCalculation(value);
                     break;
+                case CategoryType[CategoryType.motion]:
+                    this.calculateContent(value, "Keine", CategoryType.motion);
                 default:
                     break;
             }
@@ -75,5 +79,21 @@ export class SummaryTools {
         }
     }
 
+    private calculateContent(entry: SummaryEntry, emptyContent: string, type: CategoryType) {
+        var resultArray: string[] = [];
+        entry.items.map(v => {
+            if (v.state == StateMapping.TriggeredStateByCategory.get(type)) { 
+                resultArray.push(v.label);
+            }
+        });
+
+        if (resultArray.length > 0) {
+            entry.content = resultArray.join(', ');
+            entry.disabledIcon = false;
+        } else {
+            entry.content = emptyContent;
+            entry.disabledIcon = true;
+        }
+    }
     
 }

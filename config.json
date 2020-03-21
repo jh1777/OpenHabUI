@@ -12,8 +12,9 @@
                 },
                 {
                     "name": "MS_Motion",
-                    "displayName": "Bewegung",
-                    "category": "motion"
+                    "displayName": "Wohnzimmer",
+                    "category": "motion",
+                    "showInSummary": true
                 },
                 {
                     "name": "TradfriWohnzimmer",
