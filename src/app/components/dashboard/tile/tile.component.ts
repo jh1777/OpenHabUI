@@ -14,7 +14,8 @@ export class TileComponent implements OnInit {
   @Input() tileName: string;
   @Input() items: OpenhabItem[];
   @Input() hasWarningItem: boolean;
-
+  @Input() hasCriticalItem: boolean = false;
+ 
   // UI needed
   item: OpenhabItem;
   showModal: boolean = false;

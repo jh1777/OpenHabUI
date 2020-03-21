@@ -96,7 +96,8 @@
                 {
                     "name": "DCH_KID_Kontakt",
                     "displayName": "Maria",
-                    "category": "contact"
+                    "category": "contact",
+                    "showInSummary": true
                 },
                 {
                     "name": "DCH_KID_Temperatur",
@@ -107,7 +108,8 @@
                 {
                     "name": "DCH_WORK_Kontakt",
                     "displayName": "Tim",
-                    "category": "contact"
+                    "category": "contact",
+                    "showInSummary": true
                 },
                 {
                     "name": "DCH_WORK_Temperatur",
@@ -124,13 +126,13 @@
                     "name": "iPhone_Joerg",
                     "displayName": "Jörg",
                     "category": "presence",
-                    "includeInSummary": true
+                    "showOnlyInSummary": true
                 },
                 {
                     "name": "iPhone_Julia",
                     "displayName": "Julia",
                     "category": "presence",
-                    "includeInSummary": true
+                    "showOnlyInSummary": true
                 }  
             ]
         }

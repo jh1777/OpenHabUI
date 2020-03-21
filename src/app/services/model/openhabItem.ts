@@ -12,4 +12,5 @@ export interface OpenhabItem {
     category: CategoryType; //string; // from config
     unit: string;  // from config
     hasWarning: boolean; // from config derived e.g. for battery
+    isCritical: boolean;
 }

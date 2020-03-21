@@ -2,16 +2,11 @@
 import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry';
 import { CategoryType } from 'src/app/models/config/category';
 import { OpenhabItem } from '../model/openhabItem';
-import { ChangeDetectorRef } from '@angular/core';
+import { StateMapping } from './stateMapping';
 
 export class SummaryTools {
 
     categoryType: CategoryType;
-    stateMapping: Map<CategoryType, string> = new Map<CategoryType, string>();
-
-    constructor() {
-        this.stateMapping.set(CategoryType.presence, "ON");
-    }
 
     /**
      * Summary: Fill item into SummaryEntry
@@ -37,7 +32,9 @@ export class SummaryTools {
                 case CategoryType[CategoryType.presence]:
                      this.presenceCalculation(value);
                     break;
-            
+                case CategoryType[CategoryType.contact]:
+                    this.contactCalculation(value);
+                    break;
                 default:
                     break;
             }
@@ -47,11 +44,35 @@ export class SummaryTools {
     private presenceCalculation = (entry: SummaryEntry) => {
         var resultArray: string[] = [];
         entry.items.map(v => {
-            if (v.state == this.stateMapping.get(CategoryType.presence)) { 
+            if (v.state == StateMapping.TriggeredStateByCategory.get(CategoryType.presence)) { 
                 resultArray.push(v.label);
             }
         });
-        entry.content = resultArray.join(', ');
+
+        if (resultArray.length > 0) {
+            entry.content = resultArray.join(', ');
+            entry.disabledIcon = false;
+        } else {
+            entry.content = "Keiner Zuhause";
+            entry.disabledIcon = true;
+        }
+    }
+
+    private contactCalculation = (entry: SummaryEntry) => {
+        var resultArray: string[] = [];
+        entry.items.map(v => {
+            if (v.state == StateMapping.TriggeredStateByCategory.get(CategoryType.contact)) { 
+                resultArray.push(v.label);
+            }
+        });
+
+        if (resultArray.length > 0) {
+            entry.content = resultArray.join(', ');
+            entry.disabledIcon = false;
+        } else {
+            entry.content = "Kein Fenster geöffnet";
+            entry.disabledIcon = true;
+        }
     }
 
     

@@ -5,5 +5,6 @@ export interface Item {  // V3
     unit?: string;
     warningThreshold?: number;
     warningThresholdType?: string;
-    includeInSummary?: boolean;
+    showInSummary?: boolean;
+    showOnlyInSummary?: boolean;
 }

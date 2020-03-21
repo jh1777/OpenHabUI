@@ -13,3 +13,7 @@ html {
 
 
 }
+
+.disabled {
+    opacity: 0.3;
+}

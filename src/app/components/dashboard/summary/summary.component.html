@@ -1,4 +1,4 @@
-<div *ngFor="let category of summaryItems.keys()">
+<span *ngFor="let category of summaryItems.keys()" style="padding-right: 10px;">
     <app-itemicon [item]="summaryItems.get(category).items[0]" [iconSize]="24" [isDisabled]="summaryItems.get(category).disabledIcon"></app-itemicon>
-    <span style="padding-left: 5px; font-size: small;">{{summaryItems.get(category).content}}</span>
-</div>
+    <span [ngClass]="{'disabled': summaryItems.get(category).disabledIcon }" style="padding-left: 5px; font-size: small;" >{{summaryItems.get(category).content}}</span>
+</span>

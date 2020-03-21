@@ -25,15 +25,19 @@ export class ItemPostProcessor {
       if (!item.transformedState) {
         item.transformedState = item.state;
       }
+
       if (itemConfig.warningThreshold) {
+        let stateAsNumber: number = Number.parseFloat(item.state);
         if (!itemConfig.warningThresholdType || itemConfig.warningThresholdType == "lt") {
-          item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? false : Number.parseFloat(item.state) <= itemConfig.warningThreshold;
+          item.hasWarning =  Number.isNaN(stateAsNumber) ? false : stateAsNumber <= itemConfig.warningThreshold;
+          item.isCritical = Number.isNaN(stateAsNumber) ? false : stateAsNumber == 0;
         } else {
-          item.hasWarning =  Number.isNaN(Number.parseFloat(item.state)) ? false : Number.parseFloat(item.state) >= itemConfig.warningThreshold;
+          item.hasWarning =  Number.isNaN(stateAsNumber) ? false : stateAsNumber >= itemConfig.warningThreshold;
+          item.isCritical = Number.isNaN(stateAsNumber) ? false : stateAsNumber == 100;
         }
       }
       if(item.category == CategoryType.alert) {
-        item.hasWarning = item.state == "ON";
+        item.isCritical = item.state == "ON";
       }
     }
     return item;

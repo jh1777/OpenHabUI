@@ -30,6 +30,8 @@ export class DashboardComponent implements OnInit {
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
   // Warning state by Tile Name
   warningStateByTile: Map<string, boolean> = new Map<string, boolean>();
+  // Critial state by Tile Name
+  criticalStateByTile: Map<string, boolean> = new Map<string, boolean>();
   // Summary Items by category name
   summaryItems: Map<string, SummaryEntry> = new Map<string, SummaryEntry>();
   summary: Map<string, string> = new Map<string, string>();
@@ -58,13 +60,15 @@ export class DashboardComponent implements OnInit {
           let itemConfig = tile.items.filter(i => i.name == item.name)[0];
           ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
           // Add to summary items map
-          if (itemConfig.includeInSummary) {
+          if (itemConfig.showInSummary || itemConfig.showOnlyInSummary) {
             // Addd to Summary
             this.summaryTools.fillSummary(this.summaryItems, item);
           }          
         });
         // Warning state
         this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
+        // Warning state
+        this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
 
         // Summary Calculation
         this.summaryTools.calculateSummaryContent(this.summaryItems);
@@ -89,6 +93,7 @@ export class DashboardComponent implements OnInit {
         // Update Items currently in use
         // Create temp Map as clone of existing one to ensure the event detection of Angular is working
         var itemsByTileTemp = cloneDeep(this.itemsByTile);
+        var summaryItemsTemp = cloneDeep(this.summaryItems);
         // Iterate through items
         itemsByTileTemp.forEach((value, key) => {
           value.map((item, index, array) => {
@@ -107,6 +112,9 @@ export class DashboardComponent implements OnInit {
 
                 // Update UI model
                 this.itemsByTile = itemsByTileTemp;
+                // Update summary
+                this.summaryTools.calculateSummaryContent(summaryItemsTemp);
+                this.summaryItems = summaryItemsTemp;
               });
             }
           });

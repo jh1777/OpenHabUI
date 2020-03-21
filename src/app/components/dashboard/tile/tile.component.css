@@ -33,6 +33,10 @@ div.card-header.header {
     background-color: #ceaf41;
 }
 
+.critical {
+    background-color: #c01a14;
+}
+
 a.label.clickable {
     padding: 3px;
     padding-left: 6px;
