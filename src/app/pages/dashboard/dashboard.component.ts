@@ -37,9 +37,10 @@ export class DashboardComponent implements OnInit {
   summary: Map<string, string> = new Map<string, string>();
 
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
-  tilesToShow: Tile[] = [];
+  // Used for the UI:
+  tilesToShow: Tile[];
   items: string[] = [];
-  summaryTools = new SummaryTools();
+//  summaryTools = new SummaryTools();
 
   constructor(
     private api: OpenhabApiService, 
@@ -48,27 +49,30 @@ export class DashboardComponent implements OnInit {
     {}
 
   ngOnInit() {
+    this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
     AppComponent.configuration.dashboardTiles.forEach(tile => {
       let itemNames = tile.items.map(i => i.name);
       this.api.getItems(itemNames).subscribe(items => {
+        // Filter out items that are only shown in summary
         let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
         if (itemsForTile.length > 0) {
           let itemNamesForTile = itemsForTile.map(t => t.name);
           this.itemsByTile.set(tile.title, items.filter(i => itemNamesForTile.includes(i.name)));
-          this.tilesToShow.push(tile);
+        } else {
+          // Remove from UI Tiles
+          const index = this.tilesToShow.findIndex(i => i.title == tile.title);
+          if (index > -1) {
+            this.tilesToShow.splice(index, 1);
+          }
         }
 
         items.forEach(item => {
           // add really queried items to local array for eventbus filter
           this.items.push(item.name);
-          // Get config for Item
-          let itemConfig = tile.items.filter(i => i.name == item.name)[0];
-          ItemPostProcessor.ApplyConfigToItem(item, itemConfig);
-          // Add to summary items map
-          if (itemConfig.showInSummary || itemConfig.showOnlyInSummary) {
+          if (item.showInSummary || item.showOnlyInSummary) {
             // Addd to Summary
-            this.summaryTools.fillSummary(this.summaryItems, item);
+            SummaryTools.FillSummary(this.summaryItems, item);
           }          
         });
         // Warning state
@@ -77,7 +81,7 @@ export class DashboardComponent implements OnInit {
         this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
 
         // Summary Calculation
-        this.summaryTools.calculateSummaryContent(this.summaryItems);
+        SummaryTools.CalculateSummaryContent(this.summaryItems);
       });
     });
 
@@ -118,8 +122,28 @@ export class DashboardComponent implements OnInit {
 
                 // Update UI model
                 this.itemsByTile = itemsByTileTemp;
+              });
+            }
+          });
+        });
+
+        summaryItemsTemp.forEach((value, key) => {
+          value.items.map((item, index, array) => {
+            if (item.name === itemStateChangedEvent.Item) {
+              // set new value directly
+              item.state = itemStateChangedEvent.NewValue;
+              // To get transformed data call API for this item
+              this.api.getItem(item.name).subscribe(i => {
+                console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
+                
+                // Set TransformedState from GET call first
+                item.transformedState = i.body.transformedState;
+                
+                // Apply Item config
+                ItemPostProcessor.ApplyConfigToItem(item);
+
                 // Update summary
-                this.summaryTools.calculateSummaryContent(summaryItemsTemp);
+                SummaryTools.CalculateSummaryContent(summaryItemsTemp);
                 this.summaryItems = summaryItemsTemp;
               });
             }

@@ -14,7 +14,6 @@ import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
 export class OpenhabApiService {
   private url = `${AppComponent.configuration.openHabUrl}`;
   rooms: Room[] = AppComponent.configuration.rooms;
-  //groups: Group[] = AppComponent.configuration.groups;
   
   constructor(private http: HttpClient) { }
 
@@ -45,6 +44,9 @@ export class OpenhabApiService {
     let uri = `${this.url}/items/${itemName}`;
     return this.http.get<OpenhabItem>(uri)
     .pipe(
+      tap(g => {
+        g = ItemPostProcessor.ApplyConfigToItem(g);
+      }),
       retry(1),
       catchError(this.errorHandler)
     );
@@ -58,17 +60,6 @@ export class OpenhabApiService {
         tap(g => {
           //let groups = this.groups.map(g => g.name);
           g.displayName = this.rooms.filter(r => r.groupName == g.name)[0]?.displayName;
-          g.members.forEach(item => { 
-            // set transformed state, item.category, item.unit, item.room
-            // --> fix: item = ItemPostProcessor.EnrichItem(item, this.rooms, g.name);
-          });
-          // show only room items that are part of specified 'groups'?
-          //if (AppComponent.configuration.filterByGroups) {
-          //  g.members = g.members.filter(item => intersection(item.groupNames, groups).length > 0);
-          //}
-          
-          // replace all labels acording to config
-          //g.members = ItemPostProcessor.ReplaceLabelsInGroup(g.members, this.groups);
 
         }),
         retry(1),

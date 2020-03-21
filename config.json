@@ -8,7 +8,8 @@
                 {
                     "name": "DCH_Kontakt",
                     "displayName": "Fenster Terrasse",
-                    "category": "contact"
+                    "category": "contact",
+                    "showInSummary": true
                 },
                 {
                     "name": "MS_Motion",
@@ -117,6 +118,23 @@
                     "displayName": "Tim",
                     "category": "temperature",
                     "unit": "°C"
+                }
+            ]
+        },
+        {
+            "title": "Sonsitges",
+            "items":[
+                {
+                    "name": "DCH_BM_Motion",
+                    "displayName": "Flur",
+                    "category": "motion",
+                    "showInSummary": true
+                },
+                {
+                    "name": "DCH_WT_Kontakt",
+                    "displayName": "Schalfzimmer",
+                    "category": "contact",
+                    "showInSummary": true
                 }
             ]
         },

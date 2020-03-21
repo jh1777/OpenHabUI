@@ -1,6 +1,6 @@
 import { CategoryType } from 'src/app/models/config/category';
 
-export interface OpenhabItem {
+export class OpenhabItem {
     name: string;
     state: string;
     transformedState: string;
@@ -11,6 +11,9 @@ export interface OpenhabItem {
     room: string;  // from config
     category: CategoryType; //string; // from config
     unit: string;  // from config
-    hasWarning: boolean; // from config derived e.g. for battery
-    isCritical: boolean;
+    hasWarning: boolean = false; // from config derived e.g. for battery
+    isCritical: boolean = false;
+    // Summary
+    showInSummary: boolean = false;
+    showOnlyInSummary: boolean = false;
 }

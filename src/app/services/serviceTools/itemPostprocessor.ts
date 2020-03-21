@@ -16,7 +16,9 @@ export class ItemPostProcessor {
       // set configured values in model
       item.category = CategoryType[itemConfig.category];
       item.label = itemConfig.displayName;
-      
+
+      item.showInSummary = itemConfig.showInSummary;
+      item.showOnlyInSummary = itemConfig.showOnlyInSummary;
       
       if (itemConfig.unit) {
         item.unit = itemConfig.unit;
