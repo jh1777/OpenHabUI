@@ -135,7 +135,7 @@
                 },
                 {
                     "name": "DCH_WT_Kontakt",
-                    "displayName": "Schalfzimmer",
+                    "displayName": "Schlafzimmer",
                     "category": "contact",
                     "showInSummary": true
                 }
@@ -163,34 +163,6 @@
         {
             "displayName": "Wohnzimmer",
             "groupName": "Wohnzimmer"
-        }
-    ],
-    "categories": [
-        {
-            "displayName": "Temperatur",
-            "unit": "°C",
-            "category": "temperature",
-            "replaceInItemLabel": [
-                "Temperature",
-                "Temperatur"
-            ]
-        },
-        {
-            "displayName": "Bewegung",
-            "unit": "",
-            "category": "motion",
-            "replaceInItemLabel": [
-                "Bewegung"
-            ]
-        },
-        {
-            "displayName": "Batterie",
-            "unit": "%",
-            "category": "battery",
-            "replaceInItemLabel": [
-                "Batterie"
-            ],
-            "warningThreshold": 30
         }
     ]
 }

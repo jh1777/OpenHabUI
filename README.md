@@ -141,10 +141,6 @@ Each single _item_ is defined as:
 Define `groupName` and `displayName` of groups you want to see on a separate page in the UI. 
 One page for each room will be shown.
 
-#### categories
-
-tbd
-
 ## Reference
 
 ### Repo Link
