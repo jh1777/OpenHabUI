@@ -34,6 +34,10 @@ export class SummaryTools {
                     break;
                 case CategoryType[CategoryType.motion]:
                     SummaryTools.calculateContent(value, "Keine Bewegung", CategoryType.motion);
+                    break;
+                case CategoryType[CategoryType.battery]:
+                    SummaryTools.calculateBatteryContent(value, "");
+                    break;
                 default:
                     break;
             }
@@ -45,6 +49,23 @@ export class SummaryTools {
         entry.items.map(v => {
             if (v.state == StateMapping.TriggeredStateByCategory.get(type)) { 
                 resultArray.push(v.label);
+            }
+        });
+
+        if (resultArray.length > 0) {
+            entry.content = resultArray.join(', ');
+            entry.disabledIcon = false;
+        } else {
+            entry.content = emptyContent;
+            entry.disabledIcon = true;
+        }
+    }
+
+    private static calculateBatteryContent(entry: SummaryEntry, emptyContent: string) {
+        var resultArray: string[] = [];
+        entry.items.map(v => {
+            if (v.isCritical || v.hasWarning) { 
+                resultArray.push(`${v.label} (${v.transformedState})`);
             }
         });
 

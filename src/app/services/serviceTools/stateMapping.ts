@@ -7,7 +7,8 @@ export class StateMapping {
         [CategoryType.presence, "ON" ],
         [CategoryType.alert, "ON"],
         [CategoryType.motion, "ON"],
-        [CategoryType.contact, "OPEN"]
+        [CategoryType.contact, "OPEN"],
+        [CategoryType.battery, ""] // Placeholder only (used for order in summary)
     ]);
     
 }

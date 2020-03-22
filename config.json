@@ -72,7 +72,8 @@
                     "category": "battery",
                     "unit": "%",
                     "warningThreshold": 30,
-                    "warningThresholdType": "lt"
+                    "warningThresholdType": "lt",
+                    "showInSummary": true
                 },
                 {
                     "name": "DCH_Battery",
@@ -80,7 +81,8 @@
                     "category": "battery",
                     "unit": "%",
                     "warningThreshold": 30,
-                    "warningThresholdType": "lt"
+                    "warningThresholdType": "lt",
+                    "showInSummary": true
                 },
                 {
                     "name": "DCH_WT_Battery",
@@ -88,7 +90,8 @@
                     "category": "battery",
                     "unit": "%",
                     "warningThreshold": 30,
-                    "warningThresholdType": "lt"
+                    "warningThresholdType": "lt",
+                    "showInSummary": true
                 }
             ]
         },
