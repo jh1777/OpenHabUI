@@ -15,6 +15,7 @@ export class SummaryTools {
         else {
             var s = new SummaryEntry();
             s.category = CategoryType[item.category];
+            s.order = Array.from(StateMapping.TriggeredStateByCategory.keys()).findIndex(cn => cn === item.category);
             s.items.push(item);
             summaryItems.set(s.category, s);
         }

@@ -10,6 +10,8 @@ import { SummaryEntry } from './summaryEntry';
 export class SummaryComponent implements OnInit {
 
   @Input() summaryItems: Map<string, SummaryEntry>;
+  @Input() categories: string[];
+  
   constructor() { }
   ngOnInit(): void {}
 }

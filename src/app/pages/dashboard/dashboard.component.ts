@@ -8,8 +8,6 @@ import { ItemPostProcessor } from 'src/app/services/serviceTools/itemPostprocess
 import cloneDeep from 'lodash.clonedeep';
 import { EventbusService } from 'src/app/services/eventbus.service';
 import { Tile } from 'src/app/models/config/tile';
-import { Tools } from 'src/app/services/serviceTools/tools';
-import { CategoryType } from 'src/app/models/config/category';
 import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry';
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 
@@ -34,13 +32,12 @@ export class DashboardComponent implements OnInit {
   criticalStateByTile: Map<string, boolean> = new Map<string, boolean>();
   // Summary Items by category name
   summaryItems: Map<string, SummaryEntry> = new Map<string, SummaryEntry>();
-  summary: Map<string, string> = new Map<string, string>();
+  summaryCategories: string[] = [];
 
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
   // Used for the UI:
   tilesToShow: Tile[];
   items: string[] = [];
-//  summaryTools = new SummaryTools();
 
   constructor(
     private api: OpenhabApiService, 
@@ -80,8 +77,11 @@ export class DashboardComponent implements OnInit {
         // Warning state
         this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
 
+        // Summary Category Order according to state Mapping definition
+        this.summaryCategories = Array.from(this.summaryItems.values()).sort((a, b) => a.order - b.order).map(i => i.category);
         // Summary Calculation
         SummaryTools.CalculateSummaryContent(this.summaryItems);
+
       });
     });
 

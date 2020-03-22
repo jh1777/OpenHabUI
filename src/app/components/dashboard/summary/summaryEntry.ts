@@ -5,4 +5,5 @@ export class SummaryEntry {
     items: OpenhabItem[] = [];
     content: string;
     disabledIcon: boolean = false;
+    order: number;
 }
