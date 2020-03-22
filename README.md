@@ -7,9 +7,10 @@ A smart and lean UI for your OpenHab Server (locally) using OpenHab REST API.
 GitHub Repo
 https://github.com/jh1777/OpenHabUI
 
-## Ideas
+## Supported Browsers
 
-Use 'Labels' from Clarity!
+- Safari >= 13
+- Chrome >= 80
 
 ## Setup
 
@@ -17,25 +18,44 @@ Use 'Labels' from Clarity!
 
 add the line `org.eclipse.smarthome.cors:enable=true` in the file *services/runtime.cfg*
 
-### Run locally
+### Run locally in dev mode
 
-1. Install angular cli
-2. cloe git repo (`git clone ....`)
+1. Install angular cli (`npm install -g @angular/cli`)
+2. clone this git repo (`git clone https://github.com/jh1777/OpenHabUI.git`)
 3. run `npm i` in cloned folder
-4. start app using `ng serve`
+4. start app using `ng serve` or use provided script `start-on-server.sh` (takes care of host and customizes port to 4222)
 
-### Config
 
-#### The **config.json** file is the main configuration of this App!
 
-The OpenHab API URL must be configured as like `http://localhost:8080/rest`. Or whatever your host is.
-> Don't forget to setup OpenHab like described above Setup -> OpenHab section.
+## Components
 
-There are three main sections in `config.json`:
+### Dashboard
+
+The dashboard is the main entrypoint when the UI is started
+
+## How to configure
+
+#### The `config.json` file is the main configuration of this App!
+
+#### URL
+
+`openHabUrl`key is used to set the OpenHAB API URL.
+
+The **OpenHab API URL** must be configured like `http://localhost:8080/rest` (for example). Please adapt according to your hostname and port.
+> Don't forget to setup OpenHab like described above in Setup -> OpenHab section.
+>
+> 
+
 #### Sections
+
+There are three main sections in `config.json`.
+
 ##### dashboardTiles
-Contains n _tile_ definitions. Each tile has a _title_ and n _items_ in it. 
-Each _item_ is defined as:
+
+This section contains all _tile_ definitions for the dashboard. Each tile itself has a _title_ and some _items_ in it. You can define each item like you want it to be. 
+
+Each single _item_ is defined as:
+
 ```json
 {
     "name": "<openhab item name>",
@@ -43,7 +63,9 @@ Each _item_ is defined as:
     "category": "<category - see below>",
     "unit": "<item unit like °C, % etc.>", // optional
     "warningThreshold": 25, // optional: if set, state will be compared and set to isWarning
-    "warningThresholdType": "gt" // optional: if warningThreshold is set, this should be also set to 'gt' (greater than) or 'lt' (lower than) to be able to determine warning state
+    "warningThresholdType": "gt", // optional: if warningThreshold is set, this should be also set to 'gt' (greater than) or 'lt' (lower than) to be able to determine warning state
+  	"showInSummary": true,  // optional: If you want to include this item in the summary bar (default is false)
+  	"showOnlyInSummary": false  // optional: If you want to include this item ONLY in the summary bar and don't show in a tile (default is false)
 }
 ```
 ##### rooms
