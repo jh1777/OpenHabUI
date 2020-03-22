@@ -48,13 +48,21 @@ export class TileComponent implements OnInit {
    openModal($event: MouseEvent, item: OpenhabItem) {
     $event.preventDefault();
     this.item = item;
-    
+
+    // Getting History from Openhab API
+    this.service.getItemHistory(item.name).subscribe(history => {
+      console.log(history.name+": Hitory entries found = "+history.data.length);
+    });
+
+    // --> TO be replaced:
     this.stateHistory = [];
     if (this.eventService.itemchangedHistory.has(item.name)) {
       this.eventService.itemchangedHistory.get(item.name).subscribe({
         next: (v) =>  this.stateHistory.push(v)
       });
     }
+    // <---
+
     this.showModal = true;
   }
 

@@ -33,6 +33,7 @@ export class DashboardComponent implements OnInit {
   // Summary Items by category name
   summaryItems: Map<string, SummaryEntry> = new Map<string, SummaryEntry>();
   summaryCategories: string[] = [];
+  activityOnlyInSummary = AppComponent.configuration.showOnlyActivityInSummary;
 
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
   // Used for the UI:
@@ -77,11 +78,10 @@ export class DashboardComponent implements OnInit {
         // Warning state
         this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
 
-        // Summary Category Order according to state Mapping definition
-        this.summaryCategories = Array.from(this.summaryItems.values()).sort((a, b) => a.order - b.order).map(i => i.category);
         // Summary Calculation
-        SummaryTools.CalculateSummaryContent(this.summaryItems);
-
+        this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
+        // Summary Category Order according to state Mapping definition
+        //Array.from(this.summaryItems.values()).filter(se => se.content != null).sort((a, b) => a.order - b.order).map(se => se.category);
       });
     });
 
@@ -143,8 +143,9 @@ export class DashboardComponent implements OnInit {
                 ItemPostProcessor.ApplyConfigToItem(item);
 
                 // Update summary
-                SummaryTools.CalculateSummaryContent(summaryItemsTemp);
+                let summaryCategoriesTemp = SummaryTools.CalculateSummaryContent(summaryItemsTemp, this.activityOnlyInSummary);
                 this.summaryItems = summaryItemsTemp;
+                this.summaryCategories = cloneDeep(summaryCategoriesTemp);
               });
             }
           });

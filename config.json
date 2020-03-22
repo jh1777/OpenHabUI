@@ -1,6 +1,7 @@
 {
     "openHabUrl": "http://192.168.178.129:8080/rest",
     "itemStateHistory": 10,
+    "showOnlyActivityInSummary": true,
     "dashboardTiles": [
         {
             "title": "Essentials",
@@ -125,19 +126,25 @@
             ]
         },
         {
-            "title": "Sonsitges",
+            "title": "Schlafzimmer",
             "items":[
                 {
                     "name": "DCH_BM_Motion",
                     "displayName": "Flur",
                     "category": "motion",
-                    "showInSummary": true
+                    "showOnlyInSummary": true
                 },
                 {
                     "name": "DCH_WT_Kontakt",
                     "displayName": "Schlafzimmer",
                     "category": "contact",
                     "showInSummary": true
+                },
+                {
+                    "name": "DCH_WT_Temperatur",
+                    "displayName": "Schlafzimmer",
+                    "category": "temperature",
+                    "unit": "°C"
                 }
             ]
         },

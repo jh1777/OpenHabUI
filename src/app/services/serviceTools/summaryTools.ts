@@ -21,27 +21,31 @@ export class SummaryTools {
         }
     }
 
-    static CalculateSummaryContent = (summaryItems: Map<string, SummaryEntry>) => {
+    static CalculateSummaryContent = (summaryItems: Map<string, SummaryEntry>, activityOnly: boolean): string[] => {
         let keys = Array.from(summaryItems.keys());
         keys.forEach(key => {
             let value = summaryItems.get(key);
             switch (key) {
                 case CategoryType[CategoryType.presence]:
-                    SummaryTools.calculateContent(value, "Keiner da", CategoryType.presence);
+                    SummaryTools.calculateContent(value, activityOnly ? null : "Keiner da", CategoryType.presence);
                     break;
                 case CategoryType[CategoryType.contact]:
-                    SummaryTools.calculateContent(value, "Nichts geöffnet", CategoryType.contact);
+                    SummaryTools.calculateContent(value, activityOnly ? null : "Alles geschlossen", CategoryType.contact);
                     break;
                 case CategoryType[CategoryType.motion]:
-                    SummaryTools.calculateContent(value, "Keine Bewegung", CategoryType.motion);
+                    SummaryTools.calculateContent(value, activityOnly ? null : "Keine Bewegung", CategoryType.motion);
                     break;
                 case CategoryType[CategoryType.battery]:
-                    SummaryTools.calculateBatteryContent(value, "");
+                    SummaryTools.calculateBatteryContent(value, null);
                     break;
                 default:
                     break;
             }
         });
+
+        // UI Categories to show: Summary Category Order according to state Mapping definition (only show non-Null content!)
+        return Array.from(summaryItems.values()).filter(se => se.content != null).sort((a, b) => a.order - b.order).map(se => se.category);
+
     }
 
     private static calculateContent(entry: SummaryEntry, emptyContent: string, type: CategoryType) {

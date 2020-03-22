@@ -7,6 +7,7 @@ import { OpenhabItem } from './model/openhabItem';
 import { Room } from '../models/config/room';
 import { AppComponent } from '../app.component';
 import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
+import { OpenhabItemHistory } from './model/openhabItemHistory';
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +90,23 @@ export class OpenhabApiService {
     return forkJoin(calls);
   }
 
+  getItemHistory(itemName: string): Observable<OpenhabItemHistory> {
+    let uri = `${this.url}/persistence/items/${itemName}`;
+    return this.http.get<OpenhabItemHistory>(uri) 
+      .pipe(
+        tap(g => {
+          if (g.data.length > AppComponent.configuration.itemStateHistory) {
+            g.data.splice(0, g.data.length - AppComponent.configuration.itemStateHistory);
+          }
+          // Convert unix time to Date
+          g.data.forEach(s => {
+            s.date = new Date(s.time);
+          });
+        }),
+        retry(1),
+        catchError(this.errorHandler)
+    );
+  }
 
   errorHandler(error: any) {
     let errorMessage = '';
