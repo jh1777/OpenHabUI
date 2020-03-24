@@ -23,6 +23,11 @@
                     "displayName": "Licht",
                     "category": "dimmer",
                     "unit": "%"
+                },
+                {
+                    "name": "FischeFuettern",
+                    "displayName": "Fische füttern",
+                    "category": "switch"
                 }
             ]
         },
