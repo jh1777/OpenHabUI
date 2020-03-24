@@ -130,7 +130,7 @@ Each single _item_ is defined as:
     "category": "<category - see below>",
     "unit": "<item unit like °C, % etc.>", // optional
     "warningThreshold": 25, // optional: if set, state will be compared and set to isWarning
-    "warningThresholdType": "gt", // optional: if warningThreshold is set, this should be also set to 'gt' (greater than) or 'lt' (lower than) to be able to determine warning state
+    "warningThresholdType": "gt", // optional: if warningThreshold is set, this should be also set to 'gt' (greater or equal than) or 'lt' (lower or equal than) to be able to determine warning state
     "showInSummary": true,  // optional: If you want to include this item in the summary bar (default is false)
     "showOnlyInSummary": false  // optional: If you want to include this item ONLY in the summary bar and don't show in a tile (default is false)
 }

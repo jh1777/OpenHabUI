@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, forkJoin } from 'rxjs';
-import { catchError, map, tap, retry, observeOn } from 'rxjs/operators';
+import { Observable, throwError, forkJoin, of } from 'rxjs';
+import { catchError, map, tap, retry, observeOn, switchMap, switchMapTo } from 'rxjs/operators';
 import { OpenhabGroup } from './model/openhabGroup';
 import { OpenhabItem } from './model/openhabItem';
 import { Room } from '../models/config/room';
 import { AppComponent } from '../app.component';
 import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
-import { OpenhabItemHistory } from './model/openhabItemHistory';
+import { OpenhabItemHistory, OpenhabItemHistoryEntry } from './model/openhabItemHistory';
 
 @Injectable({
   providedIn: 'root'
@@ -90,22 +90,61 @@ export class OpenhabApiService {
     return forkJoin(calls);
   }
 
-  getItemHistory(itemName: string): Observable<OpenhabItemHistory> {
-    let uri = `${this.url}/persistence/items/${itemName}`;
+  private postProcessItemHistoryData = (entries: OpenhabItemHistoryEntry[], historyValueCount: number) => {
+    if (entries.length > historyValueCount) {
+      entries.splice(0, entries.length - historyValueCount);
+    }
+    // Convert unix time to Date
+    entries.forEach(s => {
+      s.date = new Date(s.time);
+    });
+  }
+  
+  getItemHistory1h(itemName: string, historyValueCount: number): Observable<OpenhabItemHistory> {
+    console.log("Getting 1h history of Item "+itemName);
+    let startTime = new Date();
+    startTime.setHours(startTime.getHours() - 1);
+    var formattedStartTime = `${startTime.getFullYear()}-${this.pad(startTime.getMonth()+1)}-${this.pad(startTime.getDate())}T${this.pad(startTime.getHours())}:${this.pad(startTime.getMinutes())}:${this.pad(startTime.getSeconds())}`;
+    let uri = `${this.url}/persistence/items/${itemName}?starttime=${formattedStartTime}`;
     return this.http.get<OpenhabItemHistory>(uri) 
       .pipe(
-        tap(g => {
-          if (g.data.length > AppComponent.configuration.itemStateHistory) {
-            g.data.splice(0, g.data.length - AppComponent.configuration.itemStateHistory);
-          }
-          // Convert unix time to Date
-          g.data.forEach(s => {
-            s.date = new Date(s.time);
-          });
-        }),
+        tap(g => this.postProcessItemHistoryData(g.data, historyValueCount)),
         retry(1),
         catchError(this.errorHandler)
     );
+  }
+
+  getItemHistory1d(itemName: string, historyValueCount: number): Observable<OpenhabItemHistory> {
+    console.log("Getting 1 day history of Item "+itemName);
+    let uri = `${this.url}/persistence/items/${itemName}`;
+    return this.http.get<OpenhabItemHistory>(uri) 
+      .pipe(
+        tap(g => this.postProcessItemHistoryData(g.data, historyValueCount)),
+        retry(1),
+        catchError(this.errorHandler)
+    );
+  }
+
+  /**
+   * Get Item History - first try 1 hr and if neccessary, query 1 day 
+   * @param itemName 
+   * @param historyValueCount 
+   */
+  getItemHistory(itemName: string, historyValueCount: number): Observable<OpenhabItemHistory> {
+    return this.getItemHistory1h(itemName, historyValueCount)
+    .pipe(
+      switchMap( r => r.data.length >= historyValueCount ? this.getItemHistory1h(itemName, historyValueCount) : this.getItemHistory1d(itemName, historyValueCount)),
+      retry(1),
+      catchError(this.errorHandler)
+    );
+  }
+
+  pad = function(n: number): string {
+    if (n < 10) {
+      return `0${n}`;
+    } else {
+      return `${n}`;
+    }
   }
 
   errorHandler(error: any) {

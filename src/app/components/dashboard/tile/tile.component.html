@@ -44,15 +44,39 @@
 <clr-modal [(clrModalOpen)]="showModal">
     <h3 class="modal-title">{{item?.label}}</h3>
     <div class="modal-body">
+        <div *ngIf="item?.isCritical" class="alert alert-danger" role="alert">
+            <div class="alert-items">
+                <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                        <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                    </div>
+                    <span class="alert-text">
+                        This item has a critital state reported!
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="item?.hasWarning && !item?.isCritical" class="alert alert-warning" role="alert">
+            <div class="alert-items">
+                <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                        <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>
+                    </div>
+                    <span class="alert-text">
+                        This item has a warning state reported!
+                    </span>
+                </div>
+            </div>
+        </div>
+
         <div><strong>Item Name:</strong> {{item?.name}}</div>
-        <div><strong>State:</strong> {{item?.state}}</div>
+        <div><strong>Current State:</strong> {{item?.state}}</div>
         <div *ngIf="item?.transformedState"><strong>Transformed State:</strong> {{item?.transformedState}}</div>
-        <div><strong>Warning:</strong> {{item?.hasWarning ? "Y" : "N" }}</div>
         <div><strong>Category:</strong> {{ categoryType[item?.category] }}</div>
-        <div *ngIf="stateHistory.length > 0">
-            <div><strong>History (last 10):</strong></div>
-            <div *ngFor="let state of stateHistory">
-                {{state.DateTime | date: 'medium' }}: <strong>{{state.NewValue}}</strong>
+        <div *ngIf="stateHistory">
+            <div><strong>State History:</strong></div>
+            <div *ngFor="let state of stateHistory.data">
+                {{state.date | date: 'medium' }}: <strong>{{state.state}}</strong>
             </div>
         </div>
     </div>

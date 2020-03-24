@@ -10,10 +10,8 @@ export class EventbusService {
   // General Change Events
   itemchanged = new Subject<ItemStateChangedEvent>();
   // Map of ReplaySubjects by ItemName to keep track of each item change history in a separate Subject
-  itemchangedHistory: Map<string, ReplaySubject<ItemStateChangedEvent>> = new Map<string, ReplaySubject<ItemStateChangedEvent>>();
-  // Number of history items to keep
-  itemStateHistory = AppComponent.configuration.itemStateHistory ? AppComponent.configuration.itemStateHistory : 10;
-
+  // no longer in use: itemchangedHistory: Map<string, ReplaySubject<ItemStateChangedEvent>> = new Map<string, ReplaySubject<ItemStateChangedEvent>>();
+  
   constructor() {
   }
 
@@ -22,7 +20,7 @@ export class EventbusService {
    * 
    */
   subscribeToSubject = (callback: (event: ItemStateChangedEvent) => void, filter: string[] = null) => {
-    this.createSubjectOnEventBus(this.itemchanged, this.itemchangedHistory, this.itemStateHistory, filter);
+    this.createSubjectOnEventBus(this.itemchanged, filter);
     this.itemchanged.subscribe({
       next: callback
     });
@@ -32,7 +30,7 @@ export class EventbusService {
    * Subscribe to EventBus of OpenHab and notifiy Subjects on each value change
    * Pass optional filter parameter (string[]) to not pollute the subjects with unneccessary events
    */
-  private createSubjectOnEventBus = (subj: Subject<ItemStateChangedEvent>, replaySubject: Map<string, ReplaySubject<ItemStateChangedEvent>>, itemStateHistory: number, filter: string[] = null) => { 
+  private createSubjectOnEventBus = (subj: Subject<ItemStateChangedEvent>, filter: string[] = null) => { 
     var source = new EventSource(AppComponent.configuration.openHabUrl + '/events?topics=smarthome/items/*/statechanged,smarthome/items/*/*/statechanged');
     source.onmessage = function (event) {
       try {
@@ -52,12 +50,14 @@ export class EventbusService {
         
         if (filter == null || (filter != null && filter.includes(itemName))) {
           subj.next(itemEvent);
+          /* no longer use replay subject
           if (replaySubject.has(itemName)) {
             replaySubject.get(itemName).next(itemEvent);
           } else {
             replaySubject.set(itemName, new ReplaySubject<ItemStateChangedEvent>(itemStateHistory));
             replaySubject.get(itemName).next(itemEvent);
           }
+          */
         } 
       }
       catch (e) {
