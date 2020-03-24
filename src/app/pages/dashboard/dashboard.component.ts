@@ -80,8 +80,6 @@ export class DashboardComponent implements OnInit {
 
         // Summary Calculation
         this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
-        // Summary Category Order according to state Mapping definition
-        //Array.from(this.summaryItems.values()).filter(se => se.content != null).sort((a, b) => a.order - b.order).map(se => se.category);
       });
     });
 

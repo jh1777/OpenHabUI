@@ -175,6 +175,10 @@
         {
             "displayName": "Wohnzimmer",
             "groupName": "Wohnzimmer"
+        },
+        {
+            "displayName": "Flur",
+            "groupName": "Flur"
         }
     ]
 }

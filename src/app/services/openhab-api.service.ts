@@ -55,7 +55,7 @@ export class OpenhabApiService {
 
   getRoomGroup(roomGroupName: string): Observable<OpenhabGroup> {
     let uri = `${this.url}/items/${roomGroupName}`;
-    const intersection = (a, b) => { const s = new Set(b); return a.filter(x => s.has(x)); };
+    // for reference only: const intersection = (a, b) => { const s = new Set(b); return a.filter(x => s.has(x)); };
     return this.http.get<OpenhabGroup>(uri) //, { headers: OpenhabApiService.httpHeaders })
       .pipe(
         tap(g => {
@@ -101,7 +101,6 @@ export class OpenhabApiService {
   }
   
   getItemHistory1h(itemName: string, historyValueCount: number): Observable<OpenhabItemHistory> {
-    console.log("Getting 1h history of Item "+itemName);
     let startTime = new Date();
     startTime.setHours(startTime.getHours() - 1);
     var formattedStartTime = `${startTime.getFullYear()}-${this.pad(startTime.getMonth()+1)}-${this.pad(startTime.getDate())}T${this.pad(startTime.getHours())}:${this.pad(startTime.getMinutes())}:${this.pad(startTime.getSeconds())}`;
@@ -115,7 +114,6 @@ export class OpenhabApiService {
   }
 
   getItemHistory1d(itemName: string, historyValueCount: number): Observable<OpenhabItemHistory> {
-    console.log("Getting 1 day history of Item "+itemName);
     let uri = `${this.url}/persistence/items/${itemName}`;
     return this.http.get<OpenhabItemHistory>(uri) 
       .pipe(
@@ -139,7 +137,7 @@ export class OpenhabApiService {
     );
   }
 
-  pad = function(n: number): string {
+  private pad = function(n: number): string {
     if (n < 10) {
       return `0${n}`;
     } else {

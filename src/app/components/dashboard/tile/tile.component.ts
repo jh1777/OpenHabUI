@@ -3,7 +3,6 @@ import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { CategoryType } from 'src/app/models/config/category';
 import { EventbusService } from 'src/app/services/eventbus.service';
-import { ItemStateChangedEvent } from 'src/app/services/model/itemStateChangedEvent';
 import { AppComponent } from 'src/app/app.component';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
 
@@ -22,7 +21,6 @@ export class TileComponent implements OnInit {
   item: OpenhabItem;
   showModal: boolean = false;
   categoryType = CategoryType;
-  // old: with ReplaySubject: stateHistory: ItemStateChangedEvent[] = [];
   stateHistory: OpenhabItemHistory;
   
   constructor(private service: OpenhabApiService, private eventService: EventbusService) { }
@@ -54,11 +52,10 @@ export class TileComponent implements OnInit {
 
     // Getting History from Openhab API
     this.service.getItemHistory(item.name, AppComponent.configuration.itemStateHistory).subscribe(history => {
-      //console.log(history.name+": History entries found = "+history.data.length);
       this.stateHistory = history;
     });
 
-    // --> ReplaySubjec : TO be replaced:
+    // --> ReplaySubject : is replaced:
     /*
     this.stateHistory = [];
     if (this.eventService.itemchangedHistory.has(item.name)) {

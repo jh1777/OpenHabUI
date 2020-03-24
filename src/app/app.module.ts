@@ -12,6 +12,8 @@ import { RoomboxComponent } from './components/dashboard/roombox/roombox.compone
 import { TileComponent } from './components/dashboard/tile/tile.component';
 import { ItemiconComponent } from './components/itemicon/itemicon.component';
 import { SummaryComponent } from './components/dashboard/summary/summary.component';
+import { RoomComponent } from './pages/rooms/room.component';
+import { RoomsComponent } from './pages/rooms/rooms.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { SummaryComponent } from './components/dashboard/summary/summary.compone
     RoomboxComponent,
     TileComponent,
     ItemiconComponent,
-    SummaryComponent
+    SummaryComponent,
+    RoomComponent,
+    RoomsComponent
   ],
   imports: [
     BrowserModule,
