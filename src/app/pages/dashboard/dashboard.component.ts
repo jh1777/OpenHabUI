@@ -50,7 +50,13 @@ export class DashboardComponent implements OnInit {
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
     AppComponent.configuration.dashboardTiles.forEach(tile => {
-      let itemNames = tile.items.map(i => i.name);
+      // Get all item names from the current tile config that are NOT groups
+      let itemNames = tile.items.filter(i => !i.isGroup).map(i => i.name);
+      
+      // Handle Group Items (FUTURE)
+      // this.handleGroupItems(tile);
+      
+      // Get all items from OpenHab and start Tile and Summary processing
       this.api.getItems(itemNames).subscribe(items => {
         // Filter out items that are only shown in summary
         let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
@@ -85,6 +91,18 @@ export class DashboardComponent implements OnInit {
 
     // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange, this.items);
+  }
+
+  private handleGroupItems(tile: Tile) {
+    let itemDefinitions = tile.items.filter(i => i.isGroup);
+    if (itemDefinitions.length == 0) {
+      return;
+    }
+    let groupNames = itemDefinitions.map(i => i.name);
+    
+    this.api.getItemsFromGroups(groupNames).subscribe(groups => {
+      /// TODO: weiter hier!!!
+    });
   }
 
   /**

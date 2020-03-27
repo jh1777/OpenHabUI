@@ -16,7 +16,13 @@
                     "name": "MS_Motion",
                     "displayName": "Wohnzimmer",
                     "category": "motion",
-                    "showInSummary": true
+                    "showOnlyInSummary": true
+                },
+                {
+                    "name": "EyeMotion",
+                    "displayName": "Bad",
+                    "category": "motion",
+                    "showOnlyInSummary": true
                 },
                 {
                     "name": "TradfriWohnzimmer",
