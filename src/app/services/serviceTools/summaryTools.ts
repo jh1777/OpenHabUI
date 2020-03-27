@@ -21,10 +21,19 @@ export class SummaryTools {
         }
     }
 
+    /**
+     * Calculates the String Content of each Summary item based on the labels and states of the items
+     * Returns the sorted array of categories (string) to ensure that they are displayed in order
+     */
     static CalculateSummaryContent = (summaryItems: Map<string, SummaryEntry>, activityOnly: boolean): string[] => {
         let keys = Array.from(summaryItems.keys());
         keys.forEach(key => {
-            let value = summaryItems.get(key);
+            var value = summaryItems.get(key);
+            // Set hasWarning if some of the items are in warning state
+            value.hasWarning = value.items.some(i => i.hasWarning);
+            // Set isCritical if some of the items are in critical state
+            value.isCritical = value.items.some(i => i.isCritical);
+
             switch (key) {
                 case CategoryType[CategoryType.presence]:
                     SummaryTools.calculateContent(value, activityOnly ? null : "Keiner da", CategoryType.presence);
@@ -41,11 +50,11 @@ export class SummaryTools {
                 default:
                     break;
             }
+            
         });
 
         // UI Categories to show: Summary Category Order according to state Mapping definition (only show non-Null content!)
         return Array.from(summaryItems.values()).filter(se => se.content != null).sort((a, b) => a.order - b.order).map(se => se.category);
-
     }
 
     private static calculateContent(entry: SummaryEntry, emptyContent: string, type: CategoryType) {

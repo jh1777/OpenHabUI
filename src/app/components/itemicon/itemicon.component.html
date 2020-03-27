@@ -1,9 +1,9 @@
-<clr-icon *ngIf="item.category == categoryType.temperature" shape="thermometer" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.contact" shape="axis-chart" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.motion" shape="eye" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.battery" shape="battery" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.sun" shape="sun" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.dimmer" shape="lightbulb" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.switch" shape="switch" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.alert" shape="warning-standard" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
-<clr-icon *ngIf="item.category == categoryType.presence" shape="user" [ngClass]="{'is-warning': item?.hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.temperature" shape="thermometer" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.contact" shape="axis-chart" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.motion" shape="eye" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.battery" shape="battery" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.sun" shape="sun" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.dimmer" shape="lightbulb" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.switch" shape="switch" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.alert" shape="warning-standard" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>
+<clr-icon *ngIf="item.category == categoryType.presence" shape="user" [ngClass]="{'is-error': item?.isCritical || isCritical, 'is-warning': item?.hasWarning || hasWarning, 'disabled': isDisabled}" [attr.size]="iconSize"></clr-icon>

@@ -12,11 +12,13 @@ export class ItemiconComponent implements OnInit {
   @Input() item: OpenhabItem;
   @Input() iconSize = "36";
   @Input() isDisabled = false;
+  @Input() hasWarning = false;
+  @Input() isCritical = false;
+
   categoryType = CategoryType;
 
   constructor() { }
 
   ngOnInit(): void {
   }
-
 }

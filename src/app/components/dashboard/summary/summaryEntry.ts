@@ -6,4 +6,6 @@ export class SummaryEntry {
     content: string;
     disabledIcon: boolean = false;
     order: number;
+    hasWarning: boolean = false;
+    isCritical: boolean = false;
 }
