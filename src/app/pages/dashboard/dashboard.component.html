@@ -1,7 +1,7 @@
 <app-summary [summaryItems]="summaryItems" [categories]="summaryCategories"></app-summary>
 <div style="padding-top: 10px;"></div>
-  <div class="card-columns card-columns-2">
-    <div  *ngFor="let tile of tilesToShow" >
+<div class="card-columns card-columns-2">
+  <div  *ngFor="let tile of tilesToShow" >
     <app-tile [items]="itemsByTile.get(tile.title)" [tileName]="tile.title" [hasWarningItem]="warningStateByTile.get(tile.title)" [hasCriticalItem]="criticalStateByTile.get(tile.title)"></app-tile>
   </div>
-  </div>
+</div>

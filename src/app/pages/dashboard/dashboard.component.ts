@@ -11,8 +11,6 @@ import { Tile } from 'src/app/models/config/tile';
 import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry';
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 
-// service worker 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -22,22 +20,26 @@ import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 export class DashboardComponent implements OnInit {
   title = environment.title;
 
+  // List of changes states for further use - currently not in use! TODO: Make use or remove
   stateChanges: ItemStateChangedEvent[] = [];
 
-  // Items by Tile Name
+  // Items by Tile Name: Main collection for Tile data
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
-  // Warning state by Tile Name
+  // Warning state by Tile Name: Warning state by Tile name
   warningStateByTile: Map<string, boolean> = new Map<string, boolean>();
-  // Critial state by Tile Name
+  // Critial state by Tile Name: Critical state by Tile name
   criticalStateByTile: Map<string, boolean> = new Map<string, boolean>();
   // Summary Items by category name
   summaryItems: Map<string, SummaryEntry> = new Map<string, SummaryEntry>();
+  // Summary Categories array (to preserve defined order)
   summaryCategories: string[] = [];
+  // Show only activity in Summary (if false also none-triggered states will be shown)
   activityOnlyInSummary = AppComponent.configuration.showOnlyActivityInSummary;
-
+  // Config: Tiles 
   tiles: Tile[] = AppComponent.configuration.dashboardTiles;
-  // Used for the UI:
+  // Tiles used to show in UI - some may not be shown based on certain item config
   tilesToShow: Tile[];
+  // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
   items: string[] = [];
 
   constructor(
@@ -58,31 +60,13 @@ export class DashboardComponent implements OnInit {
       
       // Get all items from OpenHab and start Tile and Summary processing
       this.api.getItems(itemNames).subscribe(items => {
-        // Filter out items that are only shown in summary
-        let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
-        if (itemsForTile.length > 0) {
-          let itemNamesForTile = itemsForTile.map(t => t.name);
-          this.itemsByTile.set(tile.title, items.filter(i => itemNamesForTile.includes(i.name)));
-        } else {
-          // Remove from UI Tiles
-          const index = this.tilesToShow.findIndex(i => i.title == tile.title);
-          if (index > -1) {
-            this.tilesToShow.splice(index, 1);
-          }
-        }
 
-        items.forEach(item => {
-          // add really queried items to local array for eventbus filter
-          this.items.push(item.name);
-          if (item.showInSummary || item.showOnlyInSummary) {
-            // Addd to Summary
-            SummaryTools.FillSummary(this.summaryItems, item);
-          }          
-        });
-        // Warning state
-        this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
-        // Warning state
-        this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
+        // Do post processing: REmove tile items only shown in summary or remove tile
+        // if there is no item anymore in the tile and add items to string array (for order)
+        this.tilesPostProcessing(items, tile);
+
+        // Fill the summary items with item content
+        items.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
 
         // Summary Calculation
         this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
@@ -91,6 +75,32 @@ export class DashboardComponent implements OnInit {
 
     // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange, this.items);
+  }
+
+  /**
+   *  Do post processing: REmove tile items only shown in summary or remove tile
+   *  if there is no item anymore in the tile and add items to string array (for order)
+   */
+  private tilesPostProcessing = (items: OpenhabItem[], tile: Tile) => {
+    // Filter out items that are only shown in summary
+    let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
+    if (itemsForTile.length > 0) {
+      let itemNamesForTile = itemsForTile.map(t => t.name);
+      this.itemsByTile.set(tile.title, items.filter(i => itemNamesForTile.includes(i.name)));
+    } else {
+      // Remove from UI Tiles
+      const index = this.tilesToShow.findIndex(i => i.title == tile.title);
+      if (index > -1) {
+        this.tilesToShow.splice(index, 1);
+      }
+    }
+    // Add really queried items to local array for eventbus filter
+    Array.prototype.push.apply(this.items, items.map(i => i.name));
+
+    // Warning state
+    this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
+    // Warning state
+    this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
   }
 
   private handleGroupItems(tile: Tile) {
