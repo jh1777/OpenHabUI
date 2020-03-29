@@ -135,10 +135,11 @@ export class DashboardComponent implements OnInit {
       // Add Group to itemsByTile
       groups.map(g => Tools.AddEntryToMapArray<string, OpenhabItem>(this.itemsByTile, tile.title, g)); 
 
-      // Update Summary : TODO: Not working because one category has only one Summar Entry in Map!!
+      // Update Summary: TODO: Summary not working because one category has only one Summar Entry in Map!!
+      // maybe need to change: summaryItems: Map<string, SummaryEntry> to summaryItems: Map<string, SummaryEntry[]>
       groups.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
       // ---
-      
+
       // Warning state
       this.warningStateByTile.set(tile.title, groups.some(g => g.hasWarning == true));
       // Critical state

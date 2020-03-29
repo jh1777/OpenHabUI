@@ -58,15 +58,15 @@ export class SummaryTools {
     }
 
     private static calculateContent(entry: SummaryEntry, emptyContent: string, type: CategoryType) {
-        var resultArray: string[] = [];
+        var stateArray: string[] = [];
         entry.items.map(v => {
             if (v.state == StateMapping.TriggeredStateByCategory.get(type)) { 
-                resultArray.push(v.label);
+                stateArray.push(v.label);
             }
         });
 
-        if (resultArray.length > 0) {
-            entry.content = resultArray.join(', ');
+        if (stateArray.length > 0) {
+            entry.content = stateArray.join(', ');
             entry.disabledIcon = false;
         } else {
             entry.content = emptyContent;
@@ -75,15 +75,15 @@ export class SummaryTools {
     }
 
     private static calculateBatteryContent(entry: SummaryEntry, emptyContent: string) {
-        var resultArray: string[] = [];
+        var stateArray: string[] = [];
         entry.items.map(v => {
             if (v.isCritical || v.hasWarning) { 
-                resultArray.push(`${v.label} (${v.transformedState})`);
+                stateArray.push(`${v.label} (${v.transformedState})`);
             }
         });
 
-        if (resultArray.length > 0) {
-            entry.content = resultArray.join(', ');
+        if (stateArray.length > 0) {
+            entry.content = stateArray.join(', ');
             entry.disabledIcon = false;
         } else {
             entry.content = emptyContent;
