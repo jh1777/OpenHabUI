@@ -16,4 +16,6 @@ export class OpenhabItem {
     // Summary
     showInSummary: boolean = false;
     showOnlyInSummary: boolean = false;
+    // To use also for Groups
+    members: OpenhabItem[] = null;
 }

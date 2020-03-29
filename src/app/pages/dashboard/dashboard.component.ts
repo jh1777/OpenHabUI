@@ -10,6 +10,9 @@ import { EventbusService } from 'src/app/services/eventbus.service';
 import { Tile } from 'src/app/models/config/tile';
 import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry';
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
+import { CategoryType } from 'src/app/models/config/category';
+import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
+import { Tools } from 'src/app/services/serviceTools/tools';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,13 +55,12 @@ export class DashboardComponent implements OnInit {
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
     AppComponent.configuration.dashboardTiles.forEach(tile => {
+      
       // Get all item names from the current tile config that are NOT groups
       let itemNames = tile.items.filter(i => !i.isGroup).map(i => i.name);
+
       
-      // Handle Group Items (FUTURE)
-      // this.handleGroupItems(tile);
-      
-      // Get all items from OpenHab and start Tile and Summary processing
+      // Call API: Get all items from OpenHab and start Tile and Summary processing
       this.api.getItems(itemNames).subscribe(items => {
 
         // Do post processing: REmove tile items only shown in summary or remove tile
@@ -71,6 +73,10 @@ export class DashboardComponent implements OnInit {
         // Summary Calculation
         this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
       });
+
+      // Handle Group Items 
+      this.handleGroupItems(tile);
+
     });
 
     // Subscribe to Events (new)
@@ -99,10 +105,14 @@ export class DashboardComponent implements OnInit {
 
     // Warning state
     this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
-    // Warning state
+    // Critical state
     this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
   }
 
+   /**
+   * Handle group OpenhabItem (as Group) item processing
+   * Filter groups, Call API, Apply Config to Group and Child Items and add to Tile Items Map
+   */
   private handleGroupItems(tile: Tile) {
     let itemDefinitions = tile.items.filter(i => i.isGroup);
     if (itemDefinitions.length == 0) {
@@ -110,8 +120,59 @@ export class DashboardComponent implements OnInit {
     }
     let groupNames = itemDefinitions.map(i => i.name);
     
+    // Call API
     this.api.getItemsFromGroups(groupNames).subscribe(groups => {
-      /// TODO: weiter hier!!!
+      // Apply config to items
+      groups.map(g => g.members.map(item => { 
+        if (!this.items.includes(item.name)) {
+          this.items.push(item.name);
+        }
+      }));
+
+      // Update content of group OpenhabItem
+      groups.map(g => this.updateGroupItemState(g));
+
+      // Add Group to itemsByTile
+      groups.map(g => Tools.AddEntryToMapArray<string, OpenhabItem>(this.itemsByTile, tile.title, g)); 
+
+      // Warning state
+      this.warningStateByTile.set(tile.title, groups.some(g => g.hasWarning == true));
+      // Critical state
+      this.criticalStateByTile.set(tile.title, groups.some(g => g.isCritical == true));
+    });
+  }
+
+  /**
+   * Update content of group OpenhabItem (as Group) when state reported a change
+   * Apply Config to Group and Child Items and calculate label of the group entry
+   */
+  private updateGroupItemState = (group: OpenhabItem) => {
+    // Apply config
+    ItemPostProcessor.ApplyConfigToItem(group);
+    group.members.map(item => ItemPostProcessor.ApplyConfigToItem(item));
+    // project item data to group
+    group.hasWarning = group.members.some(i => i.hasWarning);
+    group.isCritical = group.members.some(i => i.isCritical);
+    // Set Triggered State
+    StateMapping.CalculateGroupState(group);
+  }
+
+  /**
+   * Update content of one OpenhabItem when Eventbus state reported a change
+   * Sets new vale and gets new TransformedState from API and applies config again
+   */
+  private updateItemOnStateChange = (item: OpenhabItem, itemStateChangedEvent: ItemStateChangedEvent) => {
+    // set new value directly
+    item.state = itemStateChangedEvent.NewValue;
+    // To get transformed data call API for this item
+    this.api.getItem(item.name).subscribe(i => {
+      console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
+      
+      // Normal (single) Item
+      // Set TransformedState from GET call first
+      item.transformedState = i.body.transformedState;
+      // Apply Item config
+      ItemPostProcessor.ApplyConfigToItem(item);
     });
   }
 
@@ -130,26 +191,24 @@ export class DashboardComponent implements OnInit {
         // Create temp Map as clone of existing one to ensure the event detection of Angular is working
         var itemsByTileTemp = cloneDeep(this.itemsByTile);
         var summaryItemsTemp = cloneDeep(this.summaryItems);
+
         // Iterate through items
         itemsByTileTemp.forEach((value, key) => {
           value.map((item, index, array) => {
-            if (item.name === itemStateChangedEvent.Item) {
-              // set new value directly
-              item.state = itemStateChangedEvent.NewValue;
-              // To get transformed data call API for this item
-              this.api.getItem(item.name).subscribe(i => {
-                console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
-                
-                // Set TransformedState from GET call first
-                item.transformedState = i.body.transformedState;
-                
-                // Apply Item config
-                ItemPostProcessor.ApplyConfigToItem(item);
-
-                // Update UI model
-                this.itemsByTile = itemsByTileTemp;
-              });
+            // Single item objects
+            if (item.name === itemStateChangedEvent.Item && item.members == null) {
+              this.updateItemOnStateChange(item, itemStateChangedEvent);
             }
+            // Group entry
+            if (item.members != null && item.members.findIndex(i => i.name == itemStateChangedEvent.Item) != -1) {
+                var subItem = item.members.filter(item => item.name == itemStateChangedEvent.Item);
+                subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent));
+                // Update Groups
+                this.updateGroupItemState(item);
+            }
+
+            // Update UI model
+            this.itemsByTile = itemsByTileTemp;
           });
         });
 

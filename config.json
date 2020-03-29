@@ -156,6 +156,18 @@
                     "displayName": "Schlafzimmer",
                     "category": "temperature",
                     "unit": "°C"
+                },
+                {
+                    "name": "MotionSensors",
+                    "displayName": "Bewegungen (Gruppe)",
+                    "category": "motion",
+                    "isGroup": true
+                },
+                {
+                    "name": "BatteryStatus",
+                    "displayName": "Batterien (Gruppe)",
+                    "category": "battery",
+                    "isGroup": true
                 }
             ]
         },
