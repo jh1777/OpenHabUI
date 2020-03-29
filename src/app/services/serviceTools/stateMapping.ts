@@ -38,6 +38,9 @@ export class StateMapping {
                 case CategoryType.battery:
                     stateLabel = "not in threshold";
                     break;                    
+                case CategoryType.temperature:
+                    stateLabel = "not in threshold";
+                    break;    
                 default:
                     break;
             }
