@@ -10,7 +10,6 @@ import { EventbusService } from 'src/app/services/eventbus.service';
 import { Tile } from 'src/app/models/config/tile';
 import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry';
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
-import { CategoryType } from 'src/app/models/config/category';
 import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
 
@@ -33,7 +32,7 @@ export class DashboardComponent implements OnInit {
   // Critial state by Tile Name: Critical state by Tile name
   criticalStateByTile: Map<string, boolean> = new Map<string, boolean>();
   // Summary Items by category name
-  summaryItems: Map<string, SummaryEntry> = new Map<string, SummaryEntry>();
+  summaryItems: Map<string, SummaryEntry[]> = new Map<string, SummaryEntry[]>();
   // Summary Categories array (to preserve defined order)
   summaryCategories: string[] = [];
   // Show only activity in Summary (if false also none-triggered states will be shown)
@@ -59,7 +58,6 @@ export class DashboardComponent implements OnInit {
       // Get all item names from the current tile config that are NOT groups
       let itemNames = tile.items.filter(i => !i.isGroup).map(i => i.name);
 
-      
       // Call API: Get all items from OpenHab and start Tile and Summary processing
       this.api.getItems(itemNames).subscribe(items => {
 
@@ -76,7 +74,6 @@ export class DashboardComponent implements OnInit {
 
       // Handle Group Items 
       this.handleGroupItems(tile);
-
     });
 
     // Subscribe to Events (new)
@@ -133,17 +130,25 @@ export class DashboardComponent implements OnInit {
       groups.map(g => this.updateGroupItemState(g));
 
       // Add Group to itemsByTile
-      groups.map(g => Tools.AddEntryToMapArray<string, OpenhabItem>(this.itemsByTile, tile.title, g)); 
+      groups.filter(g => !g.showOnlyInSummary).map(g => Tools.AddEntryToMapArray<string, OpenhabItem>(this.itemsByTile, tile.title, g)); 
+      let dontShowTile = tile.items.every(i => i.showOnlyInSummary);
+      if (dontShowTile) {
+        let index = this.tilesToShow.findIndex(t => t.title == tile.title);
+        if (index > -1) {
+          this.tilesToShow.splice(index, 1);
+        }
+      }
 
-      // Update Summary: TODO: Summary not working because one category has only one Summar Entry in Map!!
-      // maybe need to change: summaryItems: Map<string, SummaryEntry> to summaryItems: Map<string, SummaryEntry[]>
+      // Update Summary
       groups.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
+      // Summary Calculation
+      this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
       // ---
 
       // Warning state
-      this.warningStateByTile.set(tile.title, groups.some(g => g.hasWarning == true));
+      this.warningStateByTile.set(tile.title, groups.filter(g => !g.showOnlyInSummary).some(g => g.hasWarning == true));
       // Critical state
-      this.criticalStateByTile.set(tile.title, groups.some(g => g.isCritical == true));
+      this.criticalStateByTile.set(tile.title, groups.filter(g => !g.showOnlyInSummary).some(g => g.isCritical == true));
     });
   }
 
@@ -154,7 +159,7 @@ export class DashboardComponent implements OnInit {
   private updateGroupItemState = (group: OpenhabItem) => {
     // Apply config
     ItemPostProcessor.ApplyConfigToItem(group);
-    group.members.map(item => ItemPostProcessor.ApplyConfigToItem(item));
+    //group.members.map(item => ItemPostProcessor.ApplyConfigToItem(item));
     // project item data to group
     group.hasWarning = group.members.some(i => i.hasWarning);
     group.isCritical = group.members.some(i => i.isCritical);
@@ -166,7 +171,7 @@ export class DashboardComponent implements OnInit {
    * Update content of one OpenhabItem when Eventbus state reported a change
    * Sets new vale and gets new TransformedState from API and applies config again
    */
-  private updateItemOnStateChange = (item: OpenhabItem, itemStateChangedEvent: ItemStateChangedEvent) => {
+  private updateItemOnStateChange = (item: OpenhabItem, itemStateChangedEvent: ItemStateChangedEvent, extention: () => void = null) => {
     // set new value directly
     item.state = itemStateChangedEvent.NewValue;
     // To get transformed data call API for this item
@@ -178,7 +183,22 @@ export class DashboardComponent implements OnInit {
       item.transformedState = i.body.transformedState;
       // Apply Item config
       ItemPostProcessor.ApplyConfigToItem(item);
+
+      // Execute optional extension
+      if (extention != null) {
+        extention();
+      }
     });
+  }
+
+  private updateSummaryItemOnStateChange = (item: OpenhabItem, itemStateChangedEvent: ItemStateChangedEvent, summaryItemsTemp: Map<string, SummaryEntry[]>) => {
+    this.updateItemOnStateChange(item, itemStateChangedEvent, () => {
+      // Update summary
+      let summaryCategoriesTemp = SummaryTools.CalculateSummaryContent(summaryItemsTemp, this.activityOnlyInSummary);
+      this.summaryItems = summaryItemsTemp;
+      this.summaryCategories = cloneDeep(summaryCategoriesTemp);
+    });
+
   }
 
   /**
@@ -218,26 +238,18 @@ export class DashboardComponent implements OnInit {
         });
 
         summaryItemsTemp.forEach((value, key) => {
-          value.items.map((item, index, array) => {
-            if (item.name === itemStateChangedEvent.Item) {
-              // set new value directly
-              item.state = itemStateChangedEvent.NewValue;
-              // To get transformed data call API for this item
-              this.api.getItem(item.name).subscribe(i => {
-                console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
-                
-                // Set TransformedState from GET call first
-                item.transformedState = i.body.transformedState;
-                
-                // Apply Item config
-                ItemPostProcessor.ApplyConfigToItem(item);
-
-                // Update summary
-                let summaryCategoriesTemp = SummaryTools.CalculateSummaryContent(summaryItemsTemp, this.activityOnlyInSummary);
-                this.summaryItems = summaryItemsTemp;
-                this.summaryCategories = cloneDeep(summaryCategoriesTemp);
-              });
-            }
+          value.map(summaryEntry => { 
+            summaryEntry.items.map(item => {
+              if (item.name === itemStateChangedEvent.Item && item.members == null) {
+                this.updateSummaryItemOnStateChange(item, itemStateChangedEvent, summaryItemsTemp);
+              }
+              if (item.members != null && item.members.findIndex(i => i.name == itemStateChangedEvent.Item) != -1) {
+                var subItem = item.members.filter(item => item.name == itemStateChangedEvent.Item);
+                subItem.map(i => this.updateSummaryItemOnStateChange(i, itemStateChangedEvent, summaryItemsTemp));
+                // Update Groups
+                this.updateGroupItemState(item);
+              }
+            });
           });
         });
       });

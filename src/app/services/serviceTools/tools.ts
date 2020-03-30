@@ -9,5 +9,8 @@ export class Tools {
             map.set(key, array);
         }
     }
-
+    
+    static DistinctValuesFromArray<T,R>(array: T[], mapping: (values: T) => R): R[] {
+        return Array.from([...new Set(array.map(mapping))]);
+    }
 }
