@@ -1,4 +1,8 @@
-<span *ngFor="let category of categories" style="padding-right: 10px;">
-    <app-itemicon [item]="summaryItems.get(category).items[0]" [iconSize]="24" [hasWarning]="summaryItems.get(category).hasWarning" [isCritical]="summaryItems.get(category).isCritical" [isDisabled]="summaryItems.get(category).disabledIcon"></app-itemicon>
-    <span [ngClass]="{'disabled': summaryItems.get(category).disabledIcon }" style="padding-left: 5px; font-size: small;" >{{summaryItems.get(category).content}}</span>
+<span *ngFor="let category of categories">
+    <span *ngFor="let entry of summaryItems.get(category)" style="padding-right: 10px;">
+        <span *ngIf="entry.content != null">
+            <app-itemicon [item]="entry.items[0]" [iconSize]="24" [hasWarning]="entry.hasWarning" [isCritical]="entry.isCritical" [isDisabled]="entry.disabledIcon"></app-itemicon>
+            <span [ngClass]="{'disabled': entry.disabledIcon }" style="padding-left: 5px; font-size: small;" >{{entry.content}}</span>
+        </span>
+    </span>
 </span>

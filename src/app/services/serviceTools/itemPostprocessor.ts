@@ -14,35 +14,54 @@ export class ItemPostProcessor {
     }
     if (itemConfig) {
       // set configured values in model
-      item.category = CategoryType[itemConfig.category];
-      item.label = itemConfig.displayName;
+      // item.category = CategoryType[itemConfig.category];
+      // item.label = itemConfig.displayName;
 
-      item.showInSummary = itemConfig.showInSummary;
-      item.showOnlyInSummary = itemConfig.showOnlyInSummary;
+      // item.showInSummary = itemConfig.showInSummary;
+      // item.showOnlyInSummary = itemConfig.showOnlyInSummary;
       
-      if (itemConfig.unit) {
-        item.unit = itemConfig.unit;
-        item.transformedState = `${item.state} ${item.unit}`;
-      }
-      if (!item.transformedState) {
-        item.transformedState = item.state;
-      }
+      // States and Thesholf calculation
+      ItemPostProcessor.ApplyStateAndThresholdsToItem(itemConfig, item);
 
-      if (itemConfig.warningThreshold) {
-        let stateAsNumber: number = Number.parseFloat(item.state);
-        if (!itemConfig.warningThresholdType || itemConfig.warningThresholdType == "lt") {
-          item.hasWarning =  Number.isNaN(stateAsNumber) ? false : stateAsNumber <= itemConfig.warningThreshold;
-          item.isCritical = Number.isNaN(stateAsNumber) ? false : stateAsNumber == 0;
-        } else {
-          item.hasWarning =  Number.isNaN(stateAsNumber) ? false : stateAsNumber >= itemConfig.warningThreshold;
-          item.isCritical = Number.isNaN(stateAsNumber) ? false : stateAsNumber == 100;
-        }
-      }
-      if(item.category == CategoryType.alert) {
-        item.isCritical = item.state == "ON";
+      // Children if this is a group
+      if (itemConfig.isGroup) {
+        // Apply 
+        item.members.map(i => {
+          ItemPostProcessor.ApplyStateAndThresholdsToItem(itemConfig, i);
+        });
       }
     }
     return item;
   }
 
+  private static ApplyStateAndThresholdsToItem(itemConfig: Item, item: OpenhabItem) {
+
+    item.category = CategoryType[itemConfig.category];
+    item.label = itemConfig.displayName;
+
+    item.showInSummary = itemConfig.showInSummary;
+    item.showOnlyInSummary = itemConfig.showOnlyInSummary;
+    
+    if (itemConfig.unit) {
+      item.unit = itemConfig.unit;
+      item.transformedState = `${item.state} ${item.unit}`;
+    }
+    if (!item.transformedState) {
+      item.transformedState = item.state;
+    }
+
+    if (itemConfig.warningThreshold) {
+      let stateAsNumber: number = Number.parseFloat(item.state);
+      if (!itemConfig.warningThresholdType || itemConfig.warningThresholdType == "lt") {
+        item.hasWarning =  Number.isNaN(stateAsNumber) ? false : stateAsNumber <= itemConfig.warningThreshold;
+        item.isCritical = Number.isNaN(stateAsNumber) ? false : stateAsNumber == 0;
+      } else {
+        item.hasWarning =  Number.isNaN(stateAsNumber) ? false : stateAsNumber >= itemConfig.warningThreshold;
+        item.isCritical = Number.isNaN(stateAsNumber) ? false : stateAsNumber == 100;
+      }
+    }
+    if(item.category == CategoryType.alert) {
+      item.isCritical = item.state == "ON";
+    }
+  }
 }

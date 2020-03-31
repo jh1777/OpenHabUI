@@ -16,7 +16,13 @@
                     "name": "MS_Motion",
                     "displayName": "Wohnzimmer",
                     "category": "motion",
-                    "showInSummary": true
+                    "showOnlyInSummary": true
+                },
+                {
+                    "name": "EyeMotion",
+                    "displayName": "Bad",
+                    "category": "motion",
+                    "showOnlyInSummary": true
                 },
                 {
                     "name": "TradfriWohnzimmer",
@@ -70,7 +76,36 @@
             ]
         },
         {
-            "title": "Batterien",
+            "title": "Kinder",
+            "items":[
+                {
+                    "name": "DCH_KID_Kontakt",
+                    "displayName": "Maria",
+                    "category": "contact",
+                    "showInSummary": true
+                },
+                {
+                    "name": "DCH_KID_Temperatur",
+                    "displayName": "Maria",
+                    "category": "temperature",
+                    "unit": "°C"
+                },
+                {
+                    "name": "DCH_WORK_Kontakt",
+                    "displayName": "Tim",
+                    "category": "contact",
+                    "showInSummary": true
+                },
+                {
+                    "name": "DCH_WORK_Temperatur",
+                    "displayName": "Tim",
+                    "category": "temperature",
+                    "unit": "°C"
+                }
+            ]
+        },
+        {
+            "title": "Wichtige Batterien",
             "items": [
                 {
                     "name": "Flood_Kitchen_Battery",
@@ -102,35 +137,6 @@
             ]
         },
         {
-            "title": "Kinder",
-            "items":[
-                {
-                    "name": "DCH_KID_Kontakt",
-                    "displayName": "Maria",
-                    "category": "contact",
-                    "showInSummary": true
-                },
-                {
-                    "name": "DCH_KID_Temperatur",
-                    "displayName": "Maria",
-                    "category": "temperature",
-                    "unit": "°C"
-                },
-                {
-                    "name": "DCH_WORK_Kontakt",
-                    "displayName": "Tim",
-                    "category": "contact",
-                    "showInSummary": true
-                },
-                {
-                    "name": "DCH_WORK_Temperatur",
-                    "displayName": "Tim",
-                    "category": "temperature",
-                    "unit": "°C"
-                }
-            ]
-        },
-        {
             "title": "Schlafzimmer",
             "items":[
                 {
@@ -150,6 +156,35 @@
                     "displayName": "Schlafzimmer",
                     "category": "temperature",
                     "unit": "°C"
+                }
+            ]
+        },
+        {
+            "title": "Summary",
+            "items": [
+                {
+                    "name": "MotionSensors",
+                    "displayName": "Bewegungen (Gruppe)",
+                    "category": "motion",
+                    "isGroup": true,
+                    "showOnlyInSummary": true
+                },
+                {
+                    "name": "BatteryStatus",
+                    "displayName": "Batterien (Gruppe)",
+                    "category": "battery",
+                    "isGroup": true,
+                    "unit": "%",
+                    "warningThreshold": 30,
+                    "warningThresholdType": "lt",
+                    "showOnlyInSummary": true
+                },
+                {
+                    "name": "ContactSensors",
+                    "displayName": "Fenster (Gruppe)",
+                    "category": "contact",
+                    "isGroup": true,
+                    "showOnlyInSummary": true
                 }
             ]
         },

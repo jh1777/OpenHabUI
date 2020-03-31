@@ -28,7 +28,7 @@
                                             <strong>{{item?.transformedState }}</strong>
                                         </div>
                                         <div style="font-size: smaller; vertical-align: top;">
-                                            {{item?.label}}&nbsp;<clr-icon shape="info-circle" (click)="openModal($event, item)"></clr-icon>
+                                            {{item?.label}}&nbsp;<clr-icon *ngIf="item?.members == null" shape="info-circle" (click)="openModal($event, item)"></clr-icon>
                                         </div>
                                     </td>
                                 </tr>

@@ -53,26 +53,21 @@ export class OpenhabApiService {
     );
   }
 
-  getRoomGroup(roomGroupName: string): Observable<OpenhabGroup> {
-    let uri = `${this.url}/items/${roomGroupName}`;
+  getGroup(groupName: string): Observable<OpenhabItem> {
+    let uri = `${this.url}/items/${groupName}`;
     // for reference only: const intersection = (a, b) => { const s = new Set(b); return a.filter(x => s.has(x)); };
-    return this.http.get<OpenhabGroup>(uri) //, { headers: OpenhabApiService.httpHeaders })
+    return this.http.get<OpenhabItem>(uri) //, { headers: OpenhabApiService.httpHeaders })
       .pipe(
-        tap(g => {
-          //let groups = this.groups.map(g => g.name);
-          g.displayName = this.rooms.filter(r => r.groupName == g.name)[0]?.displayName;
-
-        }),
         retry(1),
         catchError(this.errorHandler)
       );
   }
 
-  getItemsFromRoomGroups(groupNames: string[]): Observable<OpenhabGroup[]> {
-    var calls: Observable<OpenhabGroup>[] = [];
+  getItemsFromGroups(groupNames: string[]): Observable<OpenhabItem[]> {
+    var calls: Observable<OpenhabItem>[] = [];
     // Collect all gorup calls
     groupNames.forEach( group => {
-      let call = this.getRoomGroup(group);
+      let call = this.getGroup(group);
       calls.push(call);
     });
     // Execute all

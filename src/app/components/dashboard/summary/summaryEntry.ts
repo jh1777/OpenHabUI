@@ -8,4 +8,5 @@ export class SummaryEntry {
     order: number;
     hasWarning: boolean = false;
     isCritical: boolean = false;
+    isGroup: boolean = false;
 }
