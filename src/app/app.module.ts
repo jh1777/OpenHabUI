@@ -14,6 +14,7 @@ import { ItemiconComponent } from './components/itemicon/itemicon.component';
 import { SummaryComponent } from './components/dashboard/summary/summary.component';
 import { RoomComponent } from './pages/rooms/room.component';
 import { RoomsComponent } from './pages/rooms/rooms.component';
+import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { RoomsComponent } from './pages/rooms/rooms.component';
     ItemiconComponent,
     SummaryComponent,
     RoomComponent,
-    RoomsComponent
+    RoomsComponent,
+    ItemDetailsDialogComponent
   ],
   imports: [
     BrowserModule,

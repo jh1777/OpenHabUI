@@ -167,7 +167,7 @@
                     "displayName": "Bewegungen (Gruppe)",
                     "category": "motion",
                     "isGroup": true,
-                    "showOnlyInSummary": true
+                    "showInSummary": true
                 },
                 {
                     "name": "BatteryStatus",
@@ -184,7 +184,7 @@
                     "displayName": "Fenster (Gruppe)",
                     "category": "contact",
                     "isGroup": true,
-                    "showOnlyInSummary": true
+                    "showInSummary": true
                 }
             ]
         },

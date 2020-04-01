@@ -11,7 +11,21 @@ export class SummaryComponent implements OnInit {
 
   @Input() summaryItems: Map<string, SummaryEntry[]>;
   @Input() categories: string[];
+
+  dialogEntry: SummaryEntry;
+  showModal: boolean;
   
   constructor() { }
   ngOnInit(): void {}
+
+  openModal($event: MouseEvent, entry: SummaryEntry) {
+    $event.preventDefault();
+    this.dialogEntry = entry;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.dialogEntry = null;
+  }
 }

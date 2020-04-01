@@ -1,0 +1,71 @@
+<div *ngIf="item?.isCritical" class="alert alert-danger" role="alert">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+            </div>
+            <span class="alert-text">
+                This item has a critital state reported!
+            </span>
+        </div>
+    </div>
+</div>
+<div *ngIf="item?.hasWarning && !item?.isCritical" class="alert alert-warning" role="alert">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>
+            </div>
+            <span class="alert-text">
+                This item has a warning state reported!
+            </span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="item?.members != null">
+    <div><strong>Group Name:</strong> {{item?.name}}</div>
+    <div *ngIf="item?.transformedState"><strong>Transformed State:</strong> {{item?.transformedState}}</div>
+    <div><strong>Category:</strong> {{ categoryType[item?.category] }}</div>
+    <div><strong>Group Items:</strong></div>
+    <table class="table table-noborder">
+        <thead>
+            <tr>
+                <th class="left">Name</th>
+                <th class="left">Label</th>
+                <th class="left">Transformed State</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let childItem of item?.members">
+                <td class="left">{{childItem.name}}</td>
+                <td class="left">{{childItem.label}}</td>
+                <td class="left">{{childItem.transformedState}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div *ngIf="item?.members == null">
+    <div><strong>Item Name:</strong> {{item?.name}}</div>
+    <div><strong>Current State:</strong> {{item?.state}}</div>
+    <div *ngIf="item?.transformedState"><strong>Transformed State:</strong> {{item?.transformedState}}</div>
+    <div><strong>Category:</strong> {{ categoryType[item?.category] }}</div>
+    <div *ngIf="stateHistory">
+        <div><strong>State History:</strong></div>
+        <table class="table table-noborder">
+            <thead>
+                <tr>
+                    <th class="left">Date</th>
+                    <th class="left">State</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let state of stateHistory.data">
+                    <td class="left">{{state.date | date: 'long' }}</td>
+                    <td class="left">{{state.state}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

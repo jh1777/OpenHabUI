@@ -80,8 +80,22 @@ export class DashboardComponent implements OnInit {
     this.eventService.subscribeToSubject(this.handleStateChange, this.items);
   }
 
+  private updateWarningStateForAllTiles(tileItems: Map<string, OpenhabItem[]>) {
+    let tiles = AppComponent.configuration.dashboardTiles;
+    tileItems.forEach((value, key) => {
+      this.updateWarningStateByTile(value, tiles.filter(t => t.title == key)[0]);
+    });
+  }
+
+  private updateWarningStateByTile(items: OpenhabItem[], tile: Tile) {
+    // Warning state  
+    this.warningStateByTile.set(tile.title, items.some(i => i.hasWarning == true));
+    // Critical state
+    this.criticalStateByTile.set(tile.title, items.some(i => i.isCritical == true));
+  }
+
   /**
-   *  Do post processing: REmove tile items only shown in summary or remove tile
+   *  Do post processing: Remove tile items only shown in summary or remove tile
    *  if there is no item anymore in the tile and add items to string array (for order)
    */
   private tilesPostProcessing = (items: OpenhabItem[], tile: Tile) => {
@@ -100,10 +114,8 @@ export class DashboardComponent implements OnInit {
     // Add really queried items to local array for eventbus filter
     Array.prototype.push.apply(this.items, items.map(i => i.name));
 
-    // Warning state
-    this.warningStateByTile.set(tile.title, items.map(i => i.hasWarning).some(i => i == true));
-    // Critical state
-    this.criticalStateByTile.set(tile.title, items.map(i => i.isCritical).some(i => i == true));
+    // Warning and Critical calculation gets updated
+    this.updateWarningStateByTile(items, tile);
   }
 
    /**
@@ -145,10 +157,8 @@ export class DashboardComponent implements OnInit {
       this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
       // ---
 
-      // Warning state
-      this.warningStateByTile.set(tile.title, groups.filter(g => !g.showOnlyInSummary).some(g => g.hasWarning == true));
-      // Critical state
-      this.criticalStateByTile.set(tile.title, groups.filter(g => !g.showOnlyInSummary).some(g => g.isCritical == true));
+      // Warning and Critical calculation gets updated
+      this.updateWarningStateByTile(groups.filter(g => !g.showOnlyInSummary), tile);
     });
   }
 
@@ -233,6 +243,7 @@ export class DashboardComponent implements OnInit {
             }
 
             // Update UI model
+            this.updateWarningStateForAllTiles(itemsByTileTemp);
             this.itemsByTile = itemsByTileTemp;
           });
         });

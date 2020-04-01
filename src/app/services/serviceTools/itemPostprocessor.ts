@@ -14,11 +14,11 @@ export class ItemPostProcessor {
     }
     if (itemConfig) {
       // set configured values in model
-      // item.category = CategoryType[itemConfig.category];
-      // item.label = itemConfig.displayName;
+      item.category = CategoryType[itemConfig.category];
+      item.label = itemConfig.displayName;
 
-      // item.showInSummary = itemConfig.showInSummary;
-      // item.showOnlyInSummary = itemConfig.showOnlyInSummary;
+      item.showInSummary = itemConfig.showInSummary;
+      item.showOnlyInSummary = itemConfig.showOnlyInSummary;
       
       // States and Thesholf calculation
       ItemPostProcessor.ApplyStateAndThresholdsToItem(itemConfig, item);
@@ -35,12 +35,6 @@ export class ItemPostProcessor {
   }
 
   private static ApplyStateAndThresholdsToItem(itemConfig: Item, item: OpenhabItem) {
-
-    item.category = CategoryType[itemConfig.category];
-    item.label = itemConfig.displayName;
-
-    item.showInSummary = itemConfig.showInSummary;
-    item.showOnlyInSummary = itemConfig.showOnlyInSummary;
     
     if (itemConfig.unit) {
       item.unit = itemConfig.unit;
