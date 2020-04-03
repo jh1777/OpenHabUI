@@ -1,6 +1,9 @@
-<div class="card container">
-    <div class="card-header header" [ngClass]="{'warning': hasWarningItem == true, 'critical': hasCriticalItem == true }">
+<div class="card container" [ngClass]="{'warning': hasWarningItem == true, 'critical': hasCriticalItem == true }">
+    <div class="card-header header"> <!-- [ngClass]="{'warning': hasWarningItem == true, 'critical': hasCriticalItem == true }"> -->
        {{tileName}}
+       &nbsp;
+       <clr-icon *ngIf="hasWarningItem == true" shape="warning-standard" class="is-warning" size="21"></clr-icon>
+       <clr-icon *ngIf="hasCriticalItem == true" shape="warning-standard" class="is-error" size="21"></clr-icon>
     </div>
     
     <div class="card-block block"> 
@@ -49,6 +52,6 @@
         <app-item-details-dialog [item]="item" [stateHistory]="stateHistory"></app-item-details-dialog>
     </div>    
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="closeModal()">Ok</button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="closeModal()">Close</button>
     </div>
 </clr-modal>
