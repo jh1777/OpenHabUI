@@ -76,35 +76,6 @@
             ]
         },
         {
-            "title": "Kinder",
-            "items":[
-                {
-                    "name": "DCH_KID_Kontakt",
-                    "displayName": "Maria",
-                    "category": "contact",
-                    "showInSummary": true
-                },
-                {
-                    "name": "DCH_KID_Temperatur",
-                    "displayName": "Maria",
-                    "category": "temperature",
-                    "unit": "°C"
-                },
-                {
-                    "name": "DCH_WORK_Kontakt",
-                    "displayName": "Tim",
-                    "category": "contact",
-                    "showInSummary": true
-                },
-                {
-                    "name": "DCH_WORK_Temperatur",
-                    "displayName": "Tim",
-                    "category": "temperature",
-                    "unit": "°C"
-                }
-            ]
-        },
-        {
             "title": "Wichtige Batterien",
             "items": [
                 {
@@ -114,7 +85,7 @@
                     "unit": "%",
                     "warningThreshold": 30,
                     "warningThresholdType": "lt",
-                    "showInSummary": true
+                    "showInSummary": false
                 },
                 {
                     "name": "DCH_Battery",
@@ -123,7 +94,7 @@
                     "unit": "%",
                     "warningThreshold": 30,
                     "warningThresholdType": "lt",
-                    "showInSummary": true
+                    "showInSummary": false
                 },
                 {
                     "name": "DCH_WT_Battery",
@@ -132,7 +103,7 @@
                     "unit": "%",
                     "warningThreshold": 30,
                     "warningThresholdType": "lt",
-                    "showInSummary": true
+                    "showInSummary": false
                 }
             ]
         },
@@ -185,6 +156,12 @@
                     "category": "contact",
                     "isGroup": true,
                     "showInSummary": true
+                },
+                {
+                    "name": "WallPlugs",
+                    "displayName": "Steckdosen (Gruppe)",
+                    "category": "switch",
+                    "isGroup": true
                 }
             ]
         },

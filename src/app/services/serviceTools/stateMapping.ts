@@ -10,6 +10,7 @@ export class StateMapping {
         [CategoryType.motion, "ON"],
         [CategoryType.contact, "OPEN"],
         [CategoryType.switch, "ON"],
+        [CategoryType.rollershutter, ""],
         [CategoryType.battery, ""] // Placeholder only (used for order in summary)
     ]);
 

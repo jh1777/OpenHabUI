@@ -14,5 +14,7 @@ export enum CategoryType {
     dimmer,
     switch,
     sun,
-    presence
+    presence,
+    heating,
+    rollershutter
 }
