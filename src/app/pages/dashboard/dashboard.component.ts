@@ -44,10 +44,7 @@ export class DashboardComponent implements OnInit {
   tilesToShow: Tile[];
   // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
   items: string[] = [];
-
-  // ------
-  updateSubject = new Subject<OpenhabItem>();
-
+  
   constructor(
     private api: OpenhabApiService, 
     private zone: NgZone, 
@@ -55,16 +52,6 @@ export class DashboardComponent implements OnInit {
     {}
 
   ngOnInit() {
-    this.updateSubject.subscribe({
-      next: (item) => {
-        var itemsByTileTemp = cloneDeep(this.itemsByTile);
-        var summaryItemsTemp = cloneDeep(this.summaryItems);
-
-        var items: OpenhabItem[] = [].concat(...itemsByTileTemp.values());
-        items.filter(i => i.name).map(i => i = item);
-        this.itemsByTile = itemsByTileTemp;
-      } 
-    });
 
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
@@ -309,6 +296,16 @@ export class DashboardComponent implements OnInit {
               });
               */
 
+              /* new
+              this.api.getGroup(item.name).subscribe(group => {
+                item = group;
+                // Update UI model
+                this.updateWarningStateForAllTiles(itemsByTileTemp);
+                this.itemsByTile = itemsByTileTemp;
+              });
+*/
+
+              
                 var subItem = item.members.filter(item => item.name == itemName);
                 subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent, () => { 
                   // Update Groups
@@ -319,14 +316,6 @@ export class DashboardComponent implements OnInit {
                 }));
             
 
-                /*
-                // Update Groups
-                this.updateGroupItemState(item, () => {
-                  // Update UI model
-                  this.updateWarningStateForAllTiles(itemsByTileTemp);
-                  this.itemsByTile = itemsByTileTemp;
-                }); 
-                */
             }
           });
         });
