@@ -2,6 +2,7 @@ import { OpenhabItem } from '../model/openhabItem';
 import { Item } from 'src/app/models/config/item';
 import { AppComponent } from 'src/app/app.component';
 import { CategoryType } from 'src/app/models/config/category';
+import { StateMapping } from './stateMapping';
 
 export class ItemPostProcessor {
 
@@ -29,6 +30,10 @@ export class ItemPostProcessor {
         item.members.map(i => {
           ItemPostProcessor.ApplyStateAndThresholdsToItem(itemConfig, i);
         });
+        item.hasWarning = item.members.some(i => i.hasWarning);
+        item.isCritical = item.members.some(i => i.isCritical);
+        // Set Triggered State
+        StateMapping.CalculateGroupState(item);
       }
     }
     return item;

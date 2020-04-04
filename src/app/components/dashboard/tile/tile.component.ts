@@ -29,7 +29,7 @@ export class TileComponent implements OnInit {
 
   }
 
-  switchWallPlug(event: MouseEvent, item: OpenhabItem) {
+  switchAction(event: MouseEvent, item: OpenhabItem) {
     let newState = item.state == "ON" ? "OFF" : "ON";
     this.service.setItemState(item, newState)
       .subscribe(event => {

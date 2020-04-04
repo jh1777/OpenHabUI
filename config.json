@@ -162,6 +162,12 @@
                     "displayName": "Steckdosen (Gruppe)",
                     "category": "switch",
                     "isGroup": true
+                }, 
+                {
+                    "name": "uitestswitches",
+                    "displayName": "UI Test",
+                    "category": "switch",
+                    "isGroup": true
                 }
             ]
         },

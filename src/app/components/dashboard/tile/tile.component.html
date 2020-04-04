@@ -2,7 +2,7 @@
     <div class="card-header header"> <!-- [ngClass]="{'warning': hasWarningItem == true, 'critical': hasCriticalItem == true }"> -->
        {{tileName}}
        &nbsp;
-       <clr-icon *ngIf="hasWarningItem == true" shape="warning-standard" class="is-warning" size="21"></clr-icon>
+       <clr-icon *ngIf="hasWarningItem == true && hasCriticalItem == false" shape="warning-standard" class="is-warning" size="21"></clr-icon>
        <clr-icon *ngIf="hasCriticalItem == true" shape="warning-standard" class="is-error" size="21"></clr-icon>
     </div>
     
@@ -18,8 +18,8 @@
                                         <app-itemicon [item]="item"></app-itemicon>
                                     </td>
                                     <td align="left" width="70%" style="padding-right: 10px; vertical-align: middle;">
-                                        <div *ngIf="item.category == categoryType.switch">
-                                            <a (click)="switchWallPlug($event, item)" class="label clickable" [ngClass]="{'label-success': item?.state == 'ON'}" style="cursor: pointer; font-size: smaller;">{{item?.transformedState }}</a>
+                                        <div *ngIf="item?.category == categoryType.switch">
+                                            <a (click)="switchAction($event, item)" class="label clickable" [ngClass]="{'label-success': item?.state == 'ON'}" style="cursor: pointer; font-size: smaller;">{{item?.transformedState }}</a>
                                         </div>
                                         <div *ngIf="item?.category == categoryType.dimmer || item?.category == categoryType.rollershutter">
                                             <strong style="font-size: medium;">{{item?.transformedState }}</strong>&nbsp;

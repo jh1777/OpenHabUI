@@ -12,6 +12,7 @@ import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry'
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,6 +45,9 @@ export class DashboardComponent implements OnInit {
   // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
   items: string[] = [];
 
+  // ------
+  updateSubject = new Subject<OpenhabItem>();
+
   constructor(
     private api: OpenhabApiService, 
     private zone: NgZone, 
@@ -51,6 +55,17 @@ export class DashboardComponent implements OnInit {
     {}
 
   ngOnInit() {
+    this.updateSubject.subscribe({
+      next: (item) => {
+        var itemsByTileTemp = cloneDeep(this.itemsByTile);
+        var summaryItemsTemp = cloneDeep(this.summaryItems);
+
+        var items: OpenhabItem[] = [].concat(...itemsByTileTemp.values());
+        items.filter(i => i.name).map(i => i = item);
+        this.itemsByTile = itemsByTileTemp;
+      } 
+    });
+
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
     AppComponent.configuration.dashboardTiles.forEach(tile => {
@@ -138,8 +153,8 @@ export class DashboardComponent implements OnInit {
         }
       }));
 
-      // Update content of group OpenhabItem
-      groups.map(g => this.updateGroupItemState(g));
+      // Update content of group OpenhabItem -> now done in service!
+      //groups.map(g => this.updateGroupItemState(g));
 
       // Add Group to itemsByTile
       groups.filter(g => !g.showOnlyInSummary).map(g => Tools.AddEntryToMapArray<string, OpenhabItem>(this.itemsByTile, tile.title, g)); 
@@ -166,15 +181,31 @@ export class DashboardComponent implements OnInit {
    * Update content of group OpenhabItem (as Group) when state reported a change
    * Apply Config to Group and Child Items and calculate label of the group entry
    */
-  private updateGroupItemState = (group: OpenhabItem) => {
+  private updateGroupItemState = (group: OpenhabItem, extention: () => void = null) => {
+    
     // Apply config
     ItemPostProcessor.ApplyConfigToItem(group);
-    //group.members.map(item => ItemPostProcessor.ApplyConfigToItem(item));
+
     // project item data to group
     group.hasWarning = group.members.some(i => i.hasWarning);
     group.isCritical = group.members.some(i => i.isCritical);
     // Set Triggered State
     StateMapping.CalculateGroupState(group);
+    
+
+    // NEW tut nicht!
+    // To get transformed data call API for this item
+    /*
+    this.api.getGroup(group.name).subscribe(i => {
+      console.log(`Update Group Item ${group.name} from OpenHab API.`);
+
+      group = cloneDeep(i);
+      // Execute optional extension
+      if (extention != null) {
+        extention();
+      }
+    });
+    */
   }
 
   /**
@@ -211,12 +242,35 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  private getGroupContainingItemMember = (itemMap: Map<string, OpenhabItem[]>, itemName: string): OpenhabItem => {
+    let items: OpenhabItem[] =  [].concat(...itemMap.values());
+    let groups = items.filter(i => i.members != null);
+    let result: OpenhabItem;
+    groups.forEach(i => {
+      if (i.members.findIndex(m => m.name == itemName) != -1) {
+        result = i;
+      }
+    });
+    return result;
+  }
+
+  private getItemFromMap  = (itemMap: Map<string, OpenhabItem[]>, itemName: string): OpenhabItem => {
+    let items: OpenhabItem[] =  [].concat(...itemMap.values());
+    let index = items.findIndex(m => m.name == itemName);
+    if (index != -1) {
+      return items[index];
+    } else {
+      return null;
+    }
+  }
+
   /**
    * Handle the event when an Item changed
    */
   handleStateChange = (itemStateChangedEvent: ItemStateChangedEvent): void => {
+    let itemName = itemStateChangedEvent.Item;
     // Check if Item is persent
-    if (this.items.includes(itemStateChangedEvent.Item)) { 
+    if (this.items.includes(itemName)) { 
       // Very important! run in zone to update live in web view!
       this.zone.run(() => {
         // Add to list of changes
@@ -231,31 +285,60 @@ export class DashboardComponent implements OnInit {
         itemsByTileTemp.forEach((value, key) => {
           value.map((item, index, array) => {
             // Single item objects
-            if (item.name === itemStateChangedEvent.Item && item.members == null) {
-              this.updateItemOnStateChange(item, itemStateChangedEvent);
-            }
-            // Group entry
-            if (item.members != null && item.members.findIndex(i => i.name == itemStateChangedEvent.Item) != -1) {
-                var subItem = item.members.filter(item => item.name == itemStateChangedEvent.Item);
-                subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent));
-                // Update Groups
-                this.updateGroupItemState(item);
+            if (item.name === itemName && item.members == null) {
+              this.updateItemOnStateChange(item, itemStateChangedEvent, () => {
+                // Update UI model
+                this.updateWarningStateForAllTiles(itemsByTileTemp);
+                this.itemsByTile = itemsByTileTemp;
+              });
             }
 
-            // Update UI model
-            this.updateWarningStateForAllTiles(itemsByTileTemp);
-            this.itemsByTile = itemsByTileTemp;
+            // Group entry
+            if (item.members != null && item.members.findIndex(i => i.name == itemName) != -1) {
+
+              /** new -seems to work but calls API very often  
+              this.updateItemOnStateChange(item, itemStateChangedEvent, () => { 
+                // Update Groups
+                this.updateGroupItemState(item); 
+                var subItem = item.members; //.filter(item => item.name == itemName);
+                subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent, () => { 
+                  // Update UI model
+                  this.updateWarningStateForAllTiles(itemsByTileTemp);
+                  this.itemsByTile = itemsByTileTemp;
+                }));
+              });
+              */
+
+                var subItem = item.members.filter(item => item.name == itemName);
+                subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent, () => { 
+                  // Update Groups
+                  this.updateGroupItemState(item); 
+                  // Update UI model
+                  this.updateWarningStateForAllTiles(itemsByTileTemp);
+                  this.itemsByTile = itemsByTileTemp;
+                }));
+            
+
+                /*
+                // Update Groups
+                this.updateGroupItemState(item, () => {
+                  // Update UI model
+                  this.updateWarningStateForAllTiles(itemsByTileTemp);
+                  this.itemsByTile = itemsByTileTemp;
+                }); 
+                */
+            }
           });
         });
 
         summaryItemsTemp.forEach((value, key) => {
           value.map(summaryEntry => { 
             summaryEntry.items.map(item => {
-              if (item.name === itemStateChangedEvent.Item && item.members == null) {
+              if (item.name === itemName && item.members == null) {
                 this.updateSummaryItemOnStateChange(item, itemStateChangedEvent, summaryItemsTemp);
               }
-              if (item.members != null && item.members.findIndex(i => i.name == itemStateChangedEvent.Item) != -1) {
-                var subItem = item.members.filter(item => item.name == itemStateChangedEvent.Item);
+              if (item.members != null && item.members.findIndex(i => i.name == itemName) != -1) {
+                var subItem = item.members.filter(item => item.name == itemName);
                 subItem.map(i => this.updateSummaryItemOnStateChange(i, itemStateChangedEvent, summaryItemsTemp));
                 // Update Groups
                 this.updateGroupItemState(item);
