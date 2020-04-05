@@ -45,9 +45,7 @@ export class OpenhabApiService {
     let uri = `${this.url}/items/${itemName}`;
     return this.http.get<OpenhabItem>(uri)
     .pipe(
-      tap(g => {
-        g = ItemPostProcessor.ApplyConfigToItem(g);
-      }),
+      tap(g => g = ItemPostProcessor.ApplyConfigToItem(g)),
       retry(1),
       catchError(this.errorHandler)
     );
@@ -58,6 +56,7 @@ export class OpenhabApiService {
     // for reference only: const intersection = (a, b) => { const s = new Set(b); return a.filter(x => s.has(x)); };
     return this.http.get<OpenhabItem>(uri) //, { headers: OpenhabApiService.httpHeaders })
       .pipe(
+        tap(g => g = ItemPostProcessor.ApplyConfigToItem(g)),
         retry(1),
         catchError(this.errorHandler)
       );

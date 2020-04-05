@@ -158,3 +158,5 @@ https://decembersoft.com/posts/typescript-vs-csharp-linq/
 ### Clarity
 
 https://clarity.design/documentation
+
+https://dzone.com/articles/how-to-use-change-detection-in-angular

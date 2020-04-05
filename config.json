@@ -8,7 +8,7 @@
             "items": [
                 {
                     "name": "DCH_Kontakt",
-                    "displayName": "Fenster Terrasse",
+                    "displayName": "Terrassenfenster",
                     "category": "contact",
                     "showInSummary": true
                 },
@@ -160,6 +160,12 @@
                 {
                     "name": "WallPlugs",
                     "displayName": "Steckdosen (Gruppe)",
+                    "category": "switch",
+                    "isGroup": true
+                }, 
+                {
+                    "name": "uitestswitches",
+                    "displayName": "UI Test",
                     "category": "switch",
                     "isGroup": true
                 }
