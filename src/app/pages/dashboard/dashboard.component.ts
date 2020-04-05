@@ -12,7 +12,7 @@ import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry'
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,6 +45,8 @@ export class DashboardComponent implements OnInit {
   // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
   items: string[] = [];
   
+  updateSubject = new BehaviorSubject(this.itemsByTile);
+
   constructor(
     private api: OpenhabApiService, 
     private zone: NgZone, 
@@ -52,6 +54,9 @@ export class DashboardComponent implements OnInit {
     {}
 
   ngOnInit() {
+    this.updateSubject.subscribe(data => {
+      this.itemsByTile = data;
+    });
 
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
@@ -276,7 +281,8 @@ export class DashboardComponent implements OnInit {
               this.updateItemOnStateChange(item, itemStateChangedEvent, () => {
                 // Update UI model
                 this.updateWarningStateForAllTiles(itemsByTileTemp);
-                this.itemsByTile = itemsByTileTemp;
+                // OLD: this.itemsByTile = itemsByTileTemp;
+                this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, item));
               });
             }
 
@@ -312,8 +318,11 @@ export class DashboardComponent implements OnInit {
                   this.updateGroupItemState(item); 
                   // Update UI model
                   this.updateWarningStateForAllTiles(itemsByTileTemp);
-                  this.itemsByTile = itemsByTileTemp;
+                  //OLD: this.itemsByTile = itemsByTileTemp;
+                  // TEST:
+                  this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, i));
                 }));
+                this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, item));
             
 
             }
@@ -338,5 +347,12 @@ export class DashboardComponent implements OnInit {
       });
       console.log(itemStateChangedEvent.toString());
     }
+  }
+
+  private updateValueInNewMap(map: Map<string, OpenhabItem[]>, item: OpenhabItem): Map<string, OpenhabItem[]> {
+    map.forEach((items, key) => {
+      items.filter(i => i.name == item.name).map(i => i = item);
+    });
+    return cloneDeep(map);
   }
 }
