@@ -311,7 +311,7 @@ export class DashboardComponent implements OnInit {
               });
 */
 
-              
+                this.api.getGroup(item.name).subscribe(g => item.state = g.state);
                 var subItem = item.members.filter(item => item.name == itemName);
                 subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent, () => { 
                   // Update Groups
