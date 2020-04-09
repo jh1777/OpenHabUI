@@ -18,7 +18,7 @@ export class StateMapping {
         // Set Triggered State
         if (StateMapping.TriggeredStateByCategory.has(group.category)) {
             var triggeredItems: OpenhabItem[];
-            if (group.category == CategoryType.battery) {
+            if (group.category == CategoryType.battery || group.category == CategoryType.alert) {
                 triggeredItems = group.members.filter(item => item.hasWarning || item.isCritical);
             } else {
                 let triggeredState = StateMapping.TriggeredStateByCategory.get(group.category);
