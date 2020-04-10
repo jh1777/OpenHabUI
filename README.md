@@ -156,7 +156,7 @@ As a **fundamental structural property**, the `category` of each item or group y
   - **Usage**: rollershutter
   - **Supports Group**: No **TODO**
 
-###  Section `dashboardTiles`
+### Section `dashboardTiles`
 
 This section contains all _tile_ definitions for the dashboard! Each tile itself has a _title_ and some _items_ in it. You can define each item like you want it to be. 
 
@@ -199,7 +199,7 @@ If you specify a **unit**, this will be shown after the original state. So if yo
 
 ### Group Item ( = group in OpenHab)
 
-A **group** in OpenHab can also be used to show in a tile. The label in this case will be generated to show triggered items. You need to add `"isGroup": true`  in `config.json`.
+A **group** in OpenHab can also be used in a tile. The label in this case will be generated to show number of triggered items. You need to add `"isGroup": true` in `config.json`.
 
  **Example** for *non-editable* categories: "**2/5 triggered**" (`category` == motion ) or "**1/3 open**"(`category` == contact ).
 
@@ -209,19 +209,22 @@ If the `category` is *editable* it will be shown with options to control the sta
 
 ### Single Item
 
-The **summary** is a simple bar at the top of the dashboard to quickly get an overview. If the item should be shown there you may set `showInSummary` to true. The summary is grouped by category. All _item labels_ with same `category` will be concatenated (using , <comma>) in the summary bar. 
+The **summary** is a simple bar at the top of the dashboard to quickly get an overview. If the item should be shown there you may set `showInSummary` to true. The summary is grouped by category. All item labels with same `category` will be concatenated (using , <comma>) in the summary bar. If you use `showOnlyInSummary` instead, this item will no longer be shown in the tile.
 
 There is a defined state for each `category` that is used to determine when a certain item is "triggered". By default only triggered items are shown. Please refer to config.json documentation in this file!
 
 **Example**: If you have 3 windows with labels "John", "Mike", "Tom". Now only windows of Tom and Mike are OPEN, which is the "triggered"-state for `category` = contact, the summary will show: <img src="./src/assets/icons/axis-chart-line.svg" alt="axis-chart-line" style="zoom:60%;" /> Tom, Mike
 
-...
-
 ### Group Item
 
-...
+A **group** can also be shown in the summary bar by setting `showInSummary` or `showOnlyInSummary`to true. The same applies here as for using groups in tiles described in prev. section.
 
+## Details
 
+On click on the small i-icon in the tiles or at one entry in the summary bar a detail dialog will be shown.
+In case of a sinlge item the state, label and history of states according to `itemStateHistory` will be shown.
+In case of a group the items contained in that group will be shown including their state.
+The states in the Details dialog are not real time - so changes will only be visible when the dialog is closed and re-opened.
 
 ## Reference
 

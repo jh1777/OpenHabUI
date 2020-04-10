@@ -288,29 +288,6 @@ export class DashboardComponent implements OnInit {
 
             // Group entry
             if (item.members != null && item.members.findIndex(i => i.name == itemName) != -1) {
-
-              /** new -seems to work but calls API very often  
-              this.updateItemOnStateChange(item, itemStateChangedEvent, () => { 
-                // Update Groups
-                this.updateGroupItemState(item); 
-                var subItem = item.members; //.filter(item => item.name == itemName);
-                subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent, () => { 
-                  // Update UI model
-                  this.updateWarningStateForAllTiles(itemsByTileTemp);
-                  this.itemsByTile = itemsByTileTemp;
-                }));
-              });
-              */
-
-              /* new
-              this.api.getGroup(item.name).subscribe(group => {
-                item = group;
-                // Update UI model
-                this.updateWarningStateForAllTiles(itemsByTileTemp);
-                this.itemsByTile = itemsByTileTemp;
-              });
-*/
-
                 this.api.getGroup(item.name).subscribe(g => item.state = g.state);
                 var subItem = item.members.filter(item => item.name == itemName);
                 subItem.map(i => this.updateItemOnStateChange(i, itemStateChangedEvent, () => { 
@@ -319,12 +296,10 @@ export class DashboardComponent implements OnInit {
                   // Update UI model
                   this.updateWarningStateForAllTiles(itemsByTileTemp);
                   //OLD: this.itemsByTile = itemsByTileTemp;
-                  // TEST:
                   this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, i));
                 }));
-                this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, item));
-            
 
+                this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, item));
             }
           });
         });

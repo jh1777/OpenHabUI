@@ -21,7 +21,7 @@
                                         <div *ngIf="item?.category == categoryType.switch">
                                             <a (click)="switchAction($event, item)" class="label clickable" [ngClass]="{'label-success': item?.state == 'ON'}" style="cursor: pointer; font-size: smaller;">{{item?.transformedState }}</a>
                                         </div>
-                                        <div *ngIf="item?.category == categoryType.dimmer || item?.category == categoryType.rollershutter">
+                                        <div *ngIf="item?.category == categoryType.dimmer || item?.category == categoryType.rollershutter || item?.category == categoryType.heating">
                                             <strong style="font-size: medium;">{{item?.transformedState }}</strong>&nbsp;
                                             <a (click)="setDimmer($event, item, 50)" class="label clickable" [ngClass]="{'label-success': item?.state == 50}" style="cursor: pointer; font-size: smaller;">50 %</a>
                                             <a (click)="setDimmer($event, item, 100)" class="label clickable" [ngClass]="{'label-success': item?.state == 100}" style="cursor: pointer; font-size: smaller;">100 %</a>

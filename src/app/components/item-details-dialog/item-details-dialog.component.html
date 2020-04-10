@@ -34,6 +34,7 @@
                 <th class="left">Name</th>
                 <th class="left">Label</th>
                 <th class="left">Transformed State</th>
+                <th class="left"></th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +42,10 @@
                 <td class="left">{{childItem.name}}</td>
                 <td class="left">{{childItem.label}}</td>
                 <td class="left">{{childItem.state}}</td>
+                <td class="left">
+                    <clr-icon *ngIf="childItem.hasWarning && !childItem.isCritical" shape="warning-standard" class="is-warning" size="14"></clr-icon>
+                    <clr-icon *ngIf="childItem.isCritical" shape="warning-standard" class="is-error" size="14"></clr-icon>
+                </td>
             </tr>
         </tbody>
     </table>
