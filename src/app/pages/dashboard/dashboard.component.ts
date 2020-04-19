@@ -183,21 +183,7 @@ export class DashboardComponent implements OnInit {
     group.isCritical = group.members.some(i => i.isCritical);
     // Set Triggered State
     StateMapping.CalculateGroupState(group);
-    
-
-    // NEW tut nicht!
-    // To get transformed data call API for this item
-    /*
-    this.api.getGroup(group.name).subscribe(i => {
-      console.log(`Update Group Item ${group.name} from OpenHab API.`);
-
-      group = cloneDeep(i);
-      // Execute optional extension
-      if (extention != null) {
-        extention();
-      }
-    });
-    */
+  
   }
 
   /**
@@ -209,18 +195,19 @@ export class DashboardComponent implements OnInit {
     item.state = itemStateChangedEvent.NewValue;
     // To get transformed data call API for this item
     this.api.getItem(item.name).subscribe(i => {
-      console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
-      
-      // Normal (single) Item
-      // Set TransformedState from GET call first
-      item.transformedState = i.body.transformedState;
-      // Apply Item config
-      ItemPostProcessor.ApplyConfigToItem(item);
 
-      // Execute optional extension
-      if (extention != null) {
-        extention();
-      }
+        console.log(`Update Item ${item.name} from OpenHab API. Result: ${i.status}`);
+        
+        // Normal (single) Item
+        // Set TransformedState from GET call first
+        item.transformedState = i.body.transformedState;
+        // Apply Item config
+        ItemPostProcessor.ApplyConfigToItem(item);
+
+        // Execute optional extension
+        if (extention != null) {
+          extention();
+        }
     });
   }
 
@@ -256,9 +243,22 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+/*
+  handleStateChange = (itemStateChangedEvent: ItemStateChangedEvent): void => {
+    let itemName = itemStateChangedEvent.Item;
+    if (this.items.includes(itemName)) { 
+      // Add to list of changes
+      this.zone.run(() => {
+        this.stateChanges?.push(itemStateChangedEvent);
+        console.log(itemStateChangedEvent.toString());
+      });
+    }
+  }
+*/
   /**
    * Handle the event when an Item changed
    */
+
   handleStateChange = (itemStateChangedEvent: ItemStateChangedEvent): void => {
     let itemName = itemStateChangedEvent.Item;
     // Check if Item is persent
@@ -281,7 +281,7 @@ export class DashboardComponent implements OnInit {
               this.updateItemOnStateChange(item, itemStateChangedEvent, () => {
                 // Update UI model
                 this.updateWarningStateForAllTiles(itemsByTileTemp);
-                // OLD: this.itemsByTile = itemsByTileTemp;
+
                 this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, item));
               });
             }
@@ -295,7 +295,7 @@ export class DashboardComponent implements OnInit {
                   this.updateGroupItemState(item); 
                   // Update UI model
                   this.updateWarningStateForAllTiles(itemsByTileTemp);
-                  //OLD: this.itemsByTile = itemsByTileTemp;
+
                   this.updateSubject.next(this.updateValueInNewMap(itemsByTileTemp, i));
                 }));
 
@@ -323,6 +323,7 @@ export class DashboardComponent implements OnInit {
       console.log(itemStateChangedEvent.toString());
     }
   }
+
 
   private updateValueInNewMap(map: Map<string, OpenhabItem[]>, item: OpenhabItem): Map<string, OpenhabItem[]> {
     map.forEach((items, key) => {
