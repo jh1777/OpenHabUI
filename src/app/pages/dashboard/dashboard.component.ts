@@ -23,7 +23,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 export class DashboardComponent implements OnInit {
   title = environment.title;
 
-  // List of changes states for further use - currently not in use! TODO: Make use or remove
+  // List of changes states for history (limit to 50)
   stateChanges: ItemStateChangedEvent[] = [];
 
   // Items by Tile Name: Main collection for Tile data
@@ -46,6 +46,7 @@ export class DashboardComponent implements OnInit {
   items: string[] = [];
   
   updateSubject = new BehaviorSubject(this.itemsByTile);
+  showHistoryModal = false;
 
   constructor(
     private api: OpenhabApiService, 
@@ -243,18 +244,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-/*
-  handleStateChange = (itemStateChangedEvent: ItemStateChangedEvent): void => {
-    let itemName = itemStateChangedEvent.Item;
-    if (this.items.includes(itemName)) { 
-      // Add to list of changes
-      this.zone.run(() => {
-        this.stateChanges?.push(itemStateChangedEvent);
-        console.log(itemStateChangedEvent.toString());
-      });
-    }
-  }
-*/
   /**
    * Handle the event when an Item changed
    */
@@ -266,7 +255,11 @@ export class DashboardComponent implements OnInit {
       // Very important! run in zone to update live in web view!
       this.zone.run(() => {
         // Add to list of changes
-        this.stateChanges?.push(itemStateChangedEvent);
+        this.stateChanges.push(itemStateChangedEvent);
+        // Limit History to 50
+        if (this.stateChanges.length > 50) {
+          this.stateChanges.splice(0, this.stateChanges.length - 51);
+        }
 
         // Update Items currently in use
         // Create temp Map as clone of existing one to ensure the event detection of Angular is working
@@ -324,11 +317,21 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-
+  // Item Update Helper
   private updateValueInNewMap(map: Map<string, OpenhabItem[]>, item: OpenhabItem): Map<string, OpenhabItem[]> {
     map.forEach((items, key) => {
       items.filter(i => i.name == item.name).map(i => i = item);
     });
     return cloneDeep(map);
+  }
+
+  // History
+  showHistory($event: MouseEvent) {
+    $event.preventDefault();
+    this.showHistoryModal = true;
+  }
+
+  closeHistoryModal() {
+    this.showHistoryModal = false;
   }
 }

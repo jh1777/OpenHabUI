@@ -15,6 +15,7 @@ import { SummaryComponent } from './components/dashboard/summary/summary.compone
 import { RoomComponent } from './pages/rooms/room.component';
 import { RoomsComponent } from './pages/rooms/rooms.component';
 import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
+import { ConfigComponent } from './pages/config/config.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ItemDetailsDialogComponent } from './components/item-details-dialog/ite
     SummaryComponent,
     RoomComponent,
     RoomsComponent,
-    ItemDetailsDialogComponent
+    ItemDetailsDialogComponent,
+    ConfigComponent
   ],
   imports: [
     BrowserModule,

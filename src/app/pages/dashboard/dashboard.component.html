@@ -1,3 +1,4 @@
+<span class="vl"><a class="nav-link" (click)="showHistory($event)"><clr-icon shape="history" size="22"></clr-icon></a></span>&nbsp; 
 <app-summary [summaryItems]="summaryItems" [categories]="summaryCategories"></app-summary>
 <div style="padding-top: 10px;"></div>
 <div class="card-columns card-columns-2">
@@ -6,3 +7,32 @@
   </div>
 </div>
 <p></p>
+
+<clr-modal [(clrModalOpen)]="showHistoryModal">
+  <h3 class="modal-title">
+    <clr-icon shape="history" size="20"></clr-icon>&nbsp; Item State History
+  </h3>
+  <div class="modal-body">
+    <table class="table table-noborder">
+      <thead>
+          <tr>
+              <th class="left">DateTime</th>
+              <th class="left">Item</th>
+              <th class="left">Old State</th>
+              <th class="left">New State</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let state of stateChanges">
+              <td class="left">{{state.DateTime | date: 'long' }}</td>
+              <td class="left">{{state.Item}}</td>
+              <td class="left">{{state.OldValue}}</td>
+              <td class="left">{{state.NewValue}}</td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeHistoryModal()">Ok</button>
+  </div>
+</clr-modal>
