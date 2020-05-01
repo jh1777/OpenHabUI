@@ -14,7 +14,6 @@ import { OpenhabItemHistory, OpenhabItemHistoryEntry } from './model/openhabItem
 })
 export class OpenhabApiService {
   private url = `${AppComponent.configuration.openHabUrl}`;
-  rooms: Room[] = AppComponent.configuration.rooms;
   
   constructor(private http: HttpClient) { }
 

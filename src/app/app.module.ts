@@ -12,8 +12,6 @@ import { RoomboxComponent } from './components/dashboard/roombox/roombox.compone
 import { TileComponent } from './components/dashboard/tile/tile.component';
 import { ItemiconComponent } from './components/itemicon/itemicon.component';
 import { SummaryComponent } from './components/dashboard/summary/summary.component';
-import { RoomComponent } from './pages/rooms/room.component';
-import { RoomsComponent } from './pages/rooms/rooms.component';
 import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
 import { ConfigComponent } from './pages/config/config.component';
 
@@ -25,8 +23,6 @@ import { ConfigComponent } from './pages/config/config.component';
     TileComponent,
     ItemiconComponent,
     SummaryComponent,
-    RoomComponent,
-    RoomsComponent,
     ItemDetailsDialogComponent,
     ConfigComponent
   ],

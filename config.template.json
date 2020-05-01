@@ -1,0 +1,6 @@
+{
+    "openHabUrl": "http://localhost:8080/rest",
+    "itemStateHistory": 10,
+    "showOnlyActivityInSummary": true,
+    "dashboardTiles": []
+}
