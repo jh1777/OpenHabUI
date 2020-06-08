@@ -5,6 +5,7 @@ import { CategoryType } from 'src/app/models/config/category';
 import { EventbusService } from 'src/app/services/eventbus.service';
 import { AppComponent } from 'src/app/app.component';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
+import { Tile } from 'src/app/models/config/tile';
 
 @Component({
   selector: 'app-tile',
@@ -19,7 +20,8 @@ export class TileComponent implements OnInit {
  
   // UI needed
   item: OpenhabItem;
-  showModal: boolean = false;
+  showItemDetails: boolean = false;
+  showConfig: boolean = false;
   categoryType = CategoryType;
   stateHistory: OpenhabItemHistory;
   
@@ -45,6 +47,18 @@ export class TileComponent implements OnInit {
     });
   }
 
+  editConfig($event: MouseEvent, tileName: string) {
+    $event.preventDefault();
+    
+    ///...
+    this.showConfig = true;
+  }
+
+  applyConfig() {
+    this.showConfig = false;
+  }
+
+
    // For Details button
    openModal($event: MouseEvent, item: OpenhabItem) {
     $event.preventDefault();
@@ -66,11 +80,11 @@ export class TileComponent implements OnInit {
     */
     // <---
 
-    this.showModal = true;
+    this.showItemDetails = true;
   }
 
   closeModal() {
-    this.showModal = false;
+    this.showItemDetails = false;
     this.item = null;
   }
 }

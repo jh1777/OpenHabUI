@@ -1,9 +1,19 @@
 <div class="card container" [ngClass]="{'warning': hasWarningItem == true, 'critical': hasCriticalItem == true }">
     <div class="card-header header"> <!-- [ngClass]="{'warning': hasWarningItem == true, 'critical': hasCriticalItem == true }"> -->
-       {{tileName}}
-       &nbsp;
-       <clr-icon *ngIf="hasWarningItem == true && hasCriticalItem == false" shape="warning-standard" class="is-warning" size="21"></clr-icon>
-       <clr-icon *ngIf="hasCriticalItem == true" shape="warning-standard" class="is-error" size="21"></clr-icon>
+        <table width="100%">
+            <tr>
+                <td>
+                    {{tileName}}
+                    &nbsp;
+                    <clr-icon *ngIf="hasWarningItem == true && hasCriticalItem == false" shape="warning-standard" class="is-warning" size="21"></clr-icon>
+                    <clr-icon *ngIf="hasCriticalItem == true" shape="warning-standard" class="is-error" size="21"></clr-icon>
+                </td>
+                <td style="text-align: right;" width="32px">
+                    <clr-icon (click)="editConfig($event, tileName)" shape="pencil" style="cursor: pointer; color: lightgray;" size="18"></clr-icon>
+                </td>
+            </tr>
+        </table>
+       
     </div>
     
     <div class="card-block block"> 
@@ -44,7 +54,20 @@
     </div>
 </div>
 
-<clr-modal [(clrModalOpen)]="showModal">
+<clr-modal [(clrModalOpen)]="showConfig" [clrModalClosable]="false">
+    <h3 class="modal-title">
+        <clr-icon shape="pencil" size="22"></clr-icon>&nbsp; {{tileName}}
+    </h3>
+    <div class="modal-body">
+        todo: create component for editing config of this tile
+    </div>    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary btn-sm" (click)="applyConfig()">Apply</button>
+      <button type="button" class="btn btn-sm" (click)="showConfig = false">Cancel</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="showItemDetails">
     <h3 class="modal-title">
         {{item?.label}}
     </h3>
