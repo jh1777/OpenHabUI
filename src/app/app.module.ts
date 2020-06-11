@@ -14,6 +14,7 @@ import { ItemiconComponent } from './components/itemicon/itemicon.component';
 import { SummaryComponent } from './components/dashboard/summary/summary.component';
 import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
 import { ConfigComponent } from './pages/config/config.component';
+import { TileConfigComponent } from './components/dashboard/tile-config/tile-config.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ConfigComponent } from './pages/config/config.component';
     ItemiconComponent,
     SummaryComponent,
     ItemDetailsDialogComponent,
-    ConfigComponent
+    ConfigComponent,
+    TileConfigComponent
   ],
   imports: [
     BrowserModule,

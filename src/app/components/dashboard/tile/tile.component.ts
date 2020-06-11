@@ -5,7 +5,6 @@ import { CategoryType } from 'src/app/models/config/category';
 import { EventbusService } from 'src/app/services/eventbus.service';
 import { AppComponent } from 'src/app/app.component';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
-import { Tile } from 'src/app/models/config/tile';
 
 @Component({
   selector: 'app-tile',
