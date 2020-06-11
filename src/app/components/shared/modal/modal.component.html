@@ -1,0 +1,10 @@
+<clr-modal [(clrModalOpen)]="open">
+    <h3 class="modal-title">{{title}}</h3>
+    <div class="modal-body">
+        <p>{{text}}</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="Clicked(false)">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="Clicked(true)">Ok</button>
+    </div>
+</clr-modal>

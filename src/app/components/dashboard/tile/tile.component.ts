@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewContainerRef } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { CategoryType } from 'src/app/models/config/category';
 import { EventbusService } from 'src/app/services/eventbus.service';
 import { AppComponent } from 'src/app/app.component';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
+import { DynamicModalService } from 'src/app/services/modal.service';
+import { TileConfigComponent } from '../tile-config/tile-config.component';
 
 @Component({
   selector: 'app-tile',
@@ -24,7 +26,11 @@ export class TileComponent implements OnInit {
   categoryType = CategoryType;
   stateHistory: OpenhabItemHistory;
   
-  constructor(private service: OpenhabApiService, private eventService: EventbusService) { }
+  constructor(
+    private service: OpenhabApiService, 
+    private eventService: EventbusService,
+    private dms: DynamicModalService, 
+    private vcr: ViewContainerRef) { }
 
   ngOnInit(): void {
 
@@ -47,10 +53,15 @@ export class TileComponent implements OnInit {
   }
 
   editConfig($event: MouseEvent, tileName: string) {
-    $event.preventDefault();
+    //$event.preventDefault();
+
+    // Service need a container, set appwide once
+    this.dms.setViewContainerRef(this.vcr);
+    // Call from anywhere?, returns true/false
+    this.dms.openConfirmationModal(TileConfigComponent, tileName).then(res => console.log(tileName));
     
     ///...
-    this.showConfig = true;
+    //this.showConfig = true;
   }
 
   applyConfig() {
