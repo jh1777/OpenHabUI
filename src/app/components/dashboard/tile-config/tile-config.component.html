@@ -6,8 +6,6 @@
         <p><strong>Tile items</strong></p>
         <span (click)="selectItem(item)" *ngFor="let item of tile.items" style="cursor: pointer; font-size: smaller; padding-top: 2px;" [ngClass]="{'label-info': !item?.showOnlyInSummary, 'label-warning': item?.showOnlyInSummary }" class="label clickable">{{item.displayName}}</span>
         <span (click)="createNewItem()" style="cursor: pointer; font-size: smaller; padding-top: 2px;" class="label label-success clickable"> + </span>
-
-        
         <p></p>
         <div *ngIf="selectedItem != null">
             <clr-tabs>
@@ -114,56 +112,6 @@
                     </clr-tab-content>
                 </clr-tab>
             </clr-tabs>
-<!--
-            <form clrForm clrLayout="horizontal">
-                <clr-input-container>
-                    <label>Item Name</label>
-                    <input clrInput type="text" [(ngModel)]="selectedItem.name" name="itemName" required />
-                    <clr-control-helper>Original OpenHab Item Name</clr-control-helper>
-                    <clr-control-error>No OpenHab Item exists with this name!</clr-control-error>
-                </clr-input-container>
-                <clr-input-container>
-                    <label>Display Name</label>
-                    <input clrInput type="text" [(ngModel)]="selectedItem.displayName" name="itemDisplayName" required />
-                    <clr-control-helper>Name of the Item how it should appear in the UI</clr-control-helper>
-                    <clr-control-error>Invalid Display Name</clr-control-error>
-                </clr-input-container>
-                <clr-select-container>
-                    <label>Category</label>
-                    <select clrSelect name="itemCategory" [(ngModel)]="selectedItem.category" required>
-                        <option *ngFor="let c of categories" [ngValue]="c">{{c}}</option>
-                    </select>
-                    <clr-control-helper>Category of the Item</clr-control-helper>
-                    <clr-control-error>Invalid Category</clr-control-error>
-                  </clr-select-container>
-                <clr-input-container>
-                    <label>Unit</label>
-                    <input clrInput type="text" [(ngModel)]="selectedItem.unit" name="itemUnit" required />
-                    <clr-control-helper>Unit of the Item eg. °C, %, etc. (optional)</clr-control-helper>
-                    <clr-control-error>Invalid Unit</clr-control-error>
-                </clr-input-container>
-                <clr-checkbox-container>
-                    <label>Properties</label>
-                    <clr-checkbox-wrapper>
-                      <input type="checkbox" clrCheckbox name="itemIsGroup" required value="Is Group" [(ngModel)]="selectedItem.isGroup" />
-                      <label>Is Group?</label>
-                    </clr-checkbox-wrapper>
-                    <clr-control-helper>Is this item an OpenHab Group?</clr-control-helper>
-                </clr-checkbox-container>
-                <clr-checkbox-container>
-                    <label>Summary</label>
-                    <clr-checkbox-wrapper>
-                      <input type="checkbox" clrCheckbox name="itemShowInSummary" required value="Show in Summary" [(ngModel)]="selectedItem.showInSummary" />
-                      <label>Show Item in Summary and Tile</label>
-                    </clr-checkbox-wrapper>
-                    <clr-checkbox-wrapper>
-                      <input type="checkbox" clrCheckbox name="itemShowOnlyInSummary" required value="Show Only in Summary" [(ngModel)]="selectedItem.showOnlyInSummary" />
-                      <label>Show Item only in Summary</label>
-                    </clr-checkbox-wrapper>
-                    <clr-control-helper>Summary behavior</clr-control-helper>
-                </clr-checkbox-container>
-            </form>
-            -->
         </div>
     </div>
     <div class="modal-footer">

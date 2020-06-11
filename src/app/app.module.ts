@@ -15,7 +15,6 @@ import { SummaryComponent } from './components/dashboard/summary/summary.compone
 import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { TileConfigComponent } from './components/dashboard/tile-config/tile-config.component';
-import { ConfirmationModalComponent } from './components/shared/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -27,8 +26,7 @@ import { ConfirmationModalComponent } from './components/shared/modal/modal.comp
     SummaryComponent,
     ItemDetailsDialogComponent,
     ConfigComponent,
-    TileConfigComponent,
-    ConfirmationModalComponent
+    TileConfigComponent
   ],
   imports: [
     BrowserModule,
