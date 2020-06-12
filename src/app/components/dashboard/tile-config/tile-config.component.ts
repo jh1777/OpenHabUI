@@ -4,6 +4,7 @@ import { AppComponent } from 'src/app/app.component';
 import { Item } from 'src/app/models/config/item';
 import { Subject } from 'rxjs';
 import { CategoryType } from 'src/app/models/config/category';
+import { writeFileSync, readFileSync } from 'fs';
 
 @Component({
   selector: 'app-tile-config',
@@ -42,6 +43,11 @@ export class TileConfigComponent implements OnInit {
   Apply(result) {
     // TODO
     this.open = false;
+    this.saveConfig();
     this.destroy$.next(result);
+  }
+
+  private saveConfig() {
+    writeFileSync("config.json", JSON.stringify(AppComponent.configuration));
   }
 }

@@ -1,6 +1,14 @@
 <clr-modal [(clrModalOpen)]="open" [clrModalSize]="'lg'" [clrModalClosable]="false" >
     <h3 class="modal-title">
         <clr-icon shape="pencil" size="22"></clr-icon> &nbsp; {{tileName}}
+        <form clrForm clrLayout="vertical">
+            <clr-input-container>
+                <label>Tile Name</label>
+                <input clrInput placeholder="Enter tile name here" name="tileName" [(ngModel)]="tileName" />
+                <clr-control-helper>Enter a new name for the tile. None of existing Tile Names are allowed!</clr-control-helper>
+                <clr-control-error>The Name you entered is invalid or already in use!</clr-control-error>
+            </clr-input-container>
+        </form>
     </h3>
     <div class="modal-body">
         <p><strong>Tile items</strong></p>
@@ -98,7 +106,7 @@
                         </form>
                     </clr-tab-content>
                 </clr-tab>
-                <clr-tab>
+                <!-- <clr-tab>
                     <button clrTabLink>Tile</button>
                     <clr-tab-content *clrIfActive>
                         <form clrForm clrLayout="vertical">
@@ -110,7 +118,7 @@
                             </clr-input-container>
                         </form>
                     </clr-tab-content>
-                </clr-tab>
+                </clr-tab> -->
             </clr-tabs>
         </div>
     </div>
