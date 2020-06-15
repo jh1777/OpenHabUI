@@ -138,7 +138,7 @@ export class OpenhabApiService {
     }
   }
 
-  errorHandler(error: any) {
+  private errorHandler(error: any) {
     let errorMessage = '';
     if(error.error instanceof ErrorEvent) {
       // Get client-side error
@@ -149,5 +149,4 @@ export class OpenhabApiService {
     }
     return throwError(errorMessage);
   }
-
 }

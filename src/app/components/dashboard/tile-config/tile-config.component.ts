@@ -4,14 +4,15 @@ import { AppComponent } from 'src/app/app.component';
 import { Item } from 'src/app/models/config/item';
 import { Subject } from 'rxjs';
 import { CategoryType } from 'src/app/models/config/category';
-import { writeFileSync, readFileSync } from 'fs';
+import { IConfirmationModal } from 'src/app/services/model/confirmation-modal.model';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-tile-config',
   templateUrl: './tile-config.component.html',
   styleUrls: ['./tile-config.component.css']
 })
-export class TileConfigComponent implements OnInit {
+export class TileConfigComponent implements OnInit, IConfirmationModal {
   destroy$: Subject<boolean> = new Subject();
 
   id: string;
@@ -22,7 +23,7 @@ export class TileConfigComponent implements OnInit {
   category: CategoryType;
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
   
-  constructor() {}
+  constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
     this.tileName = this.id;
@@ -40,14 +41,29 @@ export class TileConfigComponent implements OnInit {
     // TODO
   }
 
-  Apply(result) {
-    // TODO
-    this.open = false;
-    this.saveConfig();
-    this.destroy$.next(result);
+  applyConfig(result) {
+    if (!result) {
+      this.open = false;
+      this.destroy$.next(result);
+    }
+    else {
+      let saveConfigSuccess = this.saveConfig();
+      if (saveConfigSuccess) {
+        this.open = false;
+        this.destroy$.next(result);
+      } else {
+        // TODO: show error in ui
+      }
+    }
   }
 
-  private saveConfig() {
-    writeFileSync("config.json", JSON.stringify(AppComponent.configuration));
+ 
+  private saveConfig(): boolean {
+    this.configService.saveConfig(AppComponent.configuration)
+      .subscribe(event => {
+        console.log(`Saving the config. Status = ${event.statusText}; Body = ${JSON.stringify(event.body)}`);
+        return event.ok
+      });
+    return false;
   }
 }

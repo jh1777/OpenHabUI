@@ -29,7 +29,7 @@ export class TileComponent implements OnInit {
   constructor(
     private service: OpenhabApiService, 
     private eventService: EventbusService,
-    private dms: DynamicModalService, 
+    private modalService: DynamicModalService, 
     private vcr: ViewContainerRef) { }
 
   ngOnInit(): void {
@@ -56,9 +56,9 @@ export class TileComponent implements OnInit {
     //$event.preventDefault();
 
     // Service need a container, set appwide once
-    this.dms.setViewContainerRef(this.vcr);
+    this.modalService.setViewContainerRef(this.vcr);
     // Call from anywhere?, returns true/false
-    this.dms.openConfirmationModal(TileConfigComponent, tileName).then(res => console.log(tileName));
+    this.modalService.openConfirmationModal(TileConfigComponent, tileName).then(res => console.log(tileName));
     
     ///...
     //this.showConfig = true;

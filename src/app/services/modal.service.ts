@@ -14,15 +14,17 @@ export class DynamicModalService {
     this.vcr = vcr;
   }
 
-  openConfirmationModal(component: any, id: string) { // any should be only Components!
+  openConfirmationModal(component: any, id: string) { // any should be only Components! // TODO: Try use IConfirmationModal as interface not any
     const factory = this.cfr.resolveComponentFactory(component);
     const ref = factory.create(this.vcr.parentInjector);
     // Access component instance and set id property
-    (<IConfirmationModal>ref.instance).id = id;
+    var componentInstance = (<IConfirmationModal>ref.instance);
+    componentInstance.id = id;
+    
     // detection changes
     setTimeout(() => this.vcr.insert(ref.hostView));
 
-    return (<IConfirmationModal>ref.instance)
+    return componentInstance
       .destroy$.asObservable()
       .pipe(
         take(1),
