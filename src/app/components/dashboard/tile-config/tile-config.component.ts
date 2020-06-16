@@ -20,6 +20,8 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   open = true;
   tile: Tile;
   selectedItem: Item;
+  alertText: string = null;
+  isLoading: boolean = false; // Spinner
   category: CategoryType;
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
   
@@ -28,8 +30,10 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   ngOnInit(): void {
     this.tileName = this.id;
     var tiles = AppComponent.configuration.dashboardTiles.filter(t => t.title == this.tileName);
-    if (tiles.some) {
+    if (tiles.length == 1) {
       this.tile = tiles[0];
+    } else {
+      this.alertText = `Tile with name ${this.id} could not be found in config.`;
     }
   }
 
@@ -47,23 +51,57 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
       this.destroy$.next(result);
     }
     else {
-      let saveConfigSuccess = this.saveConfig();
-      if (saveConfigSuccess) {
-        this.open = false;
-        this.destroy$.next(result);
-      } else {
-        // TODO: show error in ui
+      let valid = this.tileNameIsValid();
+      if (!valid) {
+        this.alertText = `Tile with name ${this.tileName} is already in use - please use a different one!`;
+      }
+      else {
+        this.isLoading = true;
+        // assign new tile Name
+        this.tile.title = this.tileName;
+        // Save the new Config using Config Service
+        let saveConfigSuccess = this.saveConfig();
+        // On Success: Close dialog and reload
+        if (saveConfigSuccess) {
+          this.open = false;
+          this.destroy$.next(result);
+          window.location.reload();
+        }
       }
     }
   }
-
  
+  private tileNameIsValid(): boolean {
+    if (this.tileName == this.id) {
+      // unchanged tile name
+      return true;
+    } else {
+      // tile was renamed
+      let tiles = AppComponent.configuration.dashboardTiles.filter(t => t.title == this.tileName);
+      if (tiles.length > 0) {
+        return false;
+      } 
+      return true;
+    }
+  }
+
   private saveConfig(): boolean {
     this.configService.saveConfig(AppComponent.configuration)
-      .subscribe(event => {
-        console.log(`Saving the config. Status = ${event.statusText}; Body = ${JSON.stringify(event.body)}`);
-        return event.ok
-      });
+      .subscribe(
+        event => {
+          console.log(`Saving the config. Status = ${event.statusText}; Body = ${JSON.stringify(event.body)}`);
+          if (event.ok) {
+            this.alertText = null;
+          }
+          return event.ok
+        },
+        error => {
+          if (error) {
+            this.alertText = `Error: ${error}`;
+          } else {
+            this.alertText = null;
+          }
+        });
     return false;
   }
 }

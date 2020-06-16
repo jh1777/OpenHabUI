@@ -58,7 +58,11 @@ export class TileComponent implements OnInit {
     // Service need a container, set appwide once
     this.modalService.setViewContainerRef(this.vcr);
     // Call from anywhere?, returns true/false
-    this.modalService.openConfirmationModal(TileConfigComponent, tileName).then(res => console.log(tileName));
+    this.modalService.openConfirmationModal(TileConfigComponent, tileName).then(res => {
+      if (res) { 
+        console.log("Config has been changed!")
+      }
+    });
     
     ///...
     //this.showConfig = true;
