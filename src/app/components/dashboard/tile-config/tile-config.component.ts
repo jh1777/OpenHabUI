@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Tile } from 'src/app/models/config/tile';
-import { AppComponent } from 'src/app/app.component';
 import { Item } from 'src/app/models/config/item';
 import { Subject } from 'rxjs';
 import { CategoryType } from 'src/app/models/config/category';
@@ -19,22 +18,34 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   tileName: string;
   open = true;
   tile: Tile;
-  selectedItem: Item;
-  alertText: string = null;
+  selectedItem: Item;  // Item from Tile Edit dialog
+  alertText: string = null; // Error Text
   isLoading: boolean = false; // Spinner
-  category: CategoryType;
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
-  
+  // TODO: Query for available Items in OpenHab
+
   constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
-    this.tileName = this.id;
-    var tiles = AppComponent.configuration.dashboardTiles.filter(t => t.title == this.tileName);
-    if (tiles.length == 1) {
-      this.tile = tiles[0];
-    } else {
-      this.alertText = `Tile with name ${this.id} could not be found in config.`;
+    if (this.id == null) {
+      // Assume that Create New Tile was called
+      this.tile = this.createNewTile();
+    } 
+    else {
+      // Edit existing Tile
+      this.tileName = this.id;
+      var tile = this.configService.getTileWithName(this.tileName);
+      if (tile != null) {
+        this.tile = tile;
+      } else {
+        this.alertText = `Tile with name ${this.id} could not be found in config.`;
+      }
     }
+  }
+
+  private createNewTile(): Tile {
+    var tile = this.configService.addTile();
+    return tile;
   }
 
   selectItem(item: Item) {
@@ -42,7 +53,12 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   }
 
   createNewItem() {
-    // TODO
+    var item = new Item();
+    // Set some mandatory defaults
+    item.displayName = "<New Item>";
+    item.name = "<New Item>";
+    item.category = "battery";
+    this.tile.items?.push(item);
   }
 
   applyConfig(result) {
@@ -77,7 +93,7 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
       return true;
     } else {
       // tile was renamed
-      let tiles = AppComponent.configuration.dashboardTiles.filter(t => t.title == this.tileName);
+      let tiles = ConfigService.configuration.dashboardTiles.filter(t => t.title == this.tileName);
       if (tiles.length > 0) {
         return false;
       } 
@@ -86,7 +102,7 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   }
 
   private saveConfig(): boolean {
-    this.configService.saveConfig(AppComponent.configuration)
+    this.configService.saveConfig(ConfigService.configuration)
       .subscribe(
         event => {
           console.log(`Saving the config. Status = ${event.statusText}; Body = ${JSON.stringify(event.body)}`);

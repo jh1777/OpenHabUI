@@ -1,15 +1,15 @@
 import { OpenhabItem } from '../model/openhabItem';
 import { Item } from 'src/app/models/config/item';
-import { AppComponent } from 'src/app/app.component';
 import { CategoryType } from 'src/app/models/config/category';
 import { StateMapping } from './stateMapping';
+import { ConfigService } from '../config.service';
 
 export class ItemPostProcessor {
 
    static ApplyConfigToItem = (item: OpenhabItem, itemConfig: Item = null): OpenhabItem => {
     if (itemConfig == null) {
       // Get config for Item
-      let itemsFromTilesConfig = AppComponent.configuration.dashboardTiles.map(t => t.items);
+      let itemsFromTilesConfig = ConfigService.configuration.dashboardTiles.map(t => t.items);
       const flattenedArray: Item[] = [].concat(...itemsFromTilesConfig);
       itemConfig = flattenedArray.filter(i => i.name == item.name)[0];
     }

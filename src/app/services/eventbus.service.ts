@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject, ReplaySubject } from 'rxjs';
-import { AppComponent } from '../app.component';
+import { Subject } from 'rxjs';
 import { ItemStateChangedEvent } from './model/itemStateChangedEvent';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +31,7 @@ export class EventbusService {
    * Pass optional filter parameter (string[]) to not pollute the subjects with unneccessary events
    */
   private createSubjectOnEventBus = (subj: Subject<ItemStateChangedEvent>, filter: string[] = null) => { 
-    var source = new EventSource(AppComponent.configuration.openHabUrl + '/events?topics=smarthome/items/*/statechanged,smarthome/items/*/*/statechanged');
+    var source = new EventSource(ConfigService.configuration.openHabUrl + '/events?topics=smarthome/items/*/statechanged,smarthome/items/*/*/statechanged');
     source.onmessage = function (event) {
       try {
         let evtdata = JSON.parse(event.data);

@@ -1,5 +1,15 @@
-<span class="vl"><a class="nav-link" (click)="showHistory($event)"><clr-icon shape="history" size="22"></clr-icon></a></span>&nbsp; 
-<app-summary [summaryItems]="summaryItems" [categories]="summaryCategories"></app-summary>
+<table width="100%">
+  <tr>
+    <td>
+      <span class="vl"><a class="nav-link" (click)="showHistory($event)"><clr-icon shape="history" size="22"></clr-icon></a></span>&nbsp; 
+      <app-summary [summaryItems]="summaryItems" [categories]="summaryCategories"></app-summary>
+    </td>
+    <td width="35px" style="text-align: right;">
+      <clr-icon (click)="createNewTile()" shape="plus-circle" style="cursor: pointer;" size="22"></clr-icon>
+    </td>
+  </tr>
+</table>
+
 <div style="padding-top: 10px;"></div>
 <div class="card-columns card-columns-2">
   <div  *ngFor="let tile of tilesToShow" >

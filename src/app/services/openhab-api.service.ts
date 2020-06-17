@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, forkJoin, of } from 'rxjs';
-import { catchError, map, tap, retry, observeOn, switchMap, switchMapTo } from 'rxjs/operators';
-import { OpenhabGroup } from './model/openhabGroup';
+import { Observable, throwError, forkJoin } from 'rxjs';
+import { catchError, map, tap, retry, switchMap } from 'rxjs/operators';
 import { OpenhabItem } from './model/openhabItem';
-import { Room } from '../models/config/room';
-import { AppComponent } from '../app.component';
 import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
 import { OpenhabItemHistory, OpenhabItemHistoryEntry } from './model/openhabItemHistory';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenhabApiService {
-  private url = `${AppComponent.configuration.openHabUrl}`;
+  private url = `${ConfigService.configuration.openHabUrl}`;
   
   constructor(private http: HttpClient) { }
 

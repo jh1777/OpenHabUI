@@ -1,8 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, NgZone, ChangeDetectorRef, KeyValueDiffers } from '@angular/core';
+import { Component, OnInit, NgZone, ViewContainerRef } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
-import { AppComponent } from 'src/app/app.component';
 import { ItemStateChangedEvent } from 'src/app/services/model/itemStateChangedEvent';
 import { ItemPostProcessor } from 'src/app/services/serviceTools/itemPostprocessor';
 import cloneDeep from 'lodash.clonedeep';
@@ -13,6 +12,9 @@ import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
 import { Subject, BehaviorSubject } from 'rxjs';
+import { ConfigService } from 'src/app/services/config.service';
+import { DynamicModalService } from 'src/app/services/modal.service';
+import { TileConfigComponent } from 'src/app/components/dashboard/tile-config/tile-config.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,9 +39,9 @@ export class DashboardComponent implements OnInit {
   // Summary Categories array (to preserve defined order)
   summaryCategories: string[] = [];
   // Show only activity in Summary (if false also none-triggered states will be shown)
-  activityOnlyInSummary = AppComponent.configuration.showOnlyActivityInSummary;
+  activityOnlyInSummary = ConfigService.configuration.showOnlyActivityInSummary;
   // Config: Tiles 
-  tiles: Tile[] = AppComponent.configuration.dashboardTiles;
+  tiles: Tile[] = ConfigService.configuration.dashboardTiles;
   // Tiles used to show in UI - some may not be shown based on certain item config
   tilesToShow: Tile[];
   // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
@@ -51,7 +53,10 @@ export class DashboardComponent implements OnInit {
   constructor(
     private api: OpenhabApiService, 
     private zone: NgZone, 
-    private eventService: EventbusService) 
+    private eventService: EventbusService,
+    private modalService: DynamicModalService,
+    private configService: ConfigService,
+    private vcr: ViewContainerRef) 
     {}
 
   ngOnInit() {
@@ -61,27 +66,29 @@ export class DashboardComponent implements OnInit {
 
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
-    AppComponent.configuration.dashboardTiles.forEach(tile => {
+    ConfigService.configuration.dashboardTiles.forEach(tile => {
       
-      // Get all item names from the current tile config that are NOT groups
-      let itemNames = tile.items.filter(i => !i.isGroup).map(i => i.name);
+      if (this.configService.hasItems(tile)) {
+        // Get all item names from the current tile config that are NOT groups
+        let itemNames = tile.items?.filter(i => !i.isGroup).map(i => i.name);
 
-      // Call API: Get all items from OpenHab and start Tile and Summary processing
-      this.api.getItems(itemNames).subscribe(items => {
+        // Call API: Get all items from OpenHab and start Tile and Summary processing
+        this.api.getItems(itemNames).subscribe(items => {
 
-        // Do post processing: REmove tile items only shown in summary or remove tile
-        // if there is no item anymore in the tile and add items to string array (for order)
-        this.tilesPostProcessing(items, tile);
+          // Do post processing: REmove tile items only shown in summary or remove tile
+          // if there is no item anymore in the tile and add items to string array (for order)
+          this.tilesPostProcessing(items, tile);
 
-        // Fill the summary items with item content
-        items.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
+          // Fill the summary items with item content
+          items.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
 
-        // Summary Calculation
-        this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
-      });
+          // Summary Calculation
+          this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
+        });
 
-      // Handle Group Items 
-      this.handleGroupItems(tile);
+        // Handle Group Items 
+        this.handleGroupItems(tile);
+      }
     });
 
     // Subscribe to Events (new)
@@ -89,7 +96,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private updateWarningStateForAllTiles(tileItems: Map<string, OpenhabItem[]>) {
-    let tiles = AppComponent.configuration.dashboardTiles;
+    let tiles = ConfigService.configuration.dashboardTiles;
     tileItems.forEach((value, key) => {
       this.updateWarningStateByTile(value, tiles.filter(t => t.title == key)[0]);
     });
@@ -108,7 +115,7 @@ export class DashboardComponent implements OnInit {
    */
   private tilesPostProcessing = (items: OpenhabItem[], tile: Tile) => {
     // Filter out items that are only shown in summary
-    let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
+    let itemsForTile = tile.items?.filter(i => !i.showOnlyInSummary);
     if (itemsForTile.length > 0) {
       let itemNamesForTile = itemsForTile.map(t => t.name);
       this.itemsByTile.set(tile.title, items.filter(i => itemNamesForTile.includes(i.name)));
@@ -244,6 +251,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+
   /**
    * Handle the event when an Item changed
    */
@@ -325,6 +333,8 @@ export class DashboardComponent implements OnInit {
     return cloneDeep(map);
   }
 
+  //##### Button Actions
+
   // History
   showHistory($event: MouseEvent) {
     $event.preventDefault();
@@ -334,4 +344,16 @@ export class DashboardComponent implements OnInit {
   closeHistoryModal() {
     this.showHistoryModal = false;
   }
+
+  // Create new Tile
+  createNewTile() {
+    this.modalService.setViewContainerRef(this.vcr);
+    // Call from anywhere?, returns true/false
+    this.modalService.openConfirmationModal(TileConfigComponent, null).then(res => {
+      if (res) { 
+        console.log("Tile has been added!")
+      }
+    });
+  }
+
 }

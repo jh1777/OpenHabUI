@@ -7,6 +7,7 @@ import { AppComponent } from 'src/app/app.component';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
 import { DynamicModalService } from 'src/app/services/modal.service';
 import { TileConfigComponent } from '../tile-config/tile-config.component';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-tile',
@@ -79,7 +80,7 @@ export class TileComponent implements OnInit {
     this.item = item;
 
     // Getting History from Openhab API
-    this.service.getItemHistory(item.name, AppComponent.configuration.itemStateHistory).subscribe(history => {
+    this.service.getItemHistory(item.name, ConfigService.configuration.itemStateHistory).subscribe(history => {
       this.stateHistory = history;
     });
 
