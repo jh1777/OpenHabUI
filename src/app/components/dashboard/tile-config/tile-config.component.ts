@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Tile } from 'src/app/models/config/tile';
 import { Item } from 'src/app/models/config/item';
 import { Subject } from 'rxjs';
@@ -19,13 +19,17 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   open = true;
   tile: Tile;
   selectedItem: Item;  // Item from Tile Edit dialog
+
   alertText: string = null; // Error Text
+  alertText2: string = null; // Error Text
+  alertText3: string = null; // Error Text
+
   isLoading: boolean = false; // Spinner
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
   // TODO: Query for available Items in OpenHab
 
   constructor(private configService: ConfigService) {}
-
+  
   ngOnInit(): void {
     if (this.id == null) {
       // Assume that Create New Tile was called
@@ -57,7 +61,6 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
     // Set some mandatory defaults
     item.displayName = "<New Item>";
     item.name = "<New Item>";
-    item.category = "battery";
     this.tile.items?.push(item);
   }
 
@@ -67,11 +70,9 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
       this.destroy$.next(result);
     }
     else {
-      let valid = this.tileNameIsValid();
-      if (!valid) {
-        this.alertText = `Tile with name ${this.tileName} is already in use - please use a different one!`;
-      }
-      else {
+      let formInvalid = this.formDataIsInvalid();
+
+      if (!formInvalid) {
         this.isLoading = true;
         // assign new tile Name
         this.tile.title = this.tileName;
@@ -85,6 +86,31 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
         }
       }
     }
+  }
+
+  private formDataIsInvalid(): boolean {
+    // Tile
+    let validTileName = this.tileNameIsValid();
+      if (!validTileName) {
+        this.alertText = `Tile with name ${this.tileName} is already in use - please use a different one!`;
+      } else {
+        this.alertText = null;
+      }
+    // Item Names
+    let nameNotOk = this.tile.items?.some(e => e.name === "<New Item>" || e.displayName === "<New Item>");
+    if (nameNotOk) {
+      this.alertText2 = "Item Name / Item Display Name must be defined and valid!"
+    } else {
+      this.alertText2 = null;
+    }
+    // Category
+    let categoryNotOk = this.tile.items?.some(e => e.category == null || e.category == "");
+    if (categoryNotOk) {
+      this.alertText3 = "Item Category must be defined and valid!"
+    } else {
+      this.alertText3 = null;
+    }
+    return nameNotOk || categoryNotOk || !validTileName;
   }
  
   private tileNameIsValid(): boolean {

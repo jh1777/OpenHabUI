@@ -1,19 +1,17 @@
 
-<clr-modal [(clrModalOpen)]="open" [clrModalSize]="'lg'" [clrModalClosable]="false" >
+<clr-modal [(clrModalOpen)]="open" [clrModalSize]="'lg'" [clrModalClosable]="false" (keyup.esc)="applyConfig(false)" (keyup.enter)="applyConfig(true)">
     <h3 class="modal-title">
         <div *ngIf="alertText != null" class="alert alert-danger" role="alert">
-            <div class="alert-items">
-                <div class="alert-item static">
-                    <div class="alert-icon-wrapper">
-                        <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-                    </div>
-                    <span class="alert-text">
-                        {{alertText}}
-                    </span>
-                </div>
-            </div>
+            <div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon></div><span class="alert-text">{{alertText}}</span></div></div>
         </div>
-        <div *ngIf="alertText != null"><p></p></div>
+        <div *ngIf="alertText2 != null" class="alert alert-danger" role="alert">
+            <div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon></div><span class="alert-text">{{alertText2}}</span></div></div>
+        </div>
+        <div *ngIf="alertText3 != null" class="alert alert-danger" role="alert">
+            <div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon></div><span class="alert-text">{{alertText3}}</span></div></div>
+        </div>
+
+        <div *ngIf="alertText != null || alertText2 != null || alertText3 != null"><p></p></div>
         <clr-icon shape="pencil" size="22"></clr-icon> &nbsp; {{tileName}} &nbsp; <clr-spinner *ngIf="isLoading" clrInline clrMedium>Saving config</clr-spinner>
         <form clrForm clrLayout="vertical">
             <clr-input-container>
@@ -27,7 +25,7 @@
     <div class="modal-body">
         <p><strong>Tile items</strong></p>
         <span (click)="selectItem(item)" *ngFor="let item of tile.items" style="cursor: pointer; font-size: smaller; padding-top: 2px;" [ngClass]="{'label-info': !item?.showOnlyInSummary, 'label-warning': item?.showOnlyInSummary }" class="label clickable">{{item.displayName}}</span>
-        <span (click)="createNewItem()" style="cursor: pointer; font-size: smaller; padding-top: 2px;" class="label label-success clickable"> + </span>
+        <clr-icon (click)="createNewItem()" shape="plus-circle" style="cursor: pointer;" size="18"></clr-icon>
         <p></p>
         <div *ngIf="selectedItem != null">
             <clr-tabs>
@@ -57,7 +55,7 @@
                               </clr-select-container>
                             <clr-input-container>
                                 <label>Unit</label>
-                                <input clrInput type="text" [(ngModel)]="selectedItem.unit" name="itemUnit" required />
+                                <input clrInput type="text" [(ngModel)]="selectedItem.unit" name="itemUnit" />
                                 <clr-control-helper>Unit of the Item eg. °C, %, etc. (optional)</clr-control-helper>
                                 <clr-control-error>Invalid Unit</clr-control-error>
                             </clr-input-container>
@@ -101,7 +99,7 @@
                 <clr-tab>
                     <button clrTabLink>Threshold</button>
                     <clr-tab-content *clrIfActive>
-                        <form clrForm clrLayout="horizontal">
+                        <form clrForm clrLayout="horizontal" >
                             <clr-input-container>
                                 <label>Warning Threshold</label>
                                 <input clrInput type="number" [(ngModel)]="selectedItem.warningThreshold" name="itemUnit" />
