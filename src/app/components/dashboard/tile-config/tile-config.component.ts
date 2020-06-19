@@ -7,8 +7,8 @@ import { IConfirmationModal } from 'src/app/services/model/confirmation-modal.mo
 import { ConfigService } from 'src/app/services/config.service';
 import { ObservableService } from 'src/app/services/observable.service';
 import { EventData } from 'src/app/services/model/event.model';
-import { LogEntry } from 'src/app/services/model/logEntry.model';
-import { LoggingService } from 'src/app/services/log.service';
+import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
+import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
 
 @Component({
   selector: 'app-tile-config',
@@ -33,10 +33,13 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   // TODO: Query for available Items in OpenHab
   // TODO:  change modal to: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
   // TODO: Implement clr form validations again (or try)
+  // TODO: BUG: Cancel click still leaves all changes alive in configuration
+  // TODO: Feature: Remove Item
 
   constructor(
     private configService: ConfigService, 
-    private observableService: ObservableService) {}
+    private observableService: ObservableService) {
+    }
   
   ngOnInit(): void {
     if (this.id == null) {
@@ -94,8 +97,8 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
         }
       } else {
         // Log
-        let entry = new LogEntry(`"${this.tileName}" form validation failed!`, "Edit/Create Tile", `${this.alertText ?? ""};${this.alertText2 ?? ""};${this.alertText3 ?? ""}`);
-        this.observableService.emit<LogEntry>(new EventData(LoggingService.EventId, entry));
+        let entry = new LogEntry(`"${this.tileName}" form validation failed!`, LogLevel.Error, "Edit/Create Tile", `${this.alertText ?? ""};${this.alertText2 ?? ""};${this.alertText3 ?? ""}`);
+        this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
       }
     }
   }
@@ -146,12 +149,18 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
           console.log(`Saving the config. Status = ${event.statusText}; Body = ${JSON.stringify(event.body)}`);
           if (event.ok) {
             this.alertText = null;
+            // Logging
+            let entry = new LogEntry(`"${this.tileName}" saved successfully.`, LogLevel.Info, "Edit/Create Tile");
+            this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
           }
           return event.ok
         },
         error => {
           if (error) {
             this.alertText = `Error: ${error}`;
+            // Logging
+            let entry = new LogEntry(`Unable to save configuration for Tile "${this.tileName}"!`, LogLevel.Error, "Edit/Create Tile");
+            this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
           } else {
             this.alertText = null;
           }

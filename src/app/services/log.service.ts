@@ -4,40 +4,35 @@ import { LogEntry, LogLevel } from './model/logEntry.model';
 import { retry, catchError } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { ObservableService } from './observable.service';
+import { ObservableEvents } from './model/observable.eventTypes';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'platform'
 })
+
 export class LoggingService {
-  public static EventId = "Log";
   private loggingService = "http://localhost:4441/log";
 
   private static httpHeaders = new HttpHeaders()
     .set("Content-Type", "application/json");
 
-  constructor(
-    private http: HttpClient,
-    private observableService: ObservableService
-    ) { 
-      this.observableService.on<LogEntry>(LoggingService.EventId, (data: LogEntry) => {
-        this.logEntry(data).subscribe( 
-          response => { if(!response.ok) console.log(response.body); },
-          error => console.log("Logging Error occured: "+error)
-        );
-      });
-    }
-
+  constructor(private http: HttpClient, private observableService: ObservableService) { 
+    console.log("logging construted");
+    // Handle Log events from global events service
+    this.observableService.on<LogEntry>(ObservableEvents.LOG, (data: LogEntry) => {
+      this.logEntry(data).subscribe( 
+        response => { if(!response.ok) console.log(response.body); },
+        error => console.log("Logging Error occured: "+error)
+      );
+    });
+  }
 
   private logEntry(entry: LogEntry): Observable<HttpResponse<string>> {
     return this.log(entry.message, entry.level, entry.context, entry.additionalData);
   }
   
   private log(message: string, level: LogLevel, context: string = null, additionalData: string = null): Observable<HttpResponse<string>> {
-    var entry = new LogEntry(message);
-    entry.additionalData = additionalData;
-    entry.level = level;
-    entry.context = context;
-
+    let entry = new LogEntry(message, level, context, additionalData);
     return this.http.post<string>(this.loggingService, entry, { headers: LoggingService.httpHeaders, observe: 'response' })
       .pipe(
         retry(1),

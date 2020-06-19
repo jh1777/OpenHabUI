@@ -5,19 +5,19 @@ import { retry, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs/internal/observable/throwError';
 import configuration from '../../../config.json';
 import { Tile } from '../models/config/tile';
-import { Item } from '../models/config/item';
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigService {
 
+export class ConfigService {
+  public static EventId = "Config";
   private configUrl = "http://localhost:4441/config";
 
   public static configuration: IConfiguration = configuration;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+  }
 
   private static httpHeaders = new HttpHeaders()
     .set("Content-Type", "application/json");
@@ -38,7 +38,6 @@ export class ConfigService {
     tiles.dashboardTiles.push(tile);
     return tile;
   }
-
 
   public hasTiles(): boolean {
     return configuration.dashboardTiles.length > 0;

@@ -15,6 +15,7 @@ import { SummaryComponent } from './components/dashboard/summary/summary.compone
 import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
 import { ConfigComponent } from './pages/config/config.component';
 import { TileConfigComponent } from './components/dashboard/tile-config/tile-config.component';
+import { LoggingService } from './services/log.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { TileConfigComponent } from './components/dashboard/tile-config/tile-con
     FormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [LoggingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

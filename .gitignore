@@ -1,4 +1,5 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+_logs/**
 
 # compiled output
 /dist
@@ -44,3 +45,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+!config.backup.json
+!config.sicherung.json

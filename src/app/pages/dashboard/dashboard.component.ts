@@ -15,6 +15,11 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
 import { DynamicModalService } from 'src/app/services/modal.service';
 import { TileConfigComponent } from 'src/app/components/dashboard/tile-config/tile-config.component';
+import { ObservableService } from 'src/app/services/observable.service';
+import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
+import { EventData } from 'src/app/services/model/event.model';
+import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
+import { LoggingService } from 'src/app/services/log.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,10 +61,14 @@ export class DashboardComponent implements OnInit {
     private eventService: EventbusService,
     private modalService: DynamicModalService,
     private configService: ConfigService,
+    private observableService: ObservableService,
+    private logger: LoggingService,
     private vcr: ViewContainerRef) 
     {}
 
   ngOnInit() {
+    this.logger.logInfo("OpenHab UI started.", "Startup").subscribe(e => e.body);
+    
     this.updateSubject.subscribe(data => {
       this.itemsByTile = data;
     });
@@ -321,7 +330,12 @@ export class DashboardComponent implements OnInit {
           });
         });
       });
-      console.log(itemStateChangedEvent.toString());
+      
+      if (environment.logLevel == "debug") {
+        console.log(itemStateChangedEvent.toString());
+        let entry = new LogEntry(itemStateChangedEvent.toString(), LogLevel.Debug, "OpenHab EventBus");
+        this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
+      }
     }
   }
 
