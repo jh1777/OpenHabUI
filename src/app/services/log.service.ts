@@ -9,7 +9,7 @@ import { ObservableService } from './observable.service';
   providedIn: 'root'
 })
 export class LoggingService {
-  public static LogEventTypeIdentifier = "Log";
+  public static EventId = "Log";
   private loggingService = "http://localhost:4441/log";
 
   private static httpHeaders = new HttpHeaders()
@@ -19,7 +19,7 @@ export class LoggingService {
     private http: HttpClient,
     private observableService: ObservableService
     ) { 
-      this.observableService.on<LogEntry>(LoggingService.LogEventTypeIdentifier, (data: LogEntry) => {
+      this.observableService.on<LogEntry>(LoggingService.EventId, (data: LogEntry) => {
         this.logEntry(data).subscribe( 
           response => { if(!response.ok) console.log(response.body); },
           error => console.log("Logging Error occured: "+error)

@@ -5,11 +5,10 @@ import { Subject } from 'rxjs';
 import { CategoryType } from 'src/app/models/config/category';
 import { IConfirmationModal } from 'src/app/services/model/confirmation-modal.model';
 import { ConfigService } from 'src/app/services/config.service';
-import { LoggingService } from 'src/app/services/log.service';
-import { error } from 'protractor';
 import { ObservableService } from 'src/app/services/observable.service';
 import { EventData } from 'src/app/services/model/event.model';
 import { LogEntry } from 'src/app/services/model/logEntry.model';
+import { LoggingService } from 'src/app/services/log.service';
 
 @Component({
   selector: 'app-tile-config',
@@ -37,7 +36,6 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
 
   constructor(
     private configService: ConfigService, 
-    private logger: LoggingService,
     private observableService: ObservableService) {}
   
   ngOnInit(): void {
@@ -97,7 +95,7 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
       } else {
         // Log
         let entry = new LogEntry(`"${this.tileName}" form validation failed!`, "Edit/Create Tile", `${this.alertText ?? ""};${this.alertText2 ?? ""};${this.alertText3 ?? ""}`);
-        this.observableService.emit<LogEntry>(new EventData(LoggingService.LogEventTypeIdentifier, entry));
+        this.observableService.emit<LogEntry>(new EventData(LoggingService.EventId, entry));
       }
     }
   }
