@@ -5,6 +5,11 @@ import { Subject } from 'rxjs';
 import { CategoryType } from 'src/app/models/config/category';
 import { IConfirmationModal } from 'src/app/services/model/confirmation-modal.model';
 import { ConfigService } from 'src/app/services/config.service';
+import { LoggingService } from 'src/app/services/log.service';
+import { error } from 'protractor';
+import { ObservableService } from 'src/app/services/observable.service';
+import { EventData } from 'src/app/services/model/event.model';
+import { LogEntry } from 'src/app/services/model/logEntry.model';
 
 @Component({
   selector: 'app-tile-config',
@@ -27,8 +32,13 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   isLoading: boolean = false; // Spinner
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
   // TODO: Query for available Items in OpenHab
+  // TODO:  change modal to: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
+  // TODO: Implement clr form validations again (or try)
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService, 
+    private logger: LoggingService,
+    private observableService: ObservableService) {}
   
   ngOnInit(): void {
     if (this.id == null) {
@@ -84,6 +94,10 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
           this.destroy$.next(result);
           window.location.reload();
         }
+      } else {
+        // Log
+        let entry = new LogEntry(`"${this.tileName}" form validation failed!`, "Edit/Create Tile", `${this.alertText ?? ""};${this.alertText2 ?? ""};${this.alertText3 ?? ""}`);
+        this.observableService.emit<LogEntry>(new EventData(LoggingService.LogEventTypeIdentifier, entry));
       }
     }
   }
