@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
@@ -11,9 +11,8 @@ import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry'
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
-import { DynamicModalService } from 'src/app/services/modal.service';
 import { TileConfigComponent } from 'src/app/components/dashboard/tile-config/tile-config.component';
 import { ObservableService } from 'src/app/services/observable.service';
 import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
@@ -27,8 +26,9 @@ import { LoggingService } from 'src/app/services/log.service';
   styleUrls: ['./dashboard.component.css']
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   title = environment.title;
+  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent; // Declare modal tile config dialog
 
   // List of changes states for history (limit to 50)
   stateChanges: ItemStateChangedEvent[] = [];
@@ -59,14 +59,23 @@ export class DashboardComponent implements OnInit {
     private api: OpenhabApiService, 
     private zone: NgZone, 
     private eventService: EventbusService,
-    private modalService: DynamicModalService,
     private configService: ConfigService,
     private observableService: ObservableService,
-    private logger: LoggingService,
-    private vcr: ViewContainerRef) 
+    private logger: LoggingService) 
     {}
 
+  ngAfterViewInit(): void {
+    this.tileConfigDialog.onSave.subscribe(tile => {
+        //do something with tile result!
+        if (tile) {
+          // TODO: Log in logging service
+          console.log("Tile creation: "+ JSON.stringify(tile));
+        }
+        // this.tileConfigDialog.close();
+    });
+  }
   ngOnInit() {
+    
     this.logger.logInfo("OpenHab UI started.", "Startup").subscribe(e => e.body);
     
     this.updateSubject.subscribe(data => {
@@ -361,6 +370,9 @@ export class DashboardComponent implements OnInit {
 
   // Create new Tile
   createNewTile() {
+    this.tileConfigDialog.openDialog();
+    // OLD 
+    /*
     this.modalService.setViewContainerRef(this.vcr);
     // Call from anywhere?, returns true/false
     this.modalService.openConfirmationModal(TileConfigComponent, null).then(res => {
@@ -368,6 +380,7 @@ export class DashboardComponent implements OnInit {
         console.log("Tile has been added!")
       }
     });
+    */
   }
 
 }

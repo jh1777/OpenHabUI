@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Tile } from 'src/app/models/config/tile';
 import { Item } from 'src/app/models/config/item';
-import { Subject } from 'rxjs';
 import { CategoryType } from 'src/app/models/config/category';
-import { IConfirmationModal } from 'src/app/services/model/confirmation-modal.model';
 import { ConfigService } from 'src/app/services/config.service';
 import { ObservableService } from 'src/app/services/observable.service';
 import { EventData } from 'src/app/services/model/event.model';
@@ -15,13 +13,12 @@ import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
   templateUrl: './tile-config.component.html',
   styleUrls: ['./tile-config.component.css']
 })
-export class TileConfigComponent implements OnInit, IConfirmationModal {
-  destroy$: Subject<boolean> = new Subject();
+export class TileConfigComponent  {
 
-  id: string;
+  initialTileName: string;
   tileName: string;
-  open = true;
-  tile: Tile;
+  open = false;
+  tile: Tile = null;
   selectedItem: Item;  // Item from Tile Edit dialog
 
   alertText: string = null; // Error Text
@@ -30,37 +27,52 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
 
   isLoading: boolean = false; // Spinner
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
+  
+  // DONE: Modal Dialog like: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
   // TODO: Query for available Items in OpenHab
-  // TODO:  change modal to: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
   // TODO: Implement clr form validations again (or try)
   // TODO: BUG: Cancel click still leaves all changes alive in configuration
   // TODO: Feature: Remove Item
 
+  @Output() onSave: EventEmitter<Tile> = new EventEmitter<Tile>();
+  
   constructor(
     private configService: ConfigService, 
     private observableService: ObservableService) {
     }
-  
-  ngOnInit(): void {
-    if (this.id == null) {
-      // Assume that Create New Tile was called
-      this.tile = this.createNewTile();
-    } 
-    else {
-      // Edit existing Tile
-      this.tileName = this.id;
-      var tile = this.configService.getTileWithName(this.tileName);
-      if (tile != null) {
-        this.tile = tile;
-      } else {
-        this.alertText = `Tile with name ${this.id} could not be found in config.`;
-      }
-    }
-  }
 
-  private createNewTile(): Tile {
-    var tile = this.configService.addTile();
-    return tile;
+  
+  // old:: ngOnInit(): void {
+  //   if (this.id == null) {
+  //     // Assume that Create New Tile was called
+  //     this.tile = this.createNewTile();
+  //   } 
+  //   else {
+  //     // Edit existing Tile
+  //     this.tileName = this.id;
+  //     var tile = this.configService.getTileWithName(this.tileName);
+  //     if (tile != null) {
+  //       this.tile = tile;
+  //     } else {
+  //       this.alertText = `Tile with name ${this.id} could not be found in config.`;
+  //     }
+  //   }
+  // }
+
+ 
+  openDialog(tile: Tile = null) {
+    this.open = true;
+    if (tile == null) {
+      // Assume this is new Tile creation
+      this.tile = this.configService.addTile();
+      this.tileName = "";
+      this.initialTileName = "";
+    } else {
+      this.tileName = tile.title;
+      this.initialTileName = tile.title;
+      // edit tile
+      this.tile = tile;
+    }
   }
 
   selectItem(item: Item) {
@@ -78,9 +90,9 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   applyConfig(result) {
     if (!result) {
       this.open = false;
-      this.destroy$.next(result);
     }
     else {
+      
       let formInvalid = this.formDataIsInvalid();
 
       if (!formInvalid) {
@@ -91,8 +103,8 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
         let saveConfigSuccess = this.saveConfig();
         // On Success: Close dialog and reload
         if (saveConfigSuccess) {
+          this.onSave.emit(this.tile);
           this.open = false;
-          this.destroy$.next(result);
           window.location.reload();
         }
       } else {
@@ -129,7 +141,7 @@ export class TileConfigComponent implements OnInit, IConfirmationModal {
   }
  
   private tileNameIsValid(): boolean {
-    if (this.tileName == this.id) {
+    if (this.tileName == this.initialTileName) {
       // unchanged tile name
       return true;
     } else {

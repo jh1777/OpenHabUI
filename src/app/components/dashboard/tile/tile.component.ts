@@ -1,11 +1,8 @@
-import { Component, OnInit, Input, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { CategoryType } from 'src/app/models/config/category';
-import { EventbusService } from 'src/app/services/eventbus.service';
-import { AppComponent } from 'src/app/app.component';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
-import { DynamicModalService } from 'src/app/services/modal.service';
 import { TileConfigComponent } from '../tile-config/tile-config.component';
 import { ConfigService } from 'src/app/services/config.service';
 
@@ -14,27 +11,36 @@ import { ConfigService } from 'src/app/services/config.service';
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.css']
 })
-export class TileComponent implements OnInit {
+export class TileComponent implements OnInit, AfterViewInit {
   @Input() tileName: string;
   @Input() items: OpenhabItem[];
   @Input() hasWarningItem: boolean;
   @Input() hasCriticalItem: boolean = false;
  
+  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent; // Declare modal tile config dialog
+  
   // UI needed
   item: OpenhabItem;
   showItemDetails: boolean = false;
-  showConfig: boolean = false;
   categoryType = CategoryType;
   stateHistory: OpenhabItemHistory;
   
   constructor(
     private service: OpenhabApiService, 
-    private eventService: EventbusService,
-    private modalService: DynamicModalService, 
-    private vcr: ViewContainerRef) { }
+    private configService: ConfigService) { }
+
+  // TODO: Show error bar in tile when an Item is incorrect or can't be queried!
 
   ngOnInit(): void {
 
+  }
+
+  ngAfterViewInit(): void {
+    this.tileConfigDialog.onSave.subscribe(tile => {
+
+        // TODO: Log in logging service
+        console.log("Tile Edited: "+JSON.stringify(tile));
+    });
   }
 
   switchAction(event: MouseEvent, item: OpenhabItem) {
@@ -54,25 +60,11 @@ export class TileComponent implements OnInit {
   }
 
   editConfig($event: MouseEvent, tileName: string) {
-    //$event.preventDefault();
-
-    // Service need a container, set appwide once
-    this.modalService.setViewContainerRef(this.vcr);
-    // Call from anywhere?, returns true/false
-    this.modalService.openConfirmationModal(TileConfigComponent, tileName).then(res => {
-      if (res) { 
-        console.log("Config has been changed!")
-      }
-    });
-    
-    ///...
-    //this.showConfig = true;
+    let tile = this.configService.getTileWithName(tileName);
+    if (tile != null) {
+      this.tileConfigDialog.openDialog(tile);
+    }
   }
-
-  applyConfig() {
-    this.showConfig = false;
-  }
-
 
    // For Details button
    openModal($event: MouseEvent, item: OpenhabItem) {

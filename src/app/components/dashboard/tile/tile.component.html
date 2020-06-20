@@ -54,19 +54,6 @@
     </div>
 </div>
 
-<clr-modal [(clrModalOpen)]="showConfig" [clrModalClosable]="false">
-    <h3 class="modal-title">
-        <clr-icon shape="pencil" size="22"></clr-icon>&nbsp; {{tileName}}
-    </h3>
-    <div class="modal-body">
-        <!-- <app-tile-config [tileName]="tileName"></app-tile-config> -->
-    </div>    
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary btn-sm" (click)="applyConfig()">Apply</button>
-      <button type="button" class="btn btn-sm" (click)="showConfig = false">Cancel</button>
-    </div>
-</clr-modal>
-
 <clr-modal [(clrModalOpen)]="showItemDetails">
     <h3 class="modal-title">
         {{item?.label}}
@@ -78,3 +65,5 @@
       <button type="button" class="btn btn-primary btn-sm" (click)="closeModal()">Close</button>
     </div>
 </clr-modal>
+
+<app-tile-config></app-tile-config>
