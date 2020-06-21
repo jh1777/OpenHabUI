@@ -34,16 +34,16 @@
                     <clr-tab-content id="content1" *clrIfActive>
                         <form clrForm clrLayout="horizontal">
                             <clr-input-container>
-                                <label>Item Name</label>
-                                <input clrInput type="text" [(ngModel)]="selectedItem.name" name="itemName" required />
-                                <clr-control-helper>Original OpenHab Item Name</clr-control-helper>
-                                <clr-control-error>No OpenHab Item exists with this name!</clr-control-error>
-                            </clr-input-container>
-                            <clr-input-container>
                                 <label>Display Name</label>
                                 <input clrInput type="text" [(ngModel)]="selectedItem.displayName" name="itemDisplayName" required />
                                 <clr-control-helper>Name of the Item how it should appear in the UI</clr-control-helper>
                                 <clr-control-error>Invalid Display Name</clr-control-error>
+                            </clr-input-container>
+                            <clr-input-container>
+                                <label>Item Name</label>
+                                <input clrInput type="text" [(ngModel)]="selectedItem.name" name="itemName" required />
+                                <clr-control-helper>Original OpenHab Item Name</clr-control-helper>
+                                <clr-control-error>No OpenHab Item exists with this name!</clr-control-error>
                             </clr-input-container>
                             <clr-select-container>
                                 <label>Category</label>
