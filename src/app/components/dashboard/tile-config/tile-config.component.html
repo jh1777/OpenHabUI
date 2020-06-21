@@ -24,7 +24,7 @@
     </h3>
     <div class="modal-body" *ngIf="tile">
         <p><strong>Tile items</strong></p>
-        <span (click)="selectItem(item)" *ngFor="let item of tile.items" style="cursor: pointer; font-size: smaller; padding-top: 2px;" [ngClass]="{'label-info': !item?.showOnlyInSummary, 'label-warning': item?.showOnlyInSummary }" class="label clickable">{{item.displayName}}</span>
+        <span (click)="selectItem(item)" *ngFor="let item of tile.items" style="cursor: pointer; font-size: smaller; padding-top: 2px;" [ngClass]="{'label-info': !item?.showOnlyInSummary, '': item?.showOnlyInSummary, 'strong': item == selectedItem }" class="label clickable">{{item.displayName}}<span (click)="removeItem(item);" class="badge" style="background-color: darkred;"> - </span></span>
         <clr-icon (click)="createNewItem()" shape="plus-circle" style="cursor: pointer;" size="18"></clr-icon>
         <p></p>
         <div *ngIf="selectedItem != null">

@@ -1,6 +1,6 @@
 import { Tile } from 'src/app/models/config/tile';
 
-export interface IConfiguration {
+export class Configuration {
     openHabUrl: string;
     itemStateHistory: number;
     showOnlyActivityInSummary: boolean;

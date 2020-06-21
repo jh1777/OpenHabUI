@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { IConfiguration } from './model/configuration-model';
+import { Configuration } from './model/configuration-model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { retry, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs/internal/observable/throwError';
 import configuration from '../../../config.json';
 import { Tile } from '../models/config/tile';
+import cloneDeep from 'lodash.clonedeep';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ConfigService {
-  public static EventId = "Config";
   private configUrl = "http://localhost:4441/config";
 
-  public static configuration: IConfiguration = configuration;
+  public static configuration: Configuration = configuration;
 
   constructor(private http: HttpClient) { 
   }
@@ -22,7 +22,7 @@ export class ConfigService {
   private static httpHeaders = new HttpHeaders()
     .set("Content-Type", "application/json");
   
-  saveConfig(config: IConfiguration) {
+  saveConfig(config: Configuration) {
     return this.http.post<string>(this.configUrl, config, { headers: ConfigService.httpHeaders, observe: 'response' })
       .pipe(
         retry(1),
@@ -30,12 +30,16 @@ export class ConfigService {
       );
   }
 
-  public addTile(): Tile {
-    var tiles = configuration as IConfiguration;
+  public create(): Configuration {
+    return cloneDeep(ConfigService.configuration);
+  }
+
+  public createTile(): Tile {
+    //var tiles = configuration as Configuration;
     var tile = new Tile();
     tile.title = "";
     tile.items = [];
-    tiles.dashboardTiles.push(tile);
+    //tiles.dashboardTiles.push(tile);
     return tile;
   }
 

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 //import configuration from 'config.json';
-import { IConfiguration } from './services/model/configuration-model';
 
 @Component({
   selector: 'app-root',

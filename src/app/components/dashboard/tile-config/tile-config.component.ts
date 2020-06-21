@@ -7,6 +7,7 @@ import { ObservableService } from 'src/app/services/observable.service';
 import { EventData } from 'src/app/services/model/event.model';
 import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
 import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
+import { Configuration } from 'src/app/services/model/configuration-model';
 
 @Component({
   selector: 'app-tile-config',
@@ -14,6 +15,7 @@ import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
   styleUrls: ['./tile-config.component.css']
 })
 export class TileConfigComponent  {
+  workingConfig: Configuration = null;
 
   initialTileName: string;
   tileName: string;
@@ -29,10 +31,10 @@ export class TileConfigComponent  {
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
   
   // DONE: Modal Dialog like: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
+  // DONE: Cancel click still leaves all changes alive in configuration
   // TODO: Query for available Items in OpenHab
-  // TODO: Implement clr form validations again (or try)
-  // TODO: BUG: Cancel click still leaves all changes alive in configuration
-  // TODO: Feature: Remove Item
+  // TODO: Feature: Remove Item -> TODO: Show confirmation before Remove Item
+  // TODO: Create Log entry only events -> post to Logging service only on OK-click
 
   @Output() onSave: EventEmitter<Tile> = new EventEmitter<Tile>();
   
@@ -40,38 +42,29 @@ export class TileConfigComponent  {
     private configService: ConfigService, 
     private observableService: ObservableService) {
     }
-
-  
-  // old:: ngOnInit(): void {
-  //   if (this.id == null) {
-  //     // Assume that Create New Tile was called
-  //     this.tile = this.createNewTile();
-  //   } 
-  //   else {
-  //     // Edit existing Tile
-  //     this.tileName = this.id;
-  //     var tile = this.configService.getTileWithName(this.tileName);
-  //     if (tile != null) {
-  //       this.tile = tile;
-  //     } else {
-  //       this.alertText = `Tile with name ${this.id} could not be found in config.`;
-  //     }
-  //   }
-  // }
-
  
   openDialog(tile: Tile = null) {
     this.open = true;
+    this.workingConfig = this.configService.create();
     if (tile == null) {
       // Assume this is new Tile creation
-      this.tile = this.configService.addTile();
+      this.tile = this.configService.createTile();
       this.tileName = "";
       this.initialTileName = "";
+
+      // Add tile
+      this.workingConfig.dashboardTiles.push(this.tile);
     } else {
-      this.tileName = tile.title;
-      this.initialTileName = tile.title;
-      // edit tile
-      this.tile = tile;
+      var tiles = this.workingConfig.dashboardTiles.filter(t => t.title === tile.title);
+      if (tiles.length == 1) {
+        this.tileName = tile.title;
+        this.initialTileName = tile.title;
+        // edit tile
+        this.tile = tiles[0];
+        if (tiles[0].items.length > 0) {
+          this.selectedItem = tiles[0].items[0];
+        }
+      }
     }
   }
 
@@ -79,12 +72,32 @@ export class TileConfigComponent  {
     this.selectedItem = item;
   }
 
+  removeItem(item: Item) {
+    console.log(`Remove item ${item.displayName} clicked...`);
+    // TODO: REmove Item confirm
+    // ..
+    //. ...
+    let idx = this.tile.items?.findIndex(i => i === item);
+    if (idx > -1) {
+      let removedItems = this.tile.items?.splice(idx, 1);
+      if (removedItems.length == 1) {
+        this.selectedItem = this.tile.items[0];
+        // Log
+        let entry = new LogEntry(`"${this.tileName}" item ${removedItems[0].displayName} (${removedItems[0].name}) was removed.`, LogLevel.Info, "Remove Item", `${JSON.stringify(removedItems[0])}`);
+        this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
+      }
+      
+    }
+
+  }
+
   createNewItem() {
     var item = new Item();
     // Set some mandatory defaults
     item.displayName = "<New Item>";
     item.name = "<New Item>";
-    this.tile.items?.push(item);
+    let idx = this.tile.items?.push(item);
+    this.selectedItem = this.tile.items[idx-1];
   }
 
   applyConfig(result) {
@@ -92,7 +105,6 @@ export class TileConfigComponent  {
       this.open = false;
     }
     else {
-      
       let formInvalid = this.formDataIsInvalid();
 
       if (!formInvalid) {
@@ -155,7 +167,7 @@ export class TileConfigComponent  {
   }
 
   private saveConfig(): boolean {
-    this.configService.saveConfig(ConfigService.configuration)
+    this.configService.saveConfig(this.workingConfig)
       .subscribe(
         event => {
           console.log(`Saving the config. Status = ${event.statusText}; Body = ${JSON.stringify(event.body)}`);

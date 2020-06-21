@@ -17,7 +17,6 @@ export class LoggingService {
     .set("Content-Type", "application/json");
 
   constructor(private http: HttpClient, private observableService: ObservableService) { 
-    console.log("logging construted");
     // Handle Log events from global events service
     this.observableService.on<LogEntry>(ObservableEvents.LOG, (data: LogEntry) => {
       this.logEntry(data).subscribe( 
