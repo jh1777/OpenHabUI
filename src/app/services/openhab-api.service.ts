@@ -1,24 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError, forkJoin, of } from 'rxjs';
-import { catchError, map, tap, retry, observeOn, switchMap, switchMapTo } from 'rxjs/operators';
-import { OpenhabGroup } from './model/openhabGroup';
+import { Observable, throwError, forkJoin } from 'rxjs';
+import { catchError, map, tap, retry, switchMap } from 'rxjs/operators';
 import { OpenhabItem } from './model/openhabItem';
-import { Room } from '../models/config/room';
-import { AppComponent } from '../app.component';
 import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
 import { OpenhabItemHistory, OpenhabItemHistoryEntry } from './model/openhabItemHistory';
+import { ConfigService } from './config.service';
+import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenhabApiService {
-  private url = `${AppComponent.configuration.openHabUrl}`;
+  private url = `${ConfigService.configuration.openHabUrl}`;
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+  }
 
   static httpHeaders = new HttpHeaders()
     .set("Content-Type", "text/plain");
+
+  getAllItems(): Observable<HttpResponse<OpenhabItem[]>> {
+    let uri = `${this.url}/items`;
+    return this.http.get<OpenhabItem[]>(uri, { observe: 'response' })
+    .pipe(
+      retry(1),
+      catchError(this.errorHandler)
+    );
+  }
 
   setItemState(item: OpenhabItem, state: string): Observable<HttpResponse<string>>
   {
@@ -138,7 +147,7 @@ export class OpenhabApiService {
     }
   }
 
-  errorHandler(error: any) {
+  private errorHandler(error: any) {
     let errorMessage = '';
     if(error.error instanceof ErrorEvent) {
       // Get client-side error
@@ -149,5 +158,4 @@ export class OpenhabApiService {
     }
     return throwError(errorMessage);
   }
-
 }

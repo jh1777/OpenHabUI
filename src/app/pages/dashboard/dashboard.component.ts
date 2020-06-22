@@ -1,8 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, NgZone, ChangeDetectorRef, KeyValueDiffers } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, AfterViewInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
-import { AppComponent } from 'src/app/app.component';
 import { ItemStateChangedEvent } from 'src/app/services/model/itemStateChangedEvent';
 import { ItemPostProcessor } from 'src/app/services/serviceTools/itemPostprocessor';
 import cloneDeep from 'lodash.clonedeep';
@@ -12,7 +11,14 @@ import { SummaryEntry } from 'src/app/components/dashboard/summary/summaryEntry'
 import { SummaryTools } from 'src/app/services/serviceTools/summaryTools';
 import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { ConfigService } from 'src/app/services/config.service';
+import { TileConfigComponent } from 'src/app/components/dashboard/tile-config/tile-config.component';
+import { ObservableService } from 'src/app/services/observable.service';
+import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
+import { EventData } from 'src/app/services/model/event.model';
+import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
+import { LoggingService } from 'src/app/services/log.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,8 +26,9 @@ import { Subject, BehaviorSubject } from 'rxjs';
   styleUrls: ['./dashboard.component.css']
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
   title = environment.title;
+  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent; // Declare modal tile config dialog
 
   // List of changes states for history (limit to 50)
   stateChanges: ItemStateChangedEvent[] = [];
@@ -37,9 +44,9 @@ export class DashboardComponent implements OnInit {
   // Summary Categories array (to preserve defined order)
   summaryCategories: string[] = [];
   // Show only activity in Summary (if false also none-triggered states will be shown)
-  activityOnlyInSummary = AppComponent.configuration.showOnlyActivityInSummary;
+  activityOnlyInSummary = ConfigService.configuration.showOnlyActivityInSummary;
   // Config: Tiles 
-  tiles: Tile[] = AppComponent.configuration.dashboardTiles;
+  tiles: Tile[] = ConfigService.configuration.dashboardTiles;
   // Tiles used to show in UI - some may not be shown based on certain item config
   tilesToShow: Tile[];
   // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
@@ -51,37 +58,54 @@ export class DashboardComponent implements OnInit {
   constructor(
     private api: OpenhabApiService, 
     private zone: NgZone, 
-    private eventService: EventbusService) 
+    private eventService: EventbusService,
+    private configService: ConfigService,
+    private observableService: ObservableService,
+    private logger: LoggingService) 
     {}
 
+  ngAfterViewInit(): void {
+    this.tileConfigDialog.onSave.subscribe(tile => {
+        //do something with tile result!
+        if (tile) {
+          console.log("Tile creation: "+ JSON.stringify(tile));
+        }
+    });
+  }
+
   ngOnInit() {
+    
+    this.logger.logInfo("OpenHab UI started.", "Startup").subscribe(e => e.body);
+    
     this.updateSubject.subscribe(data => {
       this.itemsByTile = data;
     });
 
     this.tilesToShow = cloneDeep(this.tiles);
     // Call API for all configured tiles
-    AppComponent.configuration.dashboardTiles.forEach(tile => {
+    ConfigService.configuration.dashboardTiles.forEach(tile => {
       
-      // Get all item names from the current tile config that are NOT groups
-      let itemNames = tile.items.filter(i => !i.isGroup).map(i => i.name);
+      if (this.configService.hasItems(tile)) {
+        // Get all item names from the current tile config that are NOT groups
+        let itemNames = tile.items?.filter(i => !i.isGroup).map(i => i.name);
 
-      // Call API: Get all items from OpenHab and start Tile and Summary processing
-      this.api.getItems(itemNames).subscribe(items => {
+        // Call API: Get all items from OpenHab and start Tile and Summary processing
+        this.api.getItems(itemNames).subscribe(items => {
 
-        // Do post processing: REmove tile items only shown in summary or remove tile
-        // if there is no item anymore in the tile and add items to string array (for order)
-        this.tilesPostProcessing(items, tile);
+          // Do post processing: REmove tile items only shown in summary or remove tile
+          // if there is no item anymore in the tile and add items to string array (for order)
+          this.tilesPostProcessing(items, tile);
 
-        // Fill the summary items with item content
-        items.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
+          // Fill the summary items with item content
+          items.filter(i => i.showInSummary || i.showOnlyInSummary).map(item => SummaryTools.FillSummary(this.summaryItems, item));
 
-        // Summary Calculation
-        this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
-      });
+          // Summary Calculation
+          this.summaryCategories = SummaryTools.CalculateSummaryContent(this.summaryItems, this.activityOnlyInSummary);
+        });
 
-      // Handle Group Items 
-      this.handleGroupItems(tile);
+        // Handle Group Items 
+        this.handleGroupItems(tile);
+      }
     });
 
     // Subscribe to Events (new)
@@ -89,7 +113,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private updateWarningStateForAllTiles(tileItems: Map<string, OpenhabItem[]>) {
-    let tiles = AppComponent.configuration.dashboardTiles;
+    let tiles = ConfigService.configuration.dashboardTiles;
     tileItems.forEach((value, key) => {
       this.updateWarningStateByTile(value, tiles.filter(t => t.title == key)[0]);
     });
@@ -108,7 +132,7 @@ export class DashboardComponent implements OnInit {
    */
   private tilesPostProcessing = (items: OpenhabItem[], tile: Tile) => {
     // Filter out items that are only shown in summary
-    let itemsForTile = tile.items.filter(i => !i.showOnlyInSummary);
+    let itemsForTile = tile.items?.filter(i => !i.showOnlyInSummary);
     if (itemsForTile.length > 0) {
       let itemNamesForTile = itemsForTile.map(t => t.name);
       this.itemsByTile.set(tile.title, items.filter(i => itemNamesForTile.includes(i.name)));
@@ -222,28 +246,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  private getGroupContainingItemMember = (itemMap: Map<string, OpenhabItem[]>, itemName: string): OpenhabItem => {
-    let items: OpenhabItem[] =  [].concat(...itemMap.values());
-    let groups = items.filter(i => i.members != null);
-    let result: OpenhabItem;
-    groups.forEach(i => {
-      if (i.members.findIndex(m => m.name == itemName) != -1) {
-        result = i;
-      }
-    });
-    return result;
-  }
-
-  private getItemFromMap  = (itemMap: Map<string, OpenhabItem[]>, itemName: string): OpenhabItem => {
-    let items: OpenhabItem[] =  [].concat(...itemMap.values());
-    let index = items.findIndex(m => m.name == itemName);
-    if (index != -1) {
-      return items[index];
-    } else {
-      return null;
-    }
-  }
-
   /**
    * Handle the event when an Item changed
    */
@@ -313,7 +315,12 @@ export class DashboardComponent implements OnInit {
           });
         });
       });
-      console.log(itemStateChangedEvent.toString());
+      
+      if (environment.logLevel == "debug") {
+        console.log(itemStateChangedEvent.toString());
+        let entry = new LogEntry(itemStateChangedEvent.toString(), LogLevel.Debug, "OpenHab EventBus");
+        this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
+      }
     }
   }
 
@@ -325,6 +332,8 @@ export class DashboardComponent implements OnInit {
     return cloneDeep(map);
   }
 
+  //##### Button Actions
+
   // History
   showHistory($event: MouseEvent) {
     $event.preventDefault();
@@ -334,4 +343,10 @@ export class DashboardComponent implements OnInit {
   closeHistoryModal() {
     this.showHistoryModal = false;
   }
+
+  // Create new Tile
+  createNewTile() {
+    this.tileConfigDialog.openDialog();
+  }
+
 }

@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  title: "OpenHAB UI",
+  logLevel: "warning"
 };

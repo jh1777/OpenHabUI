@@ -1,0 +1,21 @@
+{
+  "name": "ohui-server",
+  "version": "1.0.0",
+  "description": "Server for OpenHab UI",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joerg Hannemann",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.6",
+    "concurrently": "^5.2.0",
+    "express": "^4.17.1",
+    "jsonfile": "^6.0.1",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.47",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.5"
+  }
+}

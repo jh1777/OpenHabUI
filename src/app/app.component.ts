@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import configuration from 'config.json';
-import { Tile } from './models/config/tile';
+//import configuration from 'config.json';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +8,6 @@ import { Tile } from './models/config/tile';
 })
 
 export class AppComponent  {
-  public static configuration: {openHabUrl:string, itemStateHistory: number, showOnlyActivityInSummary: boolean, dashboardTiles:Tile[]} = configuration;
+  // public static configuration: {openHabUrl:string, itemStateHistory: number, showOnlyActivityInSummary: boolean, dashboardTiles:Tile[]} = configuration;
+  //public static configuration: IConfiguration = configuration;
 }

@@ -1,1 +1,1 @@
-ng serve --host 0.0.0.0 --port 4222 --disableHostCheck
+echo "Deprecated: please use 'npm start' to launch this application"

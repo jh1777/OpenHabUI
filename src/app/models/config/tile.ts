@@ -1,7 +1,7 @@
 import { Item } from './item';
 
-export interface Tile // V3
+export class Tile // V3
 {
     title: string;
-    items: Item[];
+    items?: Item[];
 }
