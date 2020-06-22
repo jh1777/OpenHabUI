@@ -8,6 +8,7 @@ import { EventData } from 'src/app/services/model/event.model';
 import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
 import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
 import { Configuration } from 'src/app/services/model/configuration-model';
+import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 
 @Component({
   selector: 'app-tile-config',
@@ -23,16 +24,22 @@ export class TileConfigComponent  {
   tile: Tile = null;
   selectedItem: Item;  // Item from Tile Edit dialog
 
+  availableOpenhabItems: string[];
+
   alertText: string = null; // Error Text
   alertText2: string = null; // Error Text
   alertText3: string = null; // Error Text
+  alertText4: string = null; // Error Text
 
   isLoading: boolean = false; // Spinner
   categories: string[] = Object.keys(CategoryType).filter(v => isNaN(Number(v))) as string[];
   
+  // Collecting logs from actions to post them when dialog is confirmed
+  logs: LogEntry[] = [];
+
   // DONE: Modal Dialog like: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
   // DONE: Cancel click still leaves all changes alive in configuration
-  // TODO: Query for available Items in OpenHab
+  // DONE: Query for available Items in OpenHab
   // TODO: Feature: Remove Item -> TODO: Show confirmation before Remove Item
   // TODO: Create Log entry only events -> post to Logging service only on OK-click
 
@@ -40,10 +47,35 @@ export class TileConfigComponent  {
   
   constructor(
     private configService: ConfigService, 
-    private observableService: ObservableService) {
+    private observableService: ObservableService,
+    private openHabService: OpenhabApiService
+    ) {
+
     }
+
+  private processLogs() {
+    this.logs.map(entry => this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry)));
+  }
+
+  private getAllOpenHabItems() {
+    this.openHabService.getAllItems().subscribe(
+      result => {
+        this.availableOpenhabItems = result.body.map(i => i.name).sort();
+        console.log(`Fetched ${result.body.length} items from OpenHab.`)
+    }, error => {
+      if (error) {
+        this.alertText4 = `Error: ${error}`;
+        // Logging
+        let entry = new LogEntry(`Unable get all OpenHab items from API`, LogLevel.Error, "Query OpenHab API");
+        this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
+      } else {
+        this.alertText4 = null;
+      }
+    });
+  }
  
   openDialog(tile: Tile = null) {
+    this.getAllOpenHabItems();
     this.open = true;
     this.workingConfig = this.configService.create();
     if (tile == null) {
@@ -74,9 +106,9 @@ export class TileConfigComponent  {
 
   removeItem(item: Item) {
     console.log(`Remove item ${item.displayName} clicked...`);
-    // TODO: REmove Item confirm
-    // ..
-    //. ...
+
+    // TODO: Remove Item confirm dialog?
+
     let idx = this.tile.items?.findIndex(i => i === item);
     if (idx > -1) {
       let removedItems = this.tile.items?.splice(idx, 1);
@@ -84,7 +116,7 @@ export class TileConfigComponent  {
         this.selectedItem = this.tile.items[0];
         // Log
         let entry = new LogEntry(`"${this.tileName}" item ${removedItems[0].displayName} (${removedItems[0].name}) was removed.`, LogLevel.Info, "Remove Item", `${JSON.stringify(removedItems[0])}`);
-        this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
+        this.logs.push(entry);
       }
       
     }
@@ -103,11 +135,13 @@ export class TileConfigComponent  {
   applyConfig(result) {
     if (!result) {
       this.open = false;
+      this.logs = [];
     }
     else {
       let formInvalid = this.formDataIsInvalid();
 
       if (!formInvalid) {
+        this.processLogs();
         this.isLoading = true;
         // assign new tile Name
         this.tile.title = this.tileName;
@@ -174,7 +208,7 @@ export class TileConfigComponent  {
           if (event.ok) {
             this.alertText = null;
             // Logging
-            let entry = new LogEntry(`"${this.tileName}" saved successfully.`, LogLevel.Info, "Edit/Create Tile");
+            let entry = new LogEntry(`"${this.tileName}" saved successfully.`, LogLevel.Info, "Edit/Create Tile", `Data: ${JSON.stringify(this.tile)}`);
             this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
           }
           return event.ok

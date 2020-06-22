@@ -10,6 +10,9 @@
         <div *ngIf="alertText3 != null" class="alert alert-danger" role="alert">
             <div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon></div><span class="alert-text">{{alertText3}}</span></div></div>
         </div>
+        <div *ngIf="alertText4 != null" class="alert alert-danger" role="alert">
+            <div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon></div><span class="alert-text">{{alertText4}}</span></div></div>
+        </div>
 
         <div *ngIf="alertText != null || alertText2 != null || alertText3 != null"><p></p></div>
         <clr-icon shape="pencil" size="22"></clr-icon> &nbsp; {{tileName}} &nbsp; <clr-spinner *ngIf="isLoading" clrInline clrMedium>Saving config</clr-spinner>
@@ -39,12 +42,14 @@
                                 <clr-control-helper>Name of the Item how it should appear in the UI</clr-control-helper>
                                 <clr-control-error>Invalid Display Name</clr-control-error>
                             </clr-input-container>
-                            <clr-input-container>
+                            <clr-select-container>
                                 <label>Item Name</label>
-                                <input clrInput type="text" [(ngModel)]="selectedItem.name" name="itemName" required />
+                                <select clrSelect name="itemName" [(ngModel)]="selectedItem.name" required>
+                                    <option *ngFor="let name of availableOpenhabItems" [ngValue]="name">{{name}}</option>
+                                </select>
                                 <clr-control-helper>Original OpenHab Item Name</clr-control-helper>
                                 <clr-control-error>No OpenHab Item exists with this name!</clr-control-error>
-                            </clr-input-container>
+                            </clr-select-container>
                             <clr-select-container>
                                 <label>Category</label>
                                 <select clrSelect name="itemCategory" [(ngModel)]="selectedItem.category" required>
@@ -52,7 +57,7 @@
                                 </select>
                                 <clr-control-helper>Category of the Item</clr-control-helper>
                                 <clr-control-error>Invalid Category</clr-control-error>
-                              </clr-select-container>
+                            </clr-select-container>
                             <clr-input-container>
                                 <label>Unit</label>
                                 <input clrInput type="text" [(ngModel)]="selectedItem.unit" name="itemUnit" />

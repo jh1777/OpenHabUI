@@ -6,6 +6,7 @@ import { OpenhabItem } from './model/openhabItem';
 import { ItemPostProcessor } from './serviceTools/itemPostprocessor';
 import { OpenhabItemHistory, OpenhabItemHistoryEntry } from './model/openhabItemHistory';
 import { ConfigService } from './config.service';
+import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,20 @@ import { ConfigService } from './config.service';
 export class OpenhabApiService {
   private url = `${ConfigService.configuration.openHabUrl}`;
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+  }
 
   static httpHeaders = new HttpHeaders()
     .set("Content-Type", "text/plain");
+
+  getAllItems(): Observable<HttpResponse<OpenhabItem[]>> {
+    let uri = `${this.url}/items`;
+    return this.http.get<OpenhabItem[]>(uri, { observe: 'response' })
+    .pipe(
+      retry(1),
+      catchError(this.errorHandler)
+    );
+  }
 
   setItemState(item: OpenhabItem, state: string): Observable<HttpResponse<string>>
   {

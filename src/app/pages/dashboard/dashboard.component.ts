@@ -68,12 +68,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.tileConfigDialog.onSave.subscribe(tile => {
         //do something with tile result!
         if (tile) {
-          // TODO: Log in logging service
           console.log("Tile creation: "+ JSON.stringify(tile));
         }
-        // this.tileConfigDialog.close();
     });
   }
+
   ngOnInit() {
     
     this.logger.logInfo("OpenHab UI started.", "Startup").subscribe(e => e.body);
@@ -247,29 +246,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   }
 
-  private getGroupContainingItemMember = (itemMap: Map<string, OpenhabItem[]>, itemName: string): OpenhabItem => {
-    let items: OpenhabItem[] =  [].concat(...itemMap.values());
-    let groups = items.filter(i => i.members != null);
-    let result: OpenhabItem;
-    groups.forEach(i => {
-      if (i.members.findIndex(m => m.name == itemName) != -1) {
-        result = i;
-      }
-    });
-    return result;
-  }
-
-  private getItemFromMap  = (itemMap: Map<string, OpenhabItem[]>, itemName: string): OpenhabItem => {
-    let items: OpenhabItem[] =  [].concat(...itemMap.values());
-    let index = items.findIndex(m => m.name == itemName);
-    if (index != -1) {
-      return items[index];
-    } else {
-      return null;
-    }
-  }
-
-
   /**
    * Handle the event when an Item changed
    */
@@ -371,16 +347,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   // Create new Tile
   createNewTile() {
     this.tileConfigDialog.openDialog();
-    // OLD 
-    /*
-    this.modalService.setViewContainerRef(this.vcr);
-    // Call from anywhere?, returns true/false
-    this.modalService.openConfirmationModal(TileConfigComponent, null).then(res => {
-      if (res) { 
-        console.log("Tile has been added!")
-      }
-    });
-    */
   }
 
 }
