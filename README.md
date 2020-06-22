@@ -27,7 +27,7 @@ A simple and lean Angular UI for giving easy control and overview about your Ope
 1. Install angular cli (`npm install -g @angular/cli`)
 2. clone this git repo (`git clone https://github.com/jh1777/OpenHabUI.git`)
 3. run `npm i` in cloned folder to install required packages
-4. run `npm i` alos in folder `src/server` to install required packages for backend service
+4. run `npm i` also in folder `src/server` to install required packages for backend service
 5. start app using `npm start`
 
 If you need to adjust the ports (default is 4440 for angular UI and 4441 for the backend) you can find them here:
