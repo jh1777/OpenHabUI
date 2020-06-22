@@ -37,11 +37,8 @@ export class TileConfigComponent  {
   // Collecting logs from actions to post them when dialog is confirmed
   logs: LogEntry[] = [];
 
-  // DONE: Modal Dialog like: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
-  // DONE: Cancel click still leaves all changes alive in configuration
-  // DONE: Query for available Items in OpenHab
-  // TODO: Feature: Remove Item -> TODO: Show confirmation before Remove Item
-  // TODO: Create Log entry only events -> post to Logging service only on OK-click
+  // TODO: Alerts in separate component
+  // TODO (optional): Feature: Remove Item -> TODO: Show confirmation before Remove Item
 
   @Output() onSave: EventEmitter<Tile> = new EventEmitter<Tile>();
   

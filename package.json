@@ -1,6 +1,6 @@
 {
   "name": "openhab-ui",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "scripts": {
     "ng": "ng",
     "start": "concurrently \"ng serve --port 4440 --host 0.0.0.0 --disableHostCheck\" \"cd src/server && node_modules/.bin/ts-node-dev server.ts\"",

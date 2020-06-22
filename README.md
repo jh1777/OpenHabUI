@@ -9,6 +9,7 @@ A simple and lean Angular UI for giving easy control and overview about your Ope
 - Angular 9
 - RxJS
 - UI: Clarity 3
+- Backend: TS-Node API
 
 ### Supported Browsers
 
@@ -26,7 +27,17 @@ A simple and lean Angular UI for giving easy control and overview about your Ope
 1. Install angular cli (`npm install -g @angular/cli`)
 2. clone this git repo (`git clone https://github.com/jh1777/OpenHabUI.git`)
 3. run `npm i` in cloned folder to install required packages
-4. start app using `ng serve` or use provided script `start-on-server.sh` (takes care of host and customizes port to 4222)
+4. run `npm i` alos in folder `src/server` to install required packages for backend service
+5. start app using `npm start`
+
+If you need to adjust the ports (default is 4440 for angular UI and 4441 for the backend) you can find them here:
+
+- **UI**: package.json
+- **Backend**: src/server/server.ts
+
+!! The previously provided script `start-on-server.sh` is deprecated and shall NOT be used anymore!
+
+**AFTER EACH NEW OpenHAb UI UPDATE YOU INSTALL, PLEASE RUN STEPS 3 AND 4 AGAIN to install new or updated packages!**
 
 ## UI Components
 
@@ -50,7 +61,7 @@ tbd in later versions
 
 **The `config.json` file is the main configuration of this App!** Everything what you want to see in the UI you need to configure there!
 
-> An example `config.json` is contained in the repo. Please carefully take a look at that!
+> An example `config.json` is contained in the repo. Please carefully take a look at that! You can usee `config.template.json` as starting point for your own config!
 
 ### Structure
 
@@ -59,8 +70,7 @@ tbd in later versions
     "openHabUrl": "http://<ip>:<port>/rest",
     "itemStateHistory": 10,
     "showOnlyActivityInSummary": true,
-    "dashboardTiles": [],
-  	"rooms": []
+    "dashboardTiles": []
 }
 ```
 
@@ -143,13 +153,13 @@ As a **fundamental structural property**, the `category` of each item or group y
   - **Editable**: No
   - **Usage**: presence sensor
   - **Supports Group**: No
-- heating (TBD)
+- heating
   - **Icon**: <img src="./src/assets/icons/flame-line.svg" alt="flame-line" style="zoom:60%;" />
   - **Unit**: %
   - **Editable**: Yes
   - **Usage**: heating / thermostat
   - **Supports Group**: No **TODO**
-- rollershutter (TBD)
+- rollershutter
   - **Icon**: <img src="./src/assets/icons/portrait-line.svg" alt="portrait-line" style="zoom:60%;" />
   - **Unit**: %
   - **Editable**: Yes
@@ -175,11 +185,6 @@ Each single _item_ is defined as:
   	"isGroup": true // optional: is this entry is an openhab group? (default = false)
 }
 ```
-
-### Section `rooms`
-
-Define `groupName` and `displayName` of groups you want to see on a separate page in the UI. 
-One page for each room will be shown. **This feature will be implemented later!**
 
 ## Tiles
 
@@ -235,6 +240,7 @@ The states in the Details dialog are not real time - so changes will only be vis
 ### Useful Tutorial for Clarity
 
 https://medium.com/@beeman/tutorial-project-clarity-and-angular-cli-50d845a24d5b
+Modal Dialog: https://blog.armstrongconsulting.com/vmware-clarity-angular-modal-dialogs/
 
 ### CShap Linq vs Typescript
 
