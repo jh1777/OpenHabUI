@@ -174,15 +174,15 @@ Each single _item_ is defined as:
 
 ```json
 {
-    "name": "<openhab item or group name>", // mandatory and must exactly match openhab
-    "displayName": "<label in UI>", // mandatory
-    "category": "<category>", // mandatory, see documentation about possible categories
-    "unit": "<item unit like °C, % etc.>", // optional
-    "warningThreshold": 25, // optional: if set, state will be compared and set to isWarning (only for OH items, not groups)
-    "warningThresholdType": "gt", // mandatory, if warningThreshold is set: this should be also set to 'gt' (greater or equal than) or 'lt' (lower or equal than) to be able to determine warning state (only for OH items, not groups)
-    "showInSummary": true,  // optional: If you want to include this item in the summary bar (default is false)
-    "showOnlyInSummary": false,  // optional: If you want to include this item ONLY in the summary bar and don't show in a tile (default is false)
-  	"isGroup": true // optional: is this entry is an openhab group? (default = false)
+  "name": "<openhab item or group name>", // mandatory and must exactly match openhab
+  "displayName": "<label in UI>", // mandatory
+  "category": "<category>", // mandatory, see documentation about possible categories
+  "unit": "<item unit like °C, % etc.>", // optional
+  "warningThreshold": 25, // optional: if set, state will be compared and set to isWarning (only for OH items, not groups)
+  "warningThresholdType": "gt", // mandatory, if warningThreshold is set: this should be also set to 'gt' (greater or equal than) or 'lt' (lower or equal than) to be able to determine warning state (only for OH items, not groups)
+  "showInSummary": true,  // optional: If you want to include this item in the summary bar (default is false)
+  "showOnlyInSummary": false,  // optional: If you want to include this item ONLY in the summary bar and don't show in a tile (default is false)
+  "isGroup": true // optional: is this entry is an openhab group? (default = false)
 }
 ```
 
