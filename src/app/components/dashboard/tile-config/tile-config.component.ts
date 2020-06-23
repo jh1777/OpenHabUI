@@ -9,6 +9,7 @@ import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
 import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
 import { Configuration } from 'src/app/services/model/configuration-model';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
+import { AvailableOpenhabItem } from './openhabItem.available';
 
 @Component({
   selector: 'app-tile-config',
@@ -16,15 +17,20 @@ import { OpenhabApiService } from 'src/app/services/openhab-api.service';
   styleUrls: ['./tile-config.component.css']
 })
 export class TileConfigComponent  {
+  // Interim config to work on in modal dialog
   workingConfig: Configuration = null;
 
   initialTileName: string;
   tileName: string;
   open = false;
-  tile: Tile = null;
-  selectedItem: Item;  // Item from Tile Edit dialog
 
-  availableOpenhabItems: string[];
+  // Tile object for modal dialog
+  tile: Tile = null;
+  // Item from Tile Edit dialog 
+  selectedItem: Item;  
+
+  // List of Items available in openhab
+  availableOpenhabItems: AvailableOpenhabItem[];// string[];
 
   alertText: string = null; // Error Text
   alertText2: string = null; // Error Text
@@ -57,7 +63,9 @@ export class TileConfigComponent  {
   private getAllOpenHabItems() {
     this.openHabService.getAllItems().subscribe(
       result => {
-        this.availableOpenhabItems = result.body.map(i => i.name).sort();
+        this.availableOpenhabItems = result.body.map(i => { 
+          return new AvailableOpenhabItem(i.name, i.members != null);
+        }).sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
         console.log(`Fetched ${result.body.length} items from OpenHab.`)
     }, error => {
       if (error) {
@@ -152,7 +160,7 @@ export class TileConfigComponent  {
         }
       } else {
         // Log
-        let entry = new LogEntry(`"${this.tileName}" form validation failed!`, LogLevel.Error, "Edit/Create Tile", `${this.alertText ?? ""};${this.alertText2 ?? ""};${this.alertText3 ?? ""}`);
+        let entry = new LogEntry(`"${this.tileName}" form validation failed!`, LogLevel.Warning, "Edit/Create Tile", `${this.alertText ?? ""};${this.alertText2 ?? ""};${this.alertText3 ?? ""}`);
         this.observableService.emit<LogEntry>(new EventData(ObservableEvents.LOG, entry));
       }
     }

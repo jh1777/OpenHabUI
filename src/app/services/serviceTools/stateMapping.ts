@@ -7,19 +7,22 @@ export class StateMapping {
     static TriggeredStateByCategory: Map<CategoryType, string> = new Map<CategoryType, string>([
         [CategoryType.presence, "ON"],
         [CategoryType.temperature, ""],
+        [CategoryType.humidity, ""],
         [CategoryType.alert, "ON"],
         [CategoryType.motion, "ON"],
         [CategoryType.contact, "OPEN"],
         [CategoryType.switch, "ON"],
         [CategoryType.rollershutter, ""],
-        [CategoryType.battery, ""] // Placeholder only (used for order in summary)
+        [CategoryType.battery, ""], // Placeholder only (used for order in summary)
+        [CategoryType.number, ""],
+        [CategoryType.text, ""]
     ]);
 
     static CalculateGroupState = (group: OpenhabItem) => {
         // Set Triggered State
         if (StateMapping.TriggeredStateByCategory.has(group.category)) {
             var triggeredItems: OpenhabItem[];
-            if (group.category == CategoryType.battery || group.category == CategoryType.alert || group.category == CategoryType.temperature) {
+            if (group.category == CategoryType.battery || group.category == CategoryType.alert || group.category == CategoryType.temperature || group.category == CategoryType.humidity || group.category == CategoryType.number ) {
                 triggeredItems = group.members.filter(item => item.hasWarning || item.isCritical);
             } else {
                 let triggeredState = StateMapping.TriggeredStateByCategory.get(group.category);
@@ -41,10 +44,9 @@ export class StateMapping {
                     stateLabel = "on";
                     break;
                 case CategoryType.battery:
-                    noneLabel = "Everything in threshold";
-                    stateLabel = "not in threshold";
-                    break;                    
                 case CategoryType.temperature:
+                case CategoryType.humidity:
+                case CategoryType.number:
                     noneLabel = "Everything in threshold";
                     stateLabel = "not in threshold";
                     break;    

@@ -14,7 +14,7 @@
             <div class="alert-items"><div class="alert-item static"><div class="alert-icon-wrapper"><clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon></div><span class="alert-text">{{alertText4}}</span></div></div>
         </div>
 
-        <div *ngIf="alertText != null || alertText2 != null || alertText3 != null"><p></p></div>
+        <div *ngIf="alertText != null || alertText2 != null || alertText3 != null || alertText4 != null"><p></p></div>
         <clr-icon shape="pencil" size="22"></clr-icon> &nbsp; {{tileName}} &nbsp; <clr-spinner *ngIf="isLoading" clrInline clrMedium>Saving config</clr-spinner>
         <form clrForm clrLayout="vertical">
             <clr-input-container>
@@ -45,7 +45,7 @@
                             <clr-select-container>
                                 <label>Item Name</label>
                                 <select clrSelect name="itemName" [(ngModel)]="selectedItem.name" required>
-                                    <option *ngFor="let name of availableOpenhabItems" [ngValue]="name">{{name}}</option>
+                                    <option *ngFor="let item of availableOpenhabItems" [ngValue]="item.name">{{item.getDisplayName()}}</option>
                                 </select>
                                 <clr-control-helper>Original OpenHab Item Name</clr-control-helper>
                                 <clr-control-error>No OpenHab Item exists with this name!</clr-control-error>

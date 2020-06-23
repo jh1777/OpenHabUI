@@ -16,5 +16,8 @@ export enum CategoryType {
     sun,
     presence,
     heating,
-    rollershutter
+    rollershutter,
+    number,
+    text,
+    humidity
 }

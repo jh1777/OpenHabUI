@@ -35,11 +35,9 @@ export class ConfigService {
   }
 
   public createTile(): Tile {
-    //var tiles = configuration as Configuration;
     var tile = new Tile();
     tile.title = "";
     tile.items = [];
-    //tiles.dashboardTiles.push(tile);
     return tile;
   }
 
