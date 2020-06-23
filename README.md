@@ -9,7 +9,7 @@ A simple and lean Angular UI for giving easy control and overview about your Ope
 - Angular 9
 - RxJS
 - UI: Clarity 3
-- Backend: TS-Node API
+- Backend: TS Node / Express API
 
 ### Supported Browsers
 
@@ -52,10 +52,6 @@ It shows a configurable summary of items/groups you are interested in. If an ite
 Preview screenshot of a dashboard (including red marked UI components):
 
 ![screenshot-dashboard](./src/assets/documentation/screenshot-dashboard.png)
-
-### Room Pages
-
-tbd in later versions
 
 ## How to configure
 
