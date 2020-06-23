@@ -104,7 +104,7 @@ As a **fundamental structural property**, the `category` of each item or group y
   - **Unit**: you may specify "°C" for example
   - **Editable**: No
   - **Usage**: temperature sensor
-  - **Supports Group**: No **TODO**
+  - **Supports Group**: No
 - contact
   - **Icon**: <img src="./src/assets/icons/axis-chart-line.svg" alt="axis-chart-line" style="zoom:60%;" />
   - **Unit**: N/A
@@ -165,6 +165,24 @@ As a **fundamental structural property**, the `category` of each item or group y
   - **Editable**: Yes
   - **Usage**: rollershutter
   - **Supports Group**: No **TODO**
+- humidity
+  - **Icon**: <img src="./src/assets/icons/target-line.svg" alt="target-line" style="zoom:60%;" />
+  - **Unit**: %
+  - **Editable**: No
+  - **Usage**: humidity
+  - **Supports Group**: No
+- number
+  - **Icon**: <img src="./src/assets/icons/hashtag-line.svg" alt="hashtag-line" style="zoom:60%;" />
+  - **Unit**: custom
+  - **Editable**: No
+  - **Usage**: generic number content
+  - **Supports Group**: No
+- text
+  - **Icon**: <img src="./src/assets/icons/text-line.svg" alt="text-line" style="zoom:60%;" />
+  - **Unit**: N/A
+  - **Editable**: No
+  - **Usage**: generic text content
+  - **Supports Group**: No
 
 ### Section `dashboardTiles`
 
