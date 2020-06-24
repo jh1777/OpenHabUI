@@ -8,7 +8,7 @@ export const routes = express.Router();
 const jsonfile = require('jsonfile');
 const fileName = '../../config.json';
 const fileNameBackup = '../../config.backup.json';
-const logDir = '../../_logs';
+const logDir = '../../logs';
 const logFilePrefix = '-Logs-';
 
 
@@ -36,8 +36,13 @@ routes.post('/config', (req, res) => {
     jsonfile.writeFileSync(fileName, req.body);
     res.send({body: fileName});
 });
+
 // Logging
 routes.post('/log', (req, res) => {
+    if (!fs.existsSync(logDir)){
+        fs.mkdirSync(logDir);
+    }
+
     let date = new Date();
     
     let input: LogEntry = req.body;
