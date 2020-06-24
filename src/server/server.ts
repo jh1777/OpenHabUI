@@ -27,6 +27,6 @@ app.use(express.json());
 
 app.use('/', routes);
 
-app.listen(port, API_URL, function() {
+app.listen(port, function() {
     console.log(`OpenHab UI config service is started on Port ${port}`);
 });
