@@ -5,13 +5,14 @@ import { retry, catchError } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 import { ObservableService } from './observable.service';
 import { ObservableEvents } from './model/observable.eventTypes';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'platform'
 })
 
 export class LoggingService {
-  private loggingService = "http://"+window.location.hostname+":4441/log";
+  private loggingService = `http://${window.location.hostname}:${environment.serverPort}/log`;
 
   private static httpHeaders = new HttpHeaders()
     .set("Content-Type", "application/json");

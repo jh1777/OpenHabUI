@@ -6,13 +6,14 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 import configuration from '../../../config.json';
 import { Tile } from '../models/config/tile';
 import cloneDeep from 'lodash.clonedeep';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ConfigService {
-  private configUrl = "http://"+window.location.hostname+":4441/config";
+  private configUrl = `http://${window.location.hostname}:${environment.serverPort}/config`;
 
   public static configuration: Configuration = configuration;
 

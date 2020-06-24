@@ -1,9 +1,9 @@
 // Source: https://medium.com/@stephenfluin/adding-a-node-typescript-backend-to-your-angular-app-29b0e9925ff
 import { routes } from './routes';
 import express = require('express');
+import { environment } from '../environments/environment';
 
-const API_URL = "127.0.0.1";
-const port = 4441;
+const port = environment.serverPort;
 
 const app = express();
 

@@ -33,7 +33,7 @@ A simple and lean Angular UI for giving easy control and overview about your Ope
 If you need to adjust the ports (default is 4440 for angular UI and 4441 for the backend) you can find them `here:
 
 - **UI**: `package.json`
-- **Backend**: `src/server/server.ts` and `src/app/services/config.service.ts`
+- **Backend**: `src/environments/environment.ts`
 
 !! The previously provided script `start-on-server.sh` is deprecated and shall NOT be used anymore!
 

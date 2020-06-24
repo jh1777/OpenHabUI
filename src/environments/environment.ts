@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   title: "OpenHAB UI",
+  serverPort: 4441,
   logLevel: "debug"
 };
 
