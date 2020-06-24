@@ -39,6 +39,10 @@ If you need to adjust the ports (default is 4440 for angular UI and 4441 for the
 
 **AFTER EACH NEW OpenHAb UI UPDATE YOU INSTALL, PLEASE RUN STEPS 3 AND 4 AGAIN to install new or updated packages!**
 
+## Logging
+
+The app now logs at some points the actions / errors to a logfile. The logs will be written into a logfile per day in the folder "logs" in application root folder.
+
 ## UI Components
 
 The whole design is based on [Clarity UI](https://www.clarity.design).
