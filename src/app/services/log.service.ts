@@ -11,8 +11,6 @@ import { ObservableEvents } from './model/observable.eventTypes';
 })
 
 export class LoggingService {
-  //private loggingService = "http://localhost:4441/log";
-
   private loggingService = "http://"+window.location.hostname+":4441/log";
 
   private static httpHeaders = new HttpHeaders()

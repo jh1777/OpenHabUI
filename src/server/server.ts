@@ -1,13 +1,11 @@
 // Source: https://medium.com/@stephenfluin/adding-a-node-typescript-backend-to-your-angular-app-29b0e9925ff
 import { routes } from './routes';
 import express = require('express');
-//var cors = require('cors');
+
 const API_URL = "127.0.0.1";
 const port = 4441;
 
 const app = express();
-
-//app.use(cors());
 
 // Allow any method from any host and log requests
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {

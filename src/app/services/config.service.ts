@@ -12,7 +12,7 @@ import cloneDeep from 'lodash.clonedeep';
 })
 
 export class ConfigService {
-  private configUrl = "http://192.168.178.129:4441/config";
+  private configUrl = "http://"+window.location.hostname+":4441/config";
 
   public static configuration: Configuration = configuration;
 
