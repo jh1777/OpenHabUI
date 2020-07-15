@@ -13,12 +13,12 @@ import { StateMapping } from 'src/app/services/serviceTools/stateMapping';
 import { Tools } from 'src/app/services/serviceTools/tools';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from 'src/app/services/config.service';
-import { TileConfigComponent } from 'src/app/components/dashboard/tile-config/tile-config.component';
 import { ObservableService } from 'src/app/services/observable.service';
 import { LogEntry, LogLevel } from 'src/app/services/model/logEntry.model';
 import { EventData } from 'src/app/services/model/event.model';
 import { ObservableEvents } from 'src/app/services/model/observable.eventTypes';
 import { LoggingService } from 'src/app/services/log.service';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,9 +26,8 @@ import { LoggingService } from 'src/app/services/log.service';
   styleUrls: ['./dashboard.component.css']
 })
 
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit {
   title = environment.title;
-  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent; // Declare modal tile config dialog
 
   // List of changes states for history (limit to 50)
   stateChanges: ItemStateChangedEvent[] = [];
@@ -61,17 +60,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private eventService: EventbusService,
     private configService: ConfigService,
     private observableService: ObservableService,
-    private logger: LoggingService) 
+    private logger: LoggingService,
+    private appComponent: AppComponent) 
     {}
-
-  ngAfterViewInit(): void {
-    this.tileConfigDialog.onSave.subscribe(tile => {
-        //do something with tile result!
-        if (tile) {
-          console.log("Tile creation: "+ JSON.stringify(tile));
-        }
-    });
-  }
 
   ngOnInit() {
     
@@ -332,7 +323,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     return cloneDeep(map);
   }
 
-  //##### Button Actions
+  ////// Button Actions
 
   // History
   showHistory($event: MouseEvent) {
@@ -346,7 +337,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   // Create new Tile
   createNewTile() {
-    this.tileConfigDialog.openDialog();
+    this.appComponent.tileConfigDialog.openDialog();
   }
 
 }

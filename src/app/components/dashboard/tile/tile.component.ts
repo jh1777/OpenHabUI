@@ -3,21 +3,19 @@ import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { CategoryType } from 'src/app/models/config/category';
 import { OpenhabItemHistory } from 'src/app/services/model/openhabItemHistory';
-import { TileConfigComponent } from '../tile-config/tile-config.component';
 import { ConfigService } from 'src/app/services/config.service';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-tile',
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.css']
 })
-export class TileComponent implements OnInit, AfterViewInit {
+export class TileComponent implements OnInit {
   @Input() tileName: string;
   @Input() items: OpenhabItem[];
   @Input() hasWarningItem: boolean;
   @Input() hasCriticalItem: boolean = false;
- 
-  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent; // Declare modal tile config dialog
   
   // UI needed
   item: OpenhabItem;
@@ -27,20 +25,11 @@ export class TileComponent implements OnInit, AfterViewInit {
   
   constructor(
     private service: OpenhabApiService, 
-    private configService: ConfigService) { }
-
-  // TODO: Show error bar in tile when an Item is incorrect or can't be queried!
+    private configService: ConfigService,
+    private appComponent: AppComponent) { }
 
   ngOnInit(): void {
 
-  }
-
-  ngAfterViewInit(): void {
-    this.tileConfigDialog.onSave.subscribe(tile => {
-
-        // TODO: Log in logging service
-        console.log("Tile Edited: "+JSON.stringify(tile));
-    });
   }
 
   switchAction(event: MouseEvent, item: OpenhabItem) {
@@ -62,7 +51,7 @@ export class TileComponent implements OnInit, AfterViewInit {
   editConfig($event: MouseEvent, tileName: string) {
     let tile = this.configService.getTileWithName(tileName);
     if (tile != null) {
-      this.tileConfigDialog.openDialog(tile);
+      this.appComponent.tileConfigDialog.openDialog(tile);
     }
   }
 
