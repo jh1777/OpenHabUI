@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { OpenhabItem } from 'src/app/services/model/openhabItem';
 import { OpenhabApiService } from 'src/app/services/openhab-api.service';
 import { CategoryType } from 'src/app/models/config/category';
@@ -55,32 +55,7 @@ export class TileComponent implements OnInit {
     }
   }
 
-   // For Details button
-   openModal($event: MouseEvent, item: OpenhabItem) {
-    $event.preventDefault();
-    this.item = item;
-
-    // Getting History from Openhab API
-    this.service.getItemHistory(item.name, ConfigService.configuration.itemStateHistory).subscribe(history => {
-      this.stateHistory = history;
-    });
-
-    // --> ReplaySubject : is replaced:
-    /*
-    this.stateHistory = [];
-    if (this.eventService.itemchangedHistory.has(item.name)) {
-      this.eventService.itemchangedHistory.get(item.name).subscribe({
-        next: (v) =>  this.stateHistory.push(v)
-      });
-    }
-    */
-    // <---
-
-    this.showItemDetails = true;
-  }
-
-  closeModal() {
-    this.showItemDetails = false;
-    this.item = null;
+  openItemDetails(item: OpenhabItem) {
+    this.appComponent.itemDetailsDialog.openDialog(item);
   }
 }

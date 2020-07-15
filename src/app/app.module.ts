@@ -15,6 +15,7 @@ import { SummaryComponent } from './components/dashboard/summary/summary.compone
 import { ItemDetailsDialogComponent } from './components/item-details-dialog/item-details-dialog.component';
 import { TileConfigComponent } from './components/dashboard/tile-config/tile-config.component';
 import { LoggingService } from './services/log.service';
+import { ItemDetailsComponent } from './components/dashboard/item-details/item-details.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { LoggingService } from './services/log.service';
     ItemiconComponent,
     SummaryComponent,
     ItemDetailsDialogComponent,
-    TileConfigComponent
+    TileConfigComponent,
+    ItemDetailsComponent
   ],
   imports: [
     BrowserModule,

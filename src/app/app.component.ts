@@ -1,6 +1,6 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { TileConfigComponent } from './components/dashboard/tile-config/tile-config.component';
-//import configuration from 'config.json';
+import { ItemDetailsComponent } from './components/dashboard/item-details/item-details.component';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,9 @@ import { TileConfigComponent } from './components/dashboard/tile-config/tile-con
 })
 
 export class AppComponent implements AfterViewInit  {
-  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent; // Declare modal tile config dialog
+  @ViewChild(TileConfigComponent) tileConfigDialog: TileConfigComponent;
+  @ViewChild(ItemDetailsComponent) itemDetailsDialog: ItemDetailsComponent;
+
   // public static configuration: {openHabUrl:string, itemStateHistory: number, showOnlyActivityInSummary: boolean, dashboardTiles:Tile[]} = configuration;
   //public static configuration: IConfiguration = configuration;
 

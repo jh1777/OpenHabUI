@@ -41,7 +41,7 @@
                                             <strong>{{item?.transformedState }}</strong>
                                         </div>
                                         <div style="font-size: smaller; vertical-align: top;">
-                                            {{item?.label}}&nbsp;<clr-icon  shape="info-circle" (click)="openModal($event, item)"></clr-icon> <!--*ngIf="item?.members == null"-->
+                                            {{item?.label}}&nbsp;<clr-icon  shape="info-circle" (click)="openItemDetails(item)"></clr-icon> <!--*ngIf="item?.members == null"-->
                                         </div>
                                     </td>
                                 </tr>
@@ -53,15 +53,3 @@
         </table>
     </div>
 </div>
-
-<clr-modal [(clrModalOpen)]="showItemDetails">
-    <h3 class="modal-title">
-        {{item?.label}}
-    </h3>
-    <div class="modal-body">
-        <app-item-details-dialog [item]="item" [stateHistory]="stateHistory"></app-item-details-dialog>
-    </div>    
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary btn-sm" (click)="closeModal()">Close</button>
-    </div>
-</clr-modal>
