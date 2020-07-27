@@ -12,7 +12,7 @@
 
 <div style="padding-top: 10px;"></div>
 <div class="card-columns card-columns-2">
-  <div  *ngFor="let tile of tilesToShow" >
+  <div  *ngFor="let tile of tilesToShow; trackBy: trackByFn" >
     <app-tile [items]="itemsByTile.get(tile.title)" [tileName]="tile.title" [hasWarningItem]="warningStateByTile.get(tile.title)" [hasCriticalItem]="criticalStateByTile.get(tile.title)"></app-tile>
   </div>
 </div>

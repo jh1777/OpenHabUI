@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
   title = environment.title;
 
   // List of changes states for history (limit to 50)
-  stateChanges: ItemStateChangedEvent[] = [];
+  stateChanges: Array<ItemStateChangedEvent> = [];
 
   // Items by Tile Name: Main collection for Tile data
   itemsByTile: Map<string, OpenhabItem[]> = new Map<string, OpenhabItem[]>();
@@ -41,15 +41,15 @@ export class DashboardComponent implements OnInit {
   // Summary Items by category name
   summaryItems: Map<string, SummaryEntry[]> = new Map<string, SummaryEntry[]>();
   // Summary Categories array (to preserve defined order)
-  summaryCategories: string[] = [];
+  summaryCategories: Array<string> = [];
   // Show only activity in Summary (if false also none-triggered states will be shown)
   activityOnlyInSummary = ConfigService.configuration.showOnlyActivityInSummary;
   // Config: Tiles 
-  tiles: Tile[] = ConfigService.configuration.dashboardTiles;
+  tiles: Array<Tile> = ConfigService.configuration.dashboardTiles;
   // Tiles used to show in UI - some may not be shown based on certain item config
-  tilesToShow: Tile[];
+  tilesToShow: Array<Tile>;
   // Item ames overall on Dashboard as string array to filter EventBus messages, included in state change detection!
-  items: string[] = [];
+  items: Array<string> = [];
   
   updateSubject = new BehaviorSubject(this.itemsByTile);
   showHistoryModal = false;
@@ -101,6 +101,11 @@ export class DashboardComponent implements OnInit {
 
     // Subscribe to Events (new)
     this.eventService.subscribeToSubject(this.handleStateChange, this.items);
+  }
+
+  trackByFn(index: number, item: Tile) {
+    console.log("TrackBy was triggered: Index: "+index);
+    return item.title;
   }
 
   private updateWarningStateForAllTiles(tileItems: Map<string, OpenhabItem[]>) {
