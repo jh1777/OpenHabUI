@@ -1,3 +1,5 @@
+# THIS REPO IS DEPRECATED AND NOT MAINTAINED ANYMORE
+
 # Openhab UI
 
 A simple and lean Angular UI for giving easy control and overview about your OpenHab Server. The tool operates using OpenHab REST API. I developed it for local usage in same network as OpenHab Server.
